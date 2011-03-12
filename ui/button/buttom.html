@@ -4,32 +4,56 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>button</title>
 <style>
-.btn02 {
+.btn01 {
 	height: 24px;
 	border: 1px solid #87a3c1;
-	background: url(/uploadfile/200911/11/1632433537.gif);
-	color: #555;
+	color: #330033;
 	font-size: 12px;
 	line-height: 180%;
 	cursor: pointer;
 }
 
-.btn04 {
+.btn0101 {
 	height: 24px;
-	border: 1px solid #a2904d;
-	background: url(/uploadfile/200911/11/1632433537.gif) 　0　-66px;
+	border: 1px solid #3333CC;
 	color: #630;
 	font-size: 12px;
 	cursor: pointer;
 	line-height: 180%;
 }
+
+.btn02 {
+	height: 20px;
+	border: 1px solid #87a3c1;
+	color: #330033;
+	font-size: 12px;
+	line-height: 100%;
+	cursor: pointer;
+}
+
+.btn0201 {
+	height: 20px;
+	border: 1px solid #3333CC;
+	color: #630;
+	font-size: 12px;
+	cursor: pointer;
+	line-height: 100%;
+}
+
 </style>
 </head>
 
 <body>
-<p><input name="button2" type="button" class="btn02"
-	onmouseover="this.className='btn04'"
-	onmouseout="this.className='btn02'" id="button2" value="重fffffffffff置" /></p>
-<p>鼠标放到按钮上试试</p>
+<p>
+
+<input type="button"  id="button2" class="btn01" onmouseover="this.className='btn0101'" onmouseout="this.className='btn01'" value="重fffffffffff置" />
+
+</p>
+<p>
+
+<input type="button"  class="btn02" onmouseover="this.className='btn0201'" onmouseout="this.className='btn02'" value="-"/>
+<input type="button"  class="btn02" onmouseover="this.className='btn0201'" onmouseout="this.className='btn02'" value="+"/>
+<input type="button"  class="btn02" onmouseover="this.className='btn0201'" onmouseout="this.className='btn02'" value="X"/>
+</p>
 </body>
 </html>
