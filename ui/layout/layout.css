@@ -36,7 +36,7 @@ body {
 }
 
 .main {
-	height: 80%;
+	height: 80%; /*由top和bottom计算出来*/
 	width: 100%;
 }
 
