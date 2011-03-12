@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+ <head>
+  <title> New Document </title>
+  <script type="text/javascript" src="jquery-1.4.4.min.js"></script>
+ </head>
+
+ <body>
+		<div id="t">
+			<div><span id="t1">111</span></div>
+			<div><span id="t2">222</span></div>
+			<div><span id="t3">333</span></div>
+			<div><span id="t4">444</span></div>
+			<div><span id="t5">555</span></div>
+			<div><span id="t6">666</span></div>
+			<div><span id="t7">777</span></div>
+			<div><span id="t8">888</span></div>
+			<div><span id="t9">999</span></div>
+			<div><span id="t10">100</span></div>
+			<div><span id="t11">111</span></div>
+			<div><span id="t12">122</span></div>
+			<div><span id="t13">133</span></div>
+		</div>
+		<input type="button" id="prev" value="上一个" />
+		<input type="button" id="next" value="下一个" />
+		共<input type="text"  id="sumpage" />页
+ </body>
+
+  <script type="text/javascript">
+
+		var obj = $("#t").find("div");
+		var divsize = obj.size(); //数据条数
+		var perpage = 4;	//每页条数
+		var sumpage = Math.ceil(divsize/perpage);	//总页数	
+	
+		var i = 1;  //默认第一页
+		obj.hide();
+		obj.slice(0,perpage).show();
+		//上一页
+		$("#prev").click(function(){			
+			--i;
+			if(i<=0)
+			{
+				i = 1;
+				return false;
+			}
+			obj.hide();
+			obj.slice(i*perpage-perpage,i*perpage).show();	
+		});
+		//下一页
+		$("#next").click(function(){			
+			if(i>=sumpage)
+			{
+				i = sumpage;
+				return false;
+			}
+			obj.hide();
+			obj.slice(i*perpage,i*perpage+perpage).show();
+			++i;
+		});
+	
+  </script>
+</html>

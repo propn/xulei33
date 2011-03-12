@@ -1,0 +1,8 @@
+从06年到现在我一直使用aptana作为css/html/js/ajax的编辑器，确实是个很棒的工具。现在最新版本的aptana还附带了一个叫做jaxer的ajax服务器，号称是世界上第一个ajax服务器。 
+不过用Aptana Debugger来调试javascript还是没有用firebug好，如果用firefox浏览器的话，推荐使用firebug+yslow，我第一次使用它们，就有一种惊艳的感觉。 
+不过我们公司的产品在firefox下基本上跑不动，还是用IE吧，IE下推荐几个插件： 
+debugbar 
+companion.js 
+httpwatch
+IEDevToolBarSetup.msi
+

@@ -1,0 +1,54 @@
+body {
+	font-family: 'Verdana', '宋体';
+	font-size: 12PX;
+	margin: 0;
+	padding: 0;
+	min-width: 100%;
+	min-height: 100%;
+	height: 100%;
+	width: 100%;
+	overflow: hidden;
+}
+
+.layout {
+	width: 100%;
+	height: 100%;
+	background: #9c6;
+}
+
+.left {
+	width: 20%; /*入参*/
+	float: left;
+	height: 100%;
+	background: #FF00CC;
+}
+
+.right {
+	width: 20%; /*入参*/
+	float: right;
+	height: 100%;
+	background: #00FF66;
+}
+
+.center {
+	margin: 0 !important;
+	height: 100%;
+	background: #ffa;
+}
+
+.top {
+	height: 10%; /*入参*/
+	width: 100%;
+	background: #3366CC;
+}
+
+.bottom {
+	height: 10%; /*入参*/
+	width: 100%;
+	background: #339900;
+}
+
+.main {
+	height: 80%; /*根据top和bottom的height计算得出*/
+	width: 100%;
+}

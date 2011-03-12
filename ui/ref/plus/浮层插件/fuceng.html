@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"> 
+<html>
+<head>
+<meta http-equiv='Content-Type' content='text/html; charset=gbk' />
+
+<title>test</title>
+<script language="javascript" src="jquery-1.4.2.js"></script>
+<script language="javascript" src="jquery.overblock-1.2.js"></script>
+
+<style>
+
+</style>
+<script>
+$(function(){
+
+	$("#calendar").showPop({'closeable':false,'scroll':false,'overble':true});
+	
+});
+
+function show1(){
+
+	$("#calendar").showPop({'closeable':false,'scroll':false,'overble':true});
+}
+
+
+function show2(){
+
+	//该浮层单独显示
+	$("#calendar2").showPop({'closeable':false,'scroll':false,'overble':true,'single':true,'blockStyle':{'color':'blue','opacity':'0.2'}});
+}
+</script> 
+
+</head>
+<body>
+
+
+<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf
+<br />fsdfsdf
+<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf
+
+
+<div id="calendar" style="width:400px;height:200px;background-color:#444444;border:2px solid #aaaaaa;">
+浮层一
+<a href="javascript:void(0);" onclick="show2();">显示浮层二</a>
+</div> 
+
+<div id="calendar2" style="width:500px;height:150px;background-color:#aaaaaa;border:2px solid #999999;display:none;">
+浮层二
+<a href="javascript:void(0);" onclick="show1();">显示浮层一</a>
+</div> 
+<input type="button" value="看看能点击不" onclick="alert(1);" />
+<br />fsdfsdf
+<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf
+<br />fsdfsdf
+<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf
+<br />fsdfsdf
+<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf
+<br />fsdfsdf
+<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf
+<br />fsdfsdf
+<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf
+<br />fsdfsdf
+<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf<br />fsdfsdf
+</body>
+</html>

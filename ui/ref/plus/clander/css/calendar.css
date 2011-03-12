@@ -1,0 +1,109 @@
+* {
+	font: 12px;
+	letter-spacing: 0px;
+}
+
+body {
+	background-color: #E5E9F2;
+	overflow: hidden;
+	margin: 0;
+	border: 0px;
+}
+
+#titleYear {
+	text-align: center;
+	padding-top: 3px;
+	width: 120px;
+	height: 20px;
+	border: solid #E5E9F2;
+	border-width: 0px 1px 1px 0px;
+	background-color: #A4B9D7;
+	color: #000;
+	cursor: default;
+}
+
+#weekNameBox {
+	width: 282px;
+	border-bottom: 0;
+}
+
+.weekName {
+	text-align: center;
+	padding-top: 4px;
+	width: 40px;
+	height: 20px;
+	border: solid #E5E9F2;
+	border-width: 0px 1px 1px 0px;
+	background-color: #C0D0E8;
+	color: #243F65;
+	cursor: default;
+}
+
+.controlButton {
+	font-family: Webdings;
+	font: 9px;
+	text-align: center;
+	padding-top: 2px;
+	width: 40px;
+	height: 20px;
+	border: solid #E5E9F2;
+	border-width: 0px 1px 1px 0px;
+	background-color: #A4B9D7;
+	color: #243F65;
+	cursor: default;
+}
+
+.Ctable {
+	width: 282px;
+	margin-bottom: 20px;
+}
+
+.Ctable span {
+	font: 9px verdana;
+	font-weight: bold;
+	color: #243F65;
+	text-align: center;
+	padding-top: 4px;
+	width: 40px;
+	height: 26px;
+	border: solid #C0D0E8;
+	border-width: 0px 1px 1px 0px;
+	cursor: default;
+}
+
+.Cdate {
+	background-color: #E5E9F2;
+}
+
+.Ctable span.OtherMonthDate {
+	color: #999;
+	background-color: #f6f6f6;
+}
+
+.selectBox {
+	cursor: hand;
+	font: 9px verdana;
+	width: 80px;
+	position: absolute;
+	border: 1px solid #425E87;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	background-color: #fff;
+	FILTER: progid : DXImageTransform.Microsoft.Shadow ( Color = #999999,
+		offX = 10, offY = 10, direction = 120, Strength = 5 );
+	SCROLLBAR-FACE-COLOR: #E5E9F2;
+	SCROLLBAR-HIGHLIGHT-COLOR: #E5E9F2;
+	SCROLLBAR-SHADOW-COLOR: #A4B9D7;
+	SCROLLBAR-3DLIGHT-COLOR: #A4B9D7;
+	SCROLLBAR-ARROW-COLOR: #000000;
+	SCROLLBAR-TRACK-COLOR: #eeeee6;
+	SCROLLBAR-DARKSHADOW-COLOR: #ffffff;
+}
+
+.selectBox nobr {
+	padding: 0px 0px 2px 5px;
+	width: 100%;
+	color: #000;
+	letter-spacing: 2px;
+	text-decoration: none;
+}

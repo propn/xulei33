@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>工具条</title>
+<link href="layout.css" rel="stylesheet" type="text/css" />
+
+<style>
+
+.bar {margin:0 auto;height:5px; width:100%;background:#99CCFF;}
+
+.barleft { float:left; }
+
+.barcenter { margin:0 !important; margin:0; }
+
+.barright { float:right; width:40px;  }
+
+.button {margin:1px;}
+
+</style>
+
+</head>
+
+<body>
+<div class="bar">
+	<div class="barleft">.::标题</div>
+	<div class="barright" align="right">
+		<span class="button" onclick="alert('最小化')">-</span>
+		<span class="button" onclick="alert('最大化')">+</span>
+		<span class="button" onclick="alert('关闭')">X</span>
+	</div>
+  <div class="barcenter">..........</div> 
+</div>
+</body>
+</html>
