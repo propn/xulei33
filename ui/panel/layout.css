@@ -1,0 +1,33 @@
+.bar {
+	margin: 0 auto;
+	height: 5px;
+	width: 100%;
+	background: #99CCFF;
+}
+
+.barleft {
+	float: left;
+}
+
+.barcenter {
+	margin: 0 !important;
+	margin: 0;
+}
+
+.barright {
+	float: right;
+	width: 40px;
+}
+
+
+
+.panel {
+	height: 100%;
+	width: 100%;
+}
+
+.panelmain {
+	height: 98%;
+	width: 100%;
+	overflow: auto;
+}

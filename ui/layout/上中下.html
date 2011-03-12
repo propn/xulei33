@@ -4,9 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>1列自适应高度、宽度</title>
 
-
 <style>
-
 body {
 	font-family: 'Verdana', '宋体';
 	font-size: 12PX;
@@ -18,16 +16,62 @@ body {
 	overflow: hidden;
 }
 
+.layout {
+	width: 100%;
+	height: 100%;
+}
 
-.layout {width:100%; height:100%; background:#9c6;}
+.top {
+	height: 10%;
+	width: 100%;
+}
 
-.top { height:10%; width:100%; background:#3366CC;}
-.bottom { height:10%;width:100%; background:#339900;}
+.bottom {
+	height: 10%;
+	width: 100%;
+}
 
-.main { height:80%;width:100%;}<!-- 根据 top和bottom的高度得到 -->
+.main {
+	height: 80%; /*根据 top和bottom的高度得到*/
+	width: 100%;
+}
 
-.center { margin:0 !important; height:100%;  background:#ffa;}
+.center {
+	margin: 0 !important;
+	height: 100%;
+}
 
+.bar {
+	margin: 0 auto;
+	height: 5px;
+	width: 100%;
+	background: #99CCFF;
+}
+
+.barleft {
+	float: left;
+}
+
+.barcenter {
+	margin: 0 !important;
+	margin: 0;
+}
+
+.barright {
+	float: right;
+	width: 40px;
+}
+
+.panel {
+	height: 100%;
+	width: 100%;
+}
+
+.panelmain {
+	height: 98%;
+	width: 100%;
+	overflow: auto;
+}
 </style>
 
 </head>
@@ -35,31 +79,130 @@ body {
 <body>
 
 
-<div class="layout">
-<!-- 
+	<div class="layout">
+		
 	<div class="top">top</div>
- -->
-	<div class="main">
-		<div class="center">
+
+		<div class="main">
+			<div class="center">
 				<!--  -->
 				<div class="layout">
-					 
-					<div class="top">top</div>
-					
-					<div class="main">
-						<div class="center">center</div>
+
+					<div class="top">
+						<!--  -->
+						<div class="panel">
+							<div class="bar">
+								<div class="barleft">.::标题</div>
+								<div class="barright" align="right">
+									<span style="margin: 1px;" onclick="alert('最小化')">-</span> <span
+										style="margin: 1px;" onclick="alert('最大化')">+</span> <span
+										style="margin: 1px;" onclick="alert('关闭')">X</span>
+								</div>
+								<div class="barcenter">..</div>
+							</div>
+							<div class="panelmain">
+								11111111111111111111111111111111111111111111111111111111111111111111111111111111111
+								1111111<br>11111111111111111111111111111111 1111111<br>
+										1111111<br> 1111111<br> 1111111<br> 1111111<br>
+														1111111<br> 1111111<br> 1111111<br> 1111111<br>
+																		1111111<br> 1111111<br> 1111111<br>
+																					1111111<br> 1111111<br> 1111111<br>
+																								1111111<br> 1111111<br> 1111111<br>
+																											1111111<br> 1111111<br> 1111111<br>
+																														1111111<br> 1111111<br> 1111111<br>
+																																	1111111<br> 1111111<br>
+																																			1111111<br> 1111111<br>
+																																					1111111<br> 1111111<br>
+																																							1111111<br> 1111111<br>
+																																									1111111<br> 1111111<br>
+																																											1111111<br> 1111111<br>
+																																													1111111<br>1111111<br>
+																																															1111111<br>
+							</div>
+						</div>
+						<!--  -->
 					</div>
-					 
-					<div class="bottom" >bottom</div>
-					
+
+					<div class="main">
+						<div class="center">
+							<!--  -->
+							<div class="panel">
+								<div class="bar">
+									<div class="barleft">.::标题</div>
+									<div class="barright" align="right">
+										<span style="margin: 1px;" onclick="alert('最小化')">-</span> <span
+											style="margin: 1px;" onclick="alert('最大化')">+</span> <span
+											style="margin: 1px;" onclick="alert('关闭')">X</span>
+									</div>
+									<div class="barcenter">..</div>
+								</div>
+								<div class="panelmain">
+									11111111111111111111111111111111111111111111111111111111111111111111111111111111111
+									1111111<br>11111111111111111111111111111111 1111111<br>
+											1111111<br> 1111111<br> 1111111<br> 1111111<br>
+															1111111<br> 1111111<br> 1111111<br>
+																		1111111<br> 1111111<br> 1111111<br>
+																					1111111<br> 1111111<br> 1111111<br>
+																								1111111<br> 1111111<br> 1111111<br>
+																											1111111<br> 1111111<br> 1111111<br>
+																														1111111<br> 1111111<br> 1111111<br>
+																																	1111111<br> 1111111<br>
+																																			1111111<br> 1111111<br>
+																																					1111111<br> 1111111<br>
+																																							1111111<br> 1111111<br>
+																																									1111111<br> 1111111<br>
+																																											1111111<br> 1111111<br>
+																																													1111111<br> 1111111<br>1111111<br>
+																																																1111111<br>
+								</div>
+							</div>
+							<!--  -->
+						</div>
+					</div>
+
+					<div class="bottom">
+						<!--  -->
+						<div class="panel">
+							<div class="bar">
+								<div class="barleft">.::标题</div>
+								<div class="barright" align="right">
+									<span style="margin: 1px;" onclick="alert('最小化')">-</span> <span
+										style="margin: 1px;" onclick="alert('最大化')">+</span> <span
+										style="margin: 1px;" onclick="alert('关闭')">X</span>
+								</div>
+								<div class="barcenter">..</div>
+							</div>
+							<div class="panelmain">
+								11111111111111111111111111111111111111111111111111111111111111111111111111111111111
+								1111111<br>11111111111111111111111111111111 1111111<br>
+										1111111<br> 1111111<br> 1111111<br> 1111111<br>
+														1111111<br> 1111111<br> 1111111<br> 1111111<br>
+																		1111111<br> 1111111<br> 1111111<br>
+																					1111111<br> 1111111<br> 1111111<br>
+																								1111111<br> 1111111<br> 1111111<br>
+																											1111111<br> 1111111<br> 1111111<br>
+																														1111111<br> 1111111<br> 1111111<br>
+																																	1111111<br> 1111111<br>
+																																			1111111<br> 1111111<br>
+																																					1111111<br> 1111111<br>
+																																							1111111<br> 1111111<br>
+																																									1111111<br> 1111111<br>
+																																											1111111<br> 1111111<br>
+																																													1111111<br>1111111<br>
+																																															1111111<br>
+							</div>
+						</div>
+						<!--  -->
+					</div>
+
 				</div>
 				<!--  -->
+			</div>
 		</div>
-	</div>
-<!--  
+		
 	<div class="bottom" >bottom</div>
--->
-</div>
+
+	</div>
 
 
 </body>
