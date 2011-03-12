@@ -1,3 +1,8 @@
+form,select,input {
+	margin: 0px;
+	padding: 0px;
+}
+
 body {
 	font-family: 'Verdana', '宋体';
 	font-size: 12PX;
@@ -85,6 +90,7 @@ body {
 
 /*工具栏按钮*/
 .btn01 {
+	margin: 0px;
 	height: 15px;
 	border: 1px solid #87a3c1;
 	color: #330033;
@@ -94,6 +100,7 @@ body {
 }
 
 .btn0101 {
+	margin: 0px;
 	height: 15px;
 	border: 1px solid #3333CC;
 	color: #630;
