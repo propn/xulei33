@@ -64,6 +64,7 @@ body {
 	height: 98%;
 	width: 100%;
 	overflow: auto;
+	border: 1px solid #3333CC;
 }
 
 /*工具栏*/
