@@ -1,19 +1,24 @@
-/**
- * center
- */
+// 创建一个闭包  
 (function($) {
-	//
-	$.fn.layout = function(options) {
-		debug(this);
-		// 构造参数
-		var opts = $.extend({}, $.fn.layout.defaults, options);
-
+	// 插件的定义
+	$.fn.hilight = function(options) {
+		// debug(this);
+		// build main options before element iteration
+		var opts = $.extend({}, $.fn.hilight.defaults, options);
 		// iterate and reformat each matched element
 		return this.each(function() {
 			$this = $(this);
 			// build element specific options
 			var o = $.meta ? $.extend({}, opts, $this.data()) : opts;
 			// update element styles
+			alert(this.style.height);
+			alert(this.offsetWidth);
+			alert(this.offsetHeight);
+			
+			if(this.style.height<30){
+				this.style.height=100;
+			}
+
 			$this.css({
 				backgroundColor : o.background,
 				color : o.foreground
@@ -23,23 +28,19 @@
 			markup = $.fn.hilight.format(markup);
 			$this.html(markup);
 		});
-
 	};
-
 	// 私有函数：debugging
 	function debug($obj) {
-		if (window.console && window.console.log) {
+		if (window.console && window.console.log)
 			window.console.log('hilight selection count: ' + $obj.size());
-		}
 	}
 	;
 	// 定义暴露format函数
-	$.fn.layout.close = function(txt) {
+	$.fn.hilight.format = function(txt) {
 		return '<strong>' + txt + '</strong>';
 	};
-
-	// 插件的 属性defaults
-	$.fn.layout.defaults = {
+	// 插件的defaults
+	$.fn.hilight.defaults = {
 		foreground : 'red',
 		background : 'yellow'
 	};

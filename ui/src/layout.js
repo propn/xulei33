@@ -4,7 +4,7 @@
 (function($) {
 	//
 	$.fn.layout = function(options) {
-		debug(this);
+		//debug(this);
 		// 构造参数
 		var opts = $.extend({}, $.fn.layout.defaults, options);
 
