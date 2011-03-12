@@ -1,13 +1,13 @@
 /**
- * Ãæ°å
+ * é¢æ¿
  */
 (function($) {
-	// public¹¹Ôìº¯Êı
+	// publicæ„é€ å‡½æ•°
 	$.fn.panel = function(options, param) {
-		// ¹¹Ôì²ÎÊı
+		// æ„é€ å‚æ•°
 		var opts = $.extend({}, $.fn.layout.defaults, options);
 
-		// ´¦Àídom¶ÔÏó
+		// å¤„ç†domå¯¹è±¡
 		this.css({
 			backgroundColor : o.background,
 			color : o.foreground
@@ -20,20 +20,20 @@
 
 	};
 
-	// jQueryÀàË½ÓĞ³ÉÔ±º¯Êı£ºprivate void debugging(a)
+	// jQueryç±»ç§æœ‰æˆå‘˜å‡½æ•°ï¼šprivate void debugging(a)
 	function debug($obj) {
 		if (window.console && window.console.log) {
 			window.console.log('hilight selection count: ' + $obj.size());
 		}
 	}
 
-	// public³ÉÔ±º¯ÊıÊôĞÔ
+	// publicæˆå‘˜å‡½æ•°å±æ€§
 	$.fn.panel.defaults = {
 		backgroundColor : null,
 		color : red
 	};
 
-	// jQueryÀàµÄpublic staticÀàº¯Êı public static add(a,b)
+	// jQueryç±»çš„public staticç±»å‡½æ•° public static add(a,b)
 	$.extend({
 		add : function(a, b) {
 			return a + b;

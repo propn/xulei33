@@ -1,9 +1,9 @@
 /**
  * JQuery-ui plugin
  */
-// ´´½¨Ò»¸ö±Õ°ü
+// åˆ›å»ºä¸€ä¸ªé—­åŒ…
 (function($) {
-	// ²å¼şµÄ¶¨Òå
+	// æ’ä»¶çš„å®šä¹‰
 	$.fn.hilight = function(options) {
 		//debug(this);
 		
@@ -25,21 +25,21 @@
 			$this.html(markup);
 		});
 	};
-	// Ë½ÓĞº¯Êı£ºdebugging
+	// ç§æœ‰å‡½æ•°ï¼šdebugging
 	function debug($obj) {
 		if (window.console && window.console.log)
 			window.console.log('hilight selection count: ' + $obj.size());
 	}
 	;
-	// ¶¨Òå±©Â¶formatº¯Êı
+	// å®šä¹‰æš´éœ²formatå‡½æ•°
 	$.fn.hilight.format = function(txt) {
 		return '<strong>' + txt + '</strong>';
 	};
 	
-	// ²å¼şµÄdefaults
+	// æ’ä»¶çš„defaults
 	$.fn.hilight.defaults = {
 		foreground : 'red',
 		background : 'yellow'
 	};
-	// ±Õ°ü½áÊø
+	// é—­åŒ…ç»“æŸ
 })(jQuery);

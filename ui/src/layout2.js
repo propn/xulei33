@@ -5,7 +5,7 @@
 	//
 	$.fn.layout = function(options) {
 		debug(this);
-		// ¹¹Ôì²ÎÊı
+		// æ„é€ å‚æ•°
 		var opts = $.extend({}, $.fn.layout.defaults, options);
 
 		// iterate and reformat each matched element
@@ -26,22 +26,22 @@
 
 	};
 
-	// Ë½ÓĞº¯Êı£ºdebugging
+	// ç§æœ‰å‡½æ•°ï¼šdebugging
 	function debug($obj) {
 		if (window.console && window.console.log) {
 			window.console.log('hilight selection count: ' + $obj.size());
 		}
 	}
 	;
-	// ¶¨Òå±©Â¶formatº¯Êı
+	// å®šä¹‰æš´éœ²formatå‡½æ•°
 	$.fn.layout.close = function(txt) {
 		return '<strong>' + txt + '</strong>';
 	};
 
-	// ²å¼şµÄ ÊôĞÔdefaults
+	// æ’ä»¶çš„ å±æ€§defaults
 	$.fn.layout.defaults = {
 		foreground : 'red',
 		background : 'yellow'
 	};
-	// ±Õ°ü½áÊø
+	// é—­åŒ…ç»“æŸ
 })(jQuery);
