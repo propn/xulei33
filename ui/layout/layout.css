@@ -1,5 +1,5 @@
 body {
-	font-family: 'Verdana', 'ËÎÌå';
+	font-family: 'Verdana', 'å®‹ä½“';
 	font-size: 12PX;
 	margin: 0;
 	padding: 0;
@@ -13,42 +13,72 @@ body {
 .layout {
 	width: 100%;
 	height: 100%;
-	background: #9c6;
+}
+
+.center {
+	margin: 0 !important;
+	height: 100%;
+}
+
+.top {
+	height: 10%;
+	width: 100%;
+}
+
+.bottom {
+	height: 10%;
+	width: 100%;
+}
+
+.main {
+	height: 80%;
+	width: 100%;
 }
 
 .left {
-	width: 20%; /*Èë²Î*/
+	width: 20%;
 	float: left;
 	height: 100%;
 	background: #FF00CC;
 }
 
 .right {
-	width: 20%; /*Èë²Î*/
+	width: 20%;
 	float: right;
 	height: 100%;
 	background: #00FF66;
 }
 
-.center {
-	margin: 0 !important;
+/*å¸ƒå±€é¢æ¿*/
+.panel {
 	height: 100%;
-	background: #ffa;
+	width: 100%;
 }
 
-.top {
-	height: 10%; /*Èë²Î*/
+.panelmain {
+	height: 98%;
 	width: 100%;
-	background: #3366CC;
+	overflow: auto;
 }
 
-.bottom {
-	height: 10%; /*Èë²Î*/
+/*å·¥å…·æ */
+.bar {
+	margin: 0 auto;
+	height: 5px;
 	width: 100%;
-	background: #339900;
+	background: #99CCFF;
 }
 
-.main {
-	height: 80%; /*¸ù¾İtopºÍbottomµÄheight¼ÆËãµÃ³ö*/
-	width: 100%;
+.barleft {
+	float: left;
+}
+
+.barcenter {
+	margin: 0 !important;
+	margin: 0;
+}
+
+.barright {
+	float: right;
+	width: 40px;
 }
