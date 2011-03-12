@@ -80,5 +80,43 @@ body {
 
 .barright {
 	float: right;
-	width: 40px;
+	width: 60px;
+}
+
+/*工具栏按钮*/
+.btn01 {
+	height: 15px;
+	border: 1px solid #87a3c1;
+	color: #330033;
+	font-size: 12px;
+	line-height: 100%;
+	cursor: pointer;
+}
+
+.btn0101 {
+	height: 15px;
+	border: 1px solid #3333CC;
+	color: #630;
+	font-size: 12px;
+	cursor: pointer;
+	line-height: 100%;
+}
+
+/*普通按钮*/
+.btn02 {
+	height: 24px;
+	border: 1px solid #87a3c1;
+	color: #330033;
+	font-size: 12px;
+	line-height: 180%;
+	cursor: pointer;
+}
+
+.btn0201 {
+	height: 24px;
+	border: 1px solid #3333CC;
+	color: #630;
+	font-size: 12px;
+	cursor: pointer;
+	line-height: 180%;
 }
