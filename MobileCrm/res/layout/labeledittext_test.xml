@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:mobile="http://org.leixu.android"
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+
+	<org.leixu.android.widget.LabelEditText
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		mobile:lableText="姓名"
+		mobile:lableFontSize="14"
+		mobile:lablePosition="left"
+		mobile:hint="请输入用户名..." 
+		mobile:inputType="number"/>
+
+	<org.leixu.android.widget.LabelEditText
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		mobile:lableText="邮编"
+		mobile:lableFontSize="16"
+		mobile:lablePosition="top"
+		mobile:hint="请输入用户名..." />
+
+	<org.leixu.android.widget.LabelEditText
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		mobile:lableText="性别"
+		mobile:lableFontSize="18"
+		mobile:lablePosition="left"
+		mobile:hint="请输入用户名..." />
+
+</LinearLayout>
+
+
+
+

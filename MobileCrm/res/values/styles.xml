@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+	<!-- Title -->
+	<style
+		name="titleBackground">
+		<item
+			name="android:background">@drawable/head_bg</item>
+	</style>
+	<style
+		name="titleStyle"
+		parent="android:Theme"
+		mce_bogus="1">
+		<item
+			name="android:windowTitleSize">32dp</item>
+		<item
+			name="android:windowTitleBackgroundStyle">@style/titleBackground</item>
+	</style>
+
+	<!-- QuickAction -->
+	<style
+		name="QuickActionAboveAnimation">
+		<item
+			name="android:windowEnterAnimation">@anim/quickaction_above_enter</item>
+		<item
+			name="android:windowExitAnimation">@anim/quickaction_above_exit</item>
+	</style>
+	<style
+		name="QuickActionBelowAnimation">
+		<item
+			name="android:windowEnterAnimation">@anim/quickaction_below_enter</item>
+		<item
+			name="android:windowExitAnimation">@anim/quickaction_below_exit</item>
+	</style>
+
+</resources>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu>
+	<id>0</id>
+	<pid>0</pid>
+	<name>移动营销系统</name>
+	<activity />
+	<menu>
+		<id>1</id>
+		<pid>0</pid>
+		<name>业务办理</name>
+		<image>menu_fashion</image>
+		<activity />
+		<menu>
+			<id>11</id>
+			<pid>1</pid>
+			<name>业务11</name>
+			<image>menu_fashion</image>
+			<activity>onLogin</activity>
+			<menu>
+				<id>12</id>
+				<pid>1</pid>
+				<name>业务12</name>
+				<image>menu_fashion</image>
+				<activity />
+			</menu>
+		</menu>
+		<menu>
+			<id>12</id>
+			<pid>1</pid>
+			<name>业务12</name>
+			<image>menu_fashion</image>
+			<activity />
+		</menu>
+		<menu>
+			<id>12</id>
+			<pid>1</pid>
+			<name>业务13</name>
+			<image>menu_fashion</image>
+			<activity />
+		</menu>
+	</menu>
+	<menu>
+		<id>2</id>
+		<pid>0</pid>
+		<name>业务办理</name>
+		<image>menu_fashion</image>
+		<activity />
+		<menu>
+			<id>11</id>
+			<pid>1</pid>
+			<name>业务11</name>
+			<image>menu_fashion</image>
+			<activity>onLogin</activity>
+			<menu>
+				<id>12</id>
+				<pid>1</pid>
+				<name>业务12</name>
+				<image>menu_fashion</image>
+				<activity />
+			</menu>
+		</menu>
+		<menu>
+			<id>12</id>
+			<pid>1</pid>
+			<name>业务12</name>
+			<image>menu_fashion</image>
+			<activity>onLogin</activity>
+		</menu>
+		<menu>
+			<id>12</id>
+			<pid>1</pid>
+			<name>业务13</name>
+			<image>menu_fashion</image>
+			<activity>onLogin</activity>
+		</menu>
+	</menu>
+</menu>

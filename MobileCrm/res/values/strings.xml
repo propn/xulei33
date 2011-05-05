@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<!--core -->
+	<string
+		name="hello">Hello World, MobileCrm!</string>
+	<string
+		name="app_name">MobileCrm</string>
+	<string
+		name="core_dialog_message">处理中...\u2026</string>
+
+	<!--login -->
+	<string
+		name="login_username">USERNAME</string>
+	<string
+		name="login_password">PASSWORD</string>
+	<string
+		name="login_login">Login</string>
+	<string
+		name="login_cancel">Cancel</string>
+	<string
+		name="login_address">www.androidin.com</string>
+	<string
+		name="login_is_logining">Please wait for Loging www.androidin.com</string>
+	<string
+		name="login_success">Welcom to androidin</string>
+	<string
+		name="login_failed">Login Failed !!</string>
+	<string
+		name="login_timeout">Time Out!!</string>
+
+
+</resources>

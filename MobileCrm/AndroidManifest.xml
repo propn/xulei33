@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	package="com.ztesoft.mobile"
+	android:versionCode="1"
+	android:versionName="1.0">
+
+	<uses-permission
+		android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission
+		android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+	<uses-permission
+		android:name="android.permission.WRITE_APN_SETTINGS" />
+	<uses-permission
+		android:name="android.permission.READ_CONTACTS" />
+	<uses-permission
+		android:name="android.permission.WRITE_CONTACTS" />
+	<uses-permission
+		android:name="android.permission.VIBRATE" />
+	<uses-permission
+		android:name="android.permission.ACCESS_COARSE_LOCATION" />
+	<uses-permission
+		android:name="android.permission.SET_WALLPAPER" />
+	<uses-permission
+		android:name="android.permission.SEND_SMS" />
+	<uses-permission
+		android:name="android.permission.RECEIVE_SMS" />
+	<uses-permission
+		android:name="android.permission.NFC" />
+	<uses-permission
+		android:name="android.permission.RECORD_AUDIO" />
+	<uses-permission
+		android:name="android.permission.CAMERA" />
+	<uses-permission
+		android:name="android.permission.INTERNET" />
+	<uses-permission
+		android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission
+		android:name="android.permission.INSTALL_PACKAGES" />
+	<uses-permission
+		android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+	<uses-permission
+		android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission
+		android:name="android.permission.EXPAND_STATUS_BAR" />
+	<uses-permission
+		android:name="android.permission.READ_PHONE_STATE" />
+
+	<uses-sdk
+		android:minSdkVersion="8" />
+
+	<application
+		android:icon="@drawable/icon"
+		android:theme="@style/titleStyle">
+		<activity
+			android:name=".core.MobileCrm">
+			<intent-filter>
+				<action
+					android:name="android.intent.action.MAIN" />
+				<category
+					android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
+
+		<activity
+			android:name=".login.activity.TestLoginView" />
+		<activity
+			android:name=".login.activity.LoginViewOnActivity" />
+		<activity
+			android:name=".menu.MenuActivity" />
+
+	</application>
+</manifest>

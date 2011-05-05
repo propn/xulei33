@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+	<ImageView
+		android:id="@+id/top_title_pic"
+		android:layout_width="wrap_content"
+		android:layout_centerVertical="true"
+		android:layout_height="wrap_content"
+		android:src="@drawable/head_logo" />
+
+
+	<TextView
+		android:id="@+id/top_title_text"
+		android:text="王小二,18900001111王小二,18900001111王小二,18900001111"
+
+		android:layout_toRightOf="@+id/top_title_pic"
+		android:layout_alignTop="@+id/top_title_pic"
+		android:layout_alignBottom="@+id/top_title_pic"
+		android:layout_marginLeft="10dip"
+		android:layout_height="fill_parent"
+		android:layout_width="fill_parent"
+		android:layout_alignParentRight="true"
+		android:ellipsize="marquee"
+		android:gravity="bottom"
+		android:singleLine="true" />
+
+</RelativeLayout>
