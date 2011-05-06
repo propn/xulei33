@@ -40,6 +40,8 @@ public class MobileCrm extends BaseActivity {
 		initMenus();
 		// CheckNetwork();
 
+		getApplicationContext();
+
 	}
 
 	private void initMenus() {

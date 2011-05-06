@@ -45,9 +45,13 @@ public abstract class BaseActivity extends Activity {
 
 	protected Thread mThread;// HttpClient请求线程
 	protected Handler mHandler;// HttpClient请求结果处理对象实例
+	protected static App app;// 应用
 
 	protected void onCreate(Bundle savedInstanceState, int layoutResID) {
 		super.onCreate(savedInstanceState);
+		if (null == app) {
+			app = (App) getApplicationContext();// 初始化应用
+		}
 		// 隐去电池等图标和一切修饰部分（状态栏部分）
 		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -59,19 +63,20 @@ public abstract class BaseActivity extends Activity {
 
 		/* 底部工具栏 */
 		initPopupMenu();// 初始化Popup Menu菜单
+
 		// 创建底部菜单 Toolbar
-		toolbarGrid = (GridView) findViewById(R.id.footbar);
-		toolbarGrid.setSelector(R.drawable.toolbar_menu_item);
-		toolbarGrid.setBackgroundResource(R.drawable.menu_bg2);// 设置背景
-		toolbarGrid.setNumColumns(5);// 设置每行列数
-		toolbarGrid.setGravity(Gravity.CENTER);// 位置居中
-		toolbarGrid.setVerticalSpacing(10);// 垂直间隔
-		toolbarGrid.setHorizontalSpacing(10);// 水平间隔
-		toolbarGrid.setAdapter(getMenuAdapter(menu_toolbar_name_array,
+		main = (GridView) findViewById(R.id.footbar);
+		main.setSelector(R.drawable.toolbar_menu_item);
+		main.setBackgroundResource(R.drawable.menu_bg2);// 设置背景
+		main.setNumColumns(5);// 设置每行列数
+		main.setGravity(Gravity.CENTER);// 位置居中
+		main.setVerticalSpacing(10);// 垂直间隔
+		main.setHorizontalSpacing(10);// 水平间隔
+		main.setAdapter(getMenuAdapter(menu_toolbar_name_array,
 				menu_toolbar_image_array));// 设置菜单Adapter
 
 		/** 监听底部菜单选项 **/
-		toolbarGrid.setOnItemClickListener(new OnItemClickListener() {
+		main.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				switch (arg2) {
@@ -97,6 +102,7 @@ public abstract class BaseActivity extends Activity {
 				}
 			}
 		});
+
 		final int[] menu_image_array = { R.drawable.menu_search,
 				R.drawable.menu_filemanager, R.drawable.menu_downmanager,
 				R.drawable.menu_fullscreen, R.drawable.menu_inputurl,
@@ -213,7 +219,7 @@ public abstract class BaseActivity extends Activity {
 	/* 底部工具栏 */
 	private PopupWindow popup;
 	private ListView listView;
-	private GridView toolbarGrid, mGridView, mTitleGridView;
+	private GridView main, mGridView, mTitleGridView;
 	private LinearLayout mLayout;
 	private TextView title1, title2, title3;
 	private int titleIndex;
@@ -372,6 +378,7 @@ public abstract class BaseActivity extends Activity {
 	 */
 	private SimpleAdapter getMenuAdapter(String[] menuNameArray,
 			int[] imageResourceArray) {
+
 		ArrayList<HashMap<String, Object>> data = new ArrayList<HashMap<String, Object>>();
 
 		for (int i = 0; i < menuNameArray.length; i++) {
@@ -385,6 +392,7 @@ public abstract class BaseActivity extends Activity {
 				R.layout.footbar_menu_item, new String[] { "itemImage",
 						"itemText" }, new int[] { R.id.item_image,
 						R.id.item_text });
+
 		return simperAdapter;
 	}
 

@@ -48,7 +48,7 @@ public class App extends Application {
 	public static int mWidth = 0;// 屏幕高度
 	public static int mHeight = 0;// 屏幕宽度
 
-	static Map<Integer, Menu> menuCache = new HashMap<Integer, Menu>();// 系统菜单缓存
+	public static Map<Integer, Menu> menuCache = new HashMap<Integer, Menu>();// 系统菜单缓存
 
 	/**
 	 * Tag used for DDMS logging
@@ -91,6 +91,11 @@ public class App extends Application {
 		} catch (NameNotFoundException e) {
 			Log.v(tag, e.getMessage());
 		}
+		try {
+			parserXml();
+		} catch (Exception e) {
+			Log.v(tag, "menu.xml解析失败！");
+		}
 	}
 
 	/**
@@ -123,7 +128,7 @@ public class App extends Application {
 		String image = map.get("image") != null ? (String) map.get("image")
 				: null;
 		if (null != image) {
-			m.setImage(app.getRes(image));
+			m.setImage(app.getResId(image));
 		}
 		m.setActivity(map.get("activity") != null ? (String) map
 				.get("activity") : "");
@@ -136,18 +141,19 @@ public class App extends Application {
 					Menu m2 = new Menu();
 					Map map2 = (Map) it.next();
 					int id2 = Integer.valueOf((String) map2.get("id"));
-					m2.setId(id);
+					m2.setId(id2);
 					m2.setName(map2.get("name") != null ? (String) map2
 							.get("name") : "");
 					m2.setPid(Integer.valueOf((String) map2.get("pid")));
 					String image2 = map2.get("image") != null ? (String) map2
 							.get("image") : null;
 					if (null != image2) {
-						m2.setImage(app.getRes(image2));
+						m2.setImage(app.getResId(image2));
 					}
 					m2.setActivity(map2.get("activity") != null ? (String) map2
 							.get("activity") : "");
 					m.getMenu().add(m2);
+					menuCache.put(id2, m2);
 				}
 			}
 			menuCache.put(id, m);
@@ -171,12 +177,13 @@ public class App extends Application {
 				String image2 = menu.get("image") != null ? (String) menu
 						.get("image") : null;
 				if (null != image2) {
-					m2.setImage(app.getRes(image2));
+					m2.setImage(app.getResId(image2));
 				}
 
 				m2.setActivity(menu.get("activity") != null ? (String) menu
 						.get("activity") : "");
 				m.getMenu().add(m2);
+				menuCache.put(id2, m2);
 			}
 			menuCache.put(id, m);
 			initMenu(menu);// 迭代处理
@@ -195,6 +202,13 @@ public class App extends Application {
 		int resID = getResources().getIdentifier(name, "drawable",
 				appInfo.packageName);
 		return BitmapFactory.decodeResource(getResources(), resID);
+	}
+
+	public int getResId(String name) {
+		ApplicationInfo appInfo = getApplicationInfo();
+		int resID = getResources().getIdentifier(name, "drawable",
+				appInfo.packageName);
+		return resID;
 	}
 
 }

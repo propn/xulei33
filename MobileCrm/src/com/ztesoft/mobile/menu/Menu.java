@@ -1,8 +1,7 @@
 package com.ztesoft.mobile.menu;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import android.graphics.Bitmap;
 
 public class Menu {
 
@@ -10,10 +9,10 @@ public class Menu {
 	private String name;
 	private int pid;
 
-	private Bitmap image;
+	private int image;
 	private String activity;
 
-	private List<Menu> menu;
+	private List<Menu> menu=new ArrayList<Menu>();
 
 	public int getId() {
 		return id;
@@ -39,14 +38,6 @@ public class Menu {
 		this.pid = pid;
 	}
 
-	public Bitmap getImage() {
-		return image;
-	}
-
-	public void setImage(Bitmap image) {
-		this.image = image;
-	}
-
 	public String getActivity() {
 		return activity;
 	}
@@ -61,6 +52,14 @@ public class Menu {
 
 	public void setMenu(List<Menu> menu) {
 		this.menu = menu;
+	}
+
+	public int getImage() {
+		return image;
+	}
+
+	public void setImage(int image) {
+		this.image = image;
 	}
 
 }

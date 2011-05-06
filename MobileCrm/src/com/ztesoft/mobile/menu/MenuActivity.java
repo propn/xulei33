@@ -21,14 +21,14 @@ import com.ztesoft.mobile.widget.Button.ImageTextButton;
 public class MenuActivity extends BaseActivity {
 
 	private MenuActivity macivity;
+
 	private Intent intent;
 	private LinearLayout mainLayout01;
 
-	private int mWidth, mHeight;
+	private int mWidth;
+	private final int IMG_WIDTH = 80;
 
-	private final static int IMG_WIDTH = 80;
 	private int mainMenuId;
-
 	private final int WC = LinearLayout.LayoutParams.WRAP_CONTENT;
 
 	public MenuActivity() {
@@ -37,9 +37,7 @@ public class MenuActivity extends BaseActivity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		
 		super.onCreate(savedInstanceState, R.layout.menu);
-		
 		try {
 			intent = MenuActivity.this.getIntent();
 			String sId = intent.getDataString();
@@ -53,24 +51,21 @@ public class MenuActivity extends BaseActivity {
 	private void createMain() {
 		DisplayMetrics dm = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
-
 		mWidth = dm.widthPixels;
-		mHeight = dm.heightPixels;
 
 		LinearLayout l1 = new LinearLayout(this);
 		LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(WC, WC);
 
 		int n = mWidth / IMG_WIDTH;
-
 		int menuNums = MenuHelper.getSecondMenus(mainMenuId);
 		menuNums = menuNums + 1;
+
 		try {
 			TextView tTitle = (TextView) this.findViewById(R.id.menuTitle);
 			tTitle.setText(MenuHelper.getTitle(mainMenuId));
 			tTitle.setTextColor(Color.WHITE);
 			tTitle.setTextAppearance(this, 10);
 		} catch (Exception ex) {
-
 		}
 
 		for (int i = 0; i < menuNums; i++) {

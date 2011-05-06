@@ -51,9 +51,10 @@
 
 	<application
 		android:icon="@drawable/icon"
-		android:theme="@style/titleStyle">
+		android:theme="@style/titleStyle"
+		android:name=".core.App">
 		<activity
-			android:name=".core.MobileCrm">
+			android:name=".menu.MenuCommActivity">
 			<intent-filter>
 				<action
 					android:name="android.intent.action.MAIN" />
@@ -68,6 +69,10 @@
 			android:name=".login.activity.LoginViewOnActivity" />
 		<activity
 			android:name=".menu.MenuActivity" />
+		
+		<activity
+			android:name=".core.MobileCrm" />
+
 
 	</application>
 </manifest>

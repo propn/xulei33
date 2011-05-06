@@ -21,13 +21,6 @@ public class ImageTextButton extends Button {
 	private int fontWidth;
 	private int fontHeight;
 
-	// private final float[] BT_SELECTED = new float[] { 1, 0, 0, 0, 50, 0, 1,
-	// 0, 0,
-	// 50, 0, 0, 1, 0, 50, 0, 0, 0, 1, 0 };
-	// private final float[] BT_NOT_SELECTED = new float[] { 1, 0, 0, 0, 0, 0,
-	// 1, 0,
-	// 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0 };
-
 	public ImageTextButton(final Context c, int rid, String text) {
 		super(c);
 		this.label = text;
@@ -41,7 +34,7 @@ public class ImageTextButton extends Button {
 	private void getFontWidthAndHeight() {
 		Paint pFont = new Paint();
 		Rect rect = new Rect();
-		pFont.getTextBounds("��", 0, 1, rect);
+		pFont.getTextBounds("中", 0, 1, rect);
 		this.fontHeight = rect.height();
 		this.fontWidth = rect.width();
 	}
@@ -68,8 +61,6 @@ public class ImageTextButton extends Button {
 		canvas.drawBitmap(image, WIDTH_PADDING / 2, HEIGHT_PADDING / 2, null);
 		canvas.drawText(label, (image.getWidth() / 2) / 2, (HEIGHT_PADDING / 2)
 				+ image.getHeight() + 8 + SPACE, textPaint);
-		// this.getBackground().setColorFilter(new
-		// ColorMatrixColorFilter(BT_SELECTED));
 		this.setBackgroundColor(Color.alpha(0));
 	}
 
@@ -84,8 +75,6 @@ public class ImageTextButton extends Button {
 		case MotionEvent.ACTION_POINTER_2_DOWN:
 
 			this.setBackgroundColor(Color.rgb(255, 165, 0));
-			// this.getBackground().setColorFilter(new
-			// ColorMatrixColorFilter(BT_SELECTED));
 
 			break;
 		case MotionEvent.ACTION_UP:
@@ -94,9 +83,6 @@ public class ImageTextButton extends Button {
 		case MotionEvent.ACTION_POINTER_2_UP:
 
 			this.setBackgroundColor(Color.alpha(0));
-			// this.getBackground().setColorFilter(new
-			// ColorMatrixColorFilter(BT_NOT_SELECTED));
-
 			break;
 		}
 		return super.onTouchEvent(event);
