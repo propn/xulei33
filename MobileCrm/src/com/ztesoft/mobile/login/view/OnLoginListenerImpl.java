@@ -15,15 +15,15 @@ public class OnLoginListenerImpl implements OnLoginListener {
 	public boolean onLogin(View v, String username, String password) {
 		// for (int i = 0; i < 10000000; i++)
 		// ;
-		if (username.equals("timeout")) {
-				while (true) {
-			}
-		}
-		if (username.equals("androidin")) {
-			return true;
-		}
-
-		return false;
+		// if (username.equals("timeout")) {
+		// while (true) {
+		// }
+		// }
+		// if (username.equals("11")) {
+		return true;
+		// }
+		//
+		// return false;
 	}
 
 	public void onLoginFailed(final View v) {
