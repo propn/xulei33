@@ -19,7 +19,7 @@ import android.widget.TextView;
 import com.ztesoft.mobile.R;
 import com.ztesoft.mobile.core.App;
 
-public class AutoUpdate extends Activity {
+public class Update extends Activity {
 	TextView updateInfo;
 	// 远程下载用到的变量
 	private String currentFilePath = "";
@@ -35,7 +35,8 @@ public class AutoUpdate extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.update);
 		updateInfo = (TextView) this.findViewById(R.id.updateinfo);
-		new AlertDialog.Builder(AutoUpdate.this)
+		
+		new AlertDialog.Builder(Update.this)
 				.setTitle("更新提示")
 				.setMessage("发现新版本，是否更新")
 				.setPositiveButton("是", new DialogInterface.OnClickListener() {
@@ -61,7 +62,6 @@ public class AutoUpdate extends Activity {
 	@Override
 	protected void onPause() {
 		updateInfo.setText("下载成功");
-
 		super.onPause();
 	}
 
@@ -128,7 +128,7 @@ public class AutoUpdate extends Activity {
 			/* 打开文件进行安装 */
 			openFile(myTempFile);
 
-			AutoUpdate.this.finish();
+			Update.this.finish();
 			try {
 				is.close();
 			} catch (Exception ex) {
@@ -142,7 +142,6 @@ public class AutoUpdate extends Activity {
 		Intent intent = new Intent();
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		intent.setAction(android.content.Intent.ACTION_VIEW);
-
 		/* 调用getMIMEType()来取得MimeType */
 		String type = getMIMEType(f);
 		/* 设置intent的file与MimeType */

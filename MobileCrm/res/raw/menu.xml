@@ -21,7 +21,7 @@
 				<pid>1</pid>
 				<name>业务12</name>
 				<image>menu_fashion</image>
-				<activity>.core.MobileCrm</activity>
+				<activity>.business.OnLineJob</activity>
 			</menu>
 		</menu>
 		<menu>
@@ -29,14 +29,14 @@
 			<pid>1</pid>
 			<name>业务12</name>
 			<image>menu_fashion</image>
-			<activity>.core.MobileCrm</activity>
+			<activity>.business.OnLineJob</activity>
 		</menu>
 		<menu>
 			<id>13</id>
 			<pid>1</pid>
 			<name>业务13</name>
 			<image>menu_fashion</image>
-			<activity>.core.MobileCrm</activity>
+			<activity>.business.OnLineJob</activity>
 		</menu>
 	</menu>
 	<menu>
@@ -56,7 +56,7 @@
 				<pid>1</pid>
 				<name>业务12</name>
 				<image>menu_fashion</image>
-				<activity>.core.MobileCrm</activity>
+				<activity>.business.OnLineJob</activity>
 			</menu>
 		</menu>
 		<menu>
@@ -64,14 +64,14 @@
 			<pid>2</pid>
 			<name>业务12</name>
 			<image>menu_fashion</image>
-			<activity>.core.MobileCrm</activity>
+			<activity>.business.OnLineJob</activity>
 		</menu>
 		<menu>
 			<id>23</id>
 			<pid>2</pid>
 			<name>业务13</name>
 			<image>menu_fashion</image>
-			<activity>.core.MobileCrm</activity>
+			<activity>.business.OnLineJob</activity>
 		</menu>
 	</menu>
 	<menu>
@@ -91,7 +91,7 @@
 				<pid>31</pid>
 				<name>业务12</name>
 				<image>menu_fashion</image>
-				<activity>.core.MobileCrm</activity>
+				<activity>.business.OnLineJob</activity>
 			</menu>
 		</menu>
 		<menu>
@@ -99,14 +99,14 @@
 			<pid>3</pid>
 			<name>业务12</name>
 			<image>menu_fashion</image>
-			<activity>.core.MobileCrm</activity>
+			<activity>.business.OnLineJob</activity>
 		</menu>
 		<menu>
 			<id>33</id>
 			<pid>3</pid>
 			<name>业务13</name>
 			<image>menu_fashion</image>
-			<activity>.core.MobileCrm</activity>
+			<activity>.business.OnLineJob</activity>
 		</menu>
 	</menu>
 	<menu>
@@ -126,7 +126,7 @@
 				<pid>41</pid>
 				<name>业务12</name>
 				<image>menu_fashion</image>
-				<activity>.core.MobileCrm</activity>
+				<activity>.business.OnLineJob</activity>
 			</menu>
 		</menu>
 		<menu>
@@ -134,14 +134,14 @@
 			<pid>4</pid>
 			<name>业务12</name>
 			<image>menu_fashion</image>
-			<activity>.core.MobileCrm</activity>
+			<activity>.business.OnLineJob</activity>
 		</menu>
 		<menu>
 			<id>43</id>
 			<pid>4</pid>
 			<name>业务13</name>
 			<image>menu_fashion</image>
-			<activity>.core.MobileCrm</activity>
+			<activity>.business.OnLineJob</activity>
 		</menu>
 	</menu>
 	<menu>
@@ -161,7 +161,7 @@
 				<pid>51</pid>
 				<name>业务12</name>
 				<image>menu_fashion</image>
-				<activity>.core.MobileCrm</activity>
+				<activity>.business.OnLineJob</activity>
 			</menu>
 		</menu>
 		<menu>
@@ -176,14 +176,14 @@
 			<pid>5</pid>
 			<name>业务13</name>
 			<image>menu_fashion</image>
-			<activity>.core.MobileCrm</activity>
+			<activity>.business.OnLineJob</activity>
 		</menu>
 	</menu>
 	<menu>
 		<id>6</id>
 		<pid>0</pid>
 		<name>返回</name>
-		<image>menu_return</image>
+		<image>menu_fashion</image>
 		<activity />
 		<menu>
 			<id>61</id>
@@ -196,7 +196,7 @@
 				<pid>1</pid>
 				<name>业务12</name>
 				<image>menu_fashion</image>
-				<activity>.core.MobileCrm</activity>
+				<activity>.business.OnLineJob</activity>
 			</menu>
 		</menu>
 		<menu>
@@ -204,14 +204,14 @@
 			<pid>6</pid>
 			<name>业务12</name>
 			<image>menu_fashion</image>
-			<activity>.core.MobileCrm</activity>
+			<activity>.business.OnLineJob</activity>
 		</menu>
 		<menu>
 			<id>63</id>
 			<pid>6</pid>
 			<name>业务13</name>
 			<image>menu_fashion</image>
-			<activity>.core.MobileCrm</activity>
+			<activity>.business.OnLineJob</activity>
 		</menu>
 	</menu>
 	<menu>

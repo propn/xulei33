@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.ztesoft.mobile.R;
-import com.ztesoft.mobile.login.activity.LoginSuccessActivity;
+import com.ztesoft.mobile.menu.MenuActivity;
 
 public class OnLoginListenerImpl implements OnLoginListener {
 
@@ -35,7 +35,7 @@ public class OnLoginListenerImpl implements OnLoginListener {
 
 	public void onLoginSuccess(View v) {
 		Context context = v.getContext();
-		context.startActivity(new Intent(context, LoginSuccessActivity.class));
+		context.startActivity(new Intent(context, MenuActivity.class));
 	}
 
 	public void onLoginTimeout(View v) {

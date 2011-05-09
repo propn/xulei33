@@ -8,7 +8,7 @@ import com.ztesoft.mobile.core.BaseActivity;
 import com.ztesoft.mobile.login.view.LoginView;
 import com.ztesoft.mobile.login.view.OnLoginListenerImpl;
 
-public class LoginViewOnActivity extends BaseActivity {
+public class LoginActivity extends BaseActivity {
 
 	private LoginView logV;
 

@@ -42,7 +42,7 @@ public class TestLoginView extends BaseActivity {
 		@Override
 		public void onClick(View v) {
 			Intent intent = new Intent();
-			intent.setClass(TestLoginView.this, LoginViewOnActivity.class);
+			intent.setClass(TestLoginView.this, LoginActivity.class);
 			startActivity(intent);
 		}
 	}

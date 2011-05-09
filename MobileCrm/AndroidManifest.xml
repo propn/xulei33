@@ -51,10 +51,10 @@
 
 	<application
 		android:icon="@drawable/icon"
-		android:theme="@style/titleStyle"
+		android:theme="@style/appStyle"
 		android:name=".core.App">
 		<activity
-			android:name=".menu.MenuCommActivity">
+			android:name=".login.activity.LoginActivity">
 			<intent-filter>
 				<action
 					android:name="android.intent.action.MAIN" />
@@ -66,13 +66,12 @@
 		<activity
 			android:name=".login.activity.TestLoginView" />
 		<activity
-			android:name=".login.activity.LoginViewOnActivity" />
-		<activity
 			android:name=".menu.MenuActivity" />
-		
 		<activity
-			android:name=".core.MobileCrm" />
+			android:name=".update.Update" />
 
+		<activity
+			android:name=".business.OnLineJob" />
 
 	</application>
 </manifest>

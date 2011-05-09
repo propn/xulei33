@@ -359,7 +359,7 @@ public abstract class BaseActivity extends Activity {
 			if (popup.isShowing())
 				popup.dismiss();
 			else {
-				popup.showAtLocation(findViewById(R.id.menus), Gravity.BOTTOM,
+				popup.showAtLocation(findViewById(R.id.main), Gravity.BOTTOM,
 						0, 70);
 				mViewFlipper.startFlipping();// 播放动画
 			}

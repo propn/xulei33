@@ -7,7 +7,7 @@
 			name="android:background">@drawable/head_bg</item>
 	</style>
 	<style
-		name="titleStyle"
+		name="appStyle"
 		parent="android:Theme"
 		mce_bogus="1">
 		<item

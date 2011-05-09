@@ -20,7 +20,7 @@
 	<string
 		name="login_address">www.androidin.com</string>
 	<string
-		name="login_is_logining">Please wait for Loging www.androidin.com</string>
+		name="login_is_logining">Please wait for Login </string>
 	<string
 		name="login_success">Welcom to androidin</string>
 	<string
