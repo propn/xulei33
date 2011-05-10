@@ -63,31 +63,21 @@ public abstract class BaseActivity extends Activity {
 
 		/* 底部工具栏 */
 		initPopupMenu();// 初始化Popup Menu菜单
-
 		// 创建底部菜单 Toolbar
 		main = (GridView) findViewById(R.id.footbar);
 		main.setSelector(R.drawable.toolbar_menu_item);
-		main.setBackgroundResource(R.drawable.menu_bg2);// 设置背景
+		main.setBackgroundResource(R.drawable.foot_bg);// 设置背景
 		main.setNumColumns(5);// 设置每行列数
 		main.setGravity(Gravity.CENTER);// 位置居中
 		main.setVerticalSpacing(10);// 垂直间隔
 		main.setHorizontalSpacing(10);// 水平间隔
-		main.setAdapter(getMenuAdapter(menu_toolbar_name_array,
-				menu_toolbar_image_array));// 设置菜单Adapter
+		main.setAdapter(getMenuAdapter(menu_toolbar_image_array));// 设置菜单Adapter
 
 		/** 监听底部菜单选项 **/
 		main.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				switch (arg2) {
-				case TOOLBAR_ITEM_PAGEHOME:
-					break;
-				case TOOLBAR_ITEM_BACK:
-					break;
-				case TOOLBAR_ITEM_FORWARD:
-					break;
-				case TOOLBAR_ITEM_NEW:
-					break;
 				case TOOLBAR_ITEM_MENU:// 菜单
 					if (popup != null) {
 						if (popup.isShowing()) {
@@ -99,22 +89,17 @@ public abstract class BaseActivity extends Activity {
 						}
 					}
 					break;
+				case TOOLBAR_ITEM_PAGEHOME:
+					break;
+				case TOOLBAR_ITEM_BACK:
+					break;
+				case TOOLBAR_ITEM_FORWARD:
+					break;
+				case TOOLBAR_ITEM_NEW:
+					break;
 				}
 			}
 		});
-
-		final int[] menu_image_array = { R.drawable.menu_search,
-				R.drawable.menu_filemanager, R.drawable.menu_downmanager,
-				R.drawable.menu_fullscreen, R.drawable.menu_inputurl,
-				R.drawable.menu_bookmark, R.drawable.menu_bookmark_sync_import,
-				R.drawable.menu_sharepage, R.drawable.menu_quit,
-				R.drawable.menu_nightmode, R.drawable.menu_refresh,
-				R.drawable.menu_more };
-		// listView = (ListView) findViewById(R.id.ListView_catalog);
-		// listView.setAdapter(getMenuAdapter(new String[] { "测试1", "测试2",
-		// "测试3",
-		// "测试4", "测试5", "测试6", "测试7", "测试8", "测试9", "测试10", "测试11",
-		// "测试12" }, menu_image_array));
 
 	}
 
@@ -218,25 +203,23 @@ public abstract class BaseActivity extends Activity {
 
 	/* 底部工具栏 */
 	private PopupWindow popup;
-	private ListView listView;
 	private GridView main, mGridView, mTitleGridView;
 	private LinearLayout mLayout;
 	private TextView title1, title2, title3;
 	private int titleIndex;
 	private ViewFlipper mViewFlipper;
 	/*-- Toolbar底部菜单选项下标--*/
-	private final int TOOLBAR_ITEM_PAGEHOME = 0;// 首页
-	private final int TOOLBAR_ITEM_BACK = 1;// 退后
-	private final int TOOLBAR_ITEM_FORWARD = 2;// 前进
-	private final int TOOLBAR_ITEM_NEW = 3;// 创建
-	private final int TOOLBAR_ITEM_MENU = 4;// 菜单
+	private final int TOOLBAR_ITEM_MENU = 0;// 菜单
+	private final int TOOLBAR_ITEM_PAGEHOME = 1;// 首页
+	private final int TOOLBAR_ITEM_BACK = 2;// 退后
+	private final int TOOLBAR_ITEM_FORWARD = 3;// 前进
+	private final int TOOLBAR_ITEM_NEW = 4;// 创建
+
 	/** 底部菜单图片 **/
-	int[] menu_toolbar_image_array = { R.drawable.controlbar_homepage,
+	int[] menu_toolbar_image_array = { R.drawable.controlbar_menu,
+			R.drawable.controlbar_homepage,
 			R.drawable.controlbar_backward_enable,
-			R.drawable.controlbar_forward_enable, R.drawable.controlbar_window,
-			R.drawable.controlbar_menu };
-	/** 底部菜单文字 **/
-	String[] menu_toolbar_name_array = { "首页", "后退", "前进", "创建", "菜单" };
+			R.drawable.controlbar_forward_enable, R.drawable.controlbar_window };
 
 	/**
 	 * 创建Popup Menu菜单
@@ -261,8 +244,10 @@ public abstract class BaseActivity extends Activity {
 		mTitleGridView.setVerticalSpacing(1);
 		mTitleGridView.setHorizontalSpacing(1);
 		mTitleGridView.setGravity(Gravity.CENTER);
+
 		MenuTitleAdapter mta = new MenuTitleAdapter(this, new String[] { "常用",
 				"设置", "工具" }, 16, 0xFFFFFFFF);
+
 		mTitleGridView.setAdapter(mta);
 
 		mTitleGridView.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -285,6 +270,7 @@ public abstract class BaseActivity extends Activity {
 		mGridView = new GridView(this);
 		mGridView.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT,
 				LayoutParams.WRAP_CONTENT));
+
 		mGridView.setSelector(R.drawable.toolbar_menu_item);
 		mGridView.setNumColumns(4);
 		mGridView.setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
@@ -292,8 +278,7 @@ public abstract class BaseActivity extends Activity {
 		mGridView.setHorizontalSpacing(10);
 		mGridView.setPadding(10, 10, 10, 10);
 		mGridView.setGravity(Gravity.CENTER);
-		mGridView.setAdapter(getMenuAdapter(new String[] { "常用1", "常用2", "常用3",
-				"常用4" }, new int[] { R.drawable.menu_test,
+		mGridView.setAdapter(getMenuAdapter(new int[] { R.drawable.menu_test,
 				R.drawable.menu_bookmark, R.drawable.menu_about,
 				R.drawable.menu_checknet }));
 
@@ -376,22 +361,19 @@ public abstract class BaseActivity extends Activity {
 	 *            图片
 	 * @return SimpleAdapter
 	 */
-	private SimpleAdapter getMenuAdapter(String[] menuNameArray,
-			int[] imageResourceArray) {
+	private SimpleAdapter getMenuAdapter(int[] imageResourceArray) {
 
 		ArrayList<HashMap<String, Object>> data = new ArrayList<HashMap<String, Object>>();
 
-		for (int i = 0; i < menuNameArray.length; i++) {
+		for (int i = 0; i < imageResourceArray.length; i++) {
 			HashMap<String, Object> map = new HashMap<String, Object>();
 			map.put("itemImage", imageResourceArray[i]);
-			map.put("itemText", menuNameArray[i]);
 			data.add(map);
 		}
 
 		SimpleAdapter simperAdapter = new SimpleAdapter(this, data,
-				R.layout.footbar_menu_item, new String[] { "itemImage",
-						"itemText" }, new int[] { R.id.item_image,
-						R.id.item_text });
+				R.layout.footbar_menu_item, new String[] { "itemImage", },
+				new int[] { R.id.item_image });
 
 		return simperAdapter;
 	}
@@ -414,10 +396,9 @@ public abstract class BaseActivity extends Activity {
 				title2.setBackgroundResource(R.drawable.toolbar_menu_release);
 			if (title3 != null)
 				title3.setBackgroundResource(R.drawable.toolbar_menu_release);
-			mGridView.setAdapter(getMenuAdapter(new String[] { "常用1", "常用2",
-					"常用3", "常用4" }, new int[] { R.drawable.menu_test,
-					R.drawable.menu_bookmark, R.drawable.menu_about,
-					R.drawable.menu_checknet }));
+			mGridView.setAdapter(getMenuAdapter(new int[] {
+					R.drawable.menu_test, R.drawable.menu_bookmark,
+					R.drawable.menu_about, R.drawable.menu_checknet }));
 			break;
 		case 1:
 			title2 = (TextView) arg1;
@@ -426,10 +407,9 @@ public abstract class BaseActivity extends Activity {
 				title1.setBackgroundResource(R.drawable.toolbar_menu_release);
 			if (title3 != null)
 				title3.setBackgroundResource(R.drawable.toolbar_menu_release);
-			mGridView.setAdapter(getMenuAdapter(new String[] { "设置1", "设置2",
-					"设置3", "设置4" }, new int[] { R.drawable.menu_edit,
-					R.drawable.menu_delete, R.drawable.menu_fullscreen,
-					R.drawable.menu_help }));
+			mGridView.setAdapter(getMenuAdapter(new int[] {
+					R.drawable.menu_edit, R.drawable.menu_delete,
+					R.drawable.menu_fullscreen, R.drawable.menu_help }));
 			break;
 		case 2:
 			title3 = (TextView) arg1;
@@ -439,10 +419,9 @@ public abstract class BaseActivity extends Activity {
 			if (title1 != null)
 				title1.setBackgroundResource(R.drawable.toolbar_menu_release);
 
-			mGridView.setAdapter(getMenuAdapter(new String[] { "工具1", "工具2",
-					"工具3", "工具4" }, new int[] { R.drawable.menu_copy,
-					R.drawable.menu_cut, R.drawable.menu_normalmode,
-					R.drawable.menu_quit }));
+			mGridView.setAdapter(getMenuAdapter(new int[] {
+					R.drawable.menu_copy, R.drawable.menu_cut,
+					R.drawable.menu_normalmode, R.drawable.menu_quit }));
 
 			break;
 		}

@@ -113,6 +113,7 @@ public class LoginView extends FrameLayout {
 	protected class LoginThread extends Thread {
 		@Override
 		public void run() {
+			
 			handler.sendEmptyMessage(SET_ONLOGIN_TRUE);
 
 			boolean flag = onLoginListener.onLogin(LoginView.this, edtUsername
