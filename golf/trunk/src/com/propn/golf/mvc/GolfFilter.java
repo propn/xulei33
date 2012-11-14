@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.propn.golf.dao.trans.Atom;
+import com.propn.golf.tools.JsonUtils;
 
 public class GolfFilter implements Filter {
 
@@ -25,7 +26,7 @@ public class GolfFilter implements Filter {
     public void init(FilterConfig filterConfig) throws ServletException {
         String regex = filterConfig.getInitParameter("ignore");
         if (!"null".equalsIgnoreCase(regex)) {
-            ignorePtn = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+            ignorePtn = Pattern.compile(IGNORE, Pattern.CASE_INSENSITIVE);
         }
         String packages = filterConfig.getInitParameter("packages");
         try {
@@ -71,7 +72,8 @@ public class GolfFilter implements Filter {
             return;
         }
         final String requestURL = request.getRequestURL().toString();
-        final URI baseUri = URI.create(request.getRequestURL().substring(0,requestURL.length() - servletPath.length() + 1));
+        final URI baseUri = URI.create(request.getRequestURL().substring(0,
+                requestURL.length() - servletPath.length() + 1));
         final URI requestUri = URI.create(requestURL);
         service(baseUri, requestUri, request, response);
     }
@@ -89,18 +91,17 @@ public class GolfFilter implements Filter {
      * @exception IOException if an input or output error occurs while the Web component is handling the HTTP request.
      * @exception ServletException if the HTTP request cannot be handled.
      */
-    public int service(URI baseUri, URI requestUri, final HttpServletRequest request, HttpServletResponse response)
+    public void service(URI baseUri, URI requestUri, final HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
             Atom res = new Atom(baseUri, requestUri, request, response);
             FutureTask<Object> transMgr = new FutureTask<Object>(res);
             new Thread(transMgr).start();
-            Object rst;
-            rst = transMgr.get();
+            Object rst = transMgr.get();
+            response.getWriter().append(JsonUtils.toJson(rst)).flush();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return 200;
     }
 
 }

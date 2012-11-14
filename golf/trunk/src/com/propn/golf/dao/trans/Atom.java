@@ -37,7 +37,7 @@ public class Atom implements Callable<Object> {
         } catch (Exception e) {
             ConnUtils.rollbackAll();
         } finally {
-            ConnUtils.clean();
+            // ConnUtils.clean();
         }
         return 200;
     }
