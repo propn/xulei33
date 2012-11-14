@@ -23,17 +23,17 @@ public abstract class Po implements Serializable {
 
     // 属性设置
     public Object get(String fieldName) throws Exception {
-        Object value = RefUtils.getInstance().getFieldValue(this, fieldName);
+        Object value = RefUtils.getFieldValue(this, fieldName);
         return value;
     }
 
     public void set(String fieldName, Object value) throws Exception {
-        RefUtils.getInstance().setFieldValue(this, fieldName, value);
+        RefUtils.setFieldValue(this, fieldName, value);
     }
 
     Map toMap() throws Exception {
         Map<String, Object> map = new HashMap();
-        Map<String, Field> fields = RefUtils.getInstance().getFields(this.getClass());
+        Map<String, Field> fields = RefUtils.getFields(this.getClass());
         for (Iterator it = fields.keySet().iterator(); it.hasNext();) {
             Field field = (Field) it.next();
             Object v = field.get(this);
@@ -48,7 +48,7 @@ public abstract class Po implements Serializable {
 
     public Map toColumnMap() throws Exception {
         Map<String, Object> map = new HashMap();
-        Map<String, Field> fields = RefUtils.getInstance().getFields(this.getClass());
+        Map<String, Field> fields = RefUtils.getFields(this.getClass());
         for (Iterator it = fields.values().iterator(); it.hasNext();) {
             Field field = (Field) it.next();
             Object v = field.get(this);
@@ -66,7 +66,7 @@ public abstract class Po implements Serializable {
     String toJson() {
         return JsonUtils.toJson(this, this.getClass());
     }
-    
+
     //
     String toXml() {
         return null;
@@ -74,6 +74,7 @@ public abstract class Po implements Serializable {
 
     // 数据库操作CRUD
     public void save() throws Exception {
+        System.out.println("currentThread :" + Thread.currentThread().getId());
         DbUtils.intsert(this);
     }
 

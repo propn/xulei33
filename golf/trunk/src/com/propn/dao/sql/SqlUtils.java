@@ -159,7 +159,7 @@ public class SqlUtils {
     }
 
     private static List<Field> getIdFields(Class clz) {
-        Map map = RefUtils.getInstance().getFields(clz);
+        Map map = RefUtils.getFields(clz);
         Object[] fields = map.values().toArray();
 
         List<Field> list = new ArrayList<Field>();
@@ -174,7 +174,7 @@ public class SqlUtils {
 
     private static List<Field> getColumnFields(Class clz) {
         List<Field> list = new ArrayList<Field>();
-        Map map = RefUtils.getInstance().getFields(clz);
+        Map map = RefUtils.getFields(clz);
         Object[] fields = map.values().toArray();
         for (int i = 0; i < fields.length; i++) {
             Field field = (Field) fields[i];

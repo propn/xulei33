@@ -1,6 +1,7 @@
 package com.propn.dao.sql;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Map;
 
 import com.propn.dao.Person;
@@ -12,43 +13,50 @@ import com.propn.tools.Cache;
  * 
  */
 public class RefUtils {
-    private static Cache<Field> cache;
-    private static RefUtils inst;
+    private static Cache<Field> fieldsCache = new Cache<Field>();;
+    private static Cache<Method> methodsCache = new Cache<Method>();;
 
     private RefUtils() {
-
     }
 
-    public static RefUtils getInstance() {
-        if (null == inst) {
-            cache = new Cache<Field>();
-            inst = new RefUtils();
-            return inst;
-        }
-        return inst;
-    }
-
-    public Object getFieldValue(Object obj, String fieldName) throws Exception {
+    public static Object getFieldValue(Object obj, String fieldName) throws Exception {
         return getFieldValue(obj, getField(obj.getClass(), fieldName));
     }
 
-    public void setFieldValue(Object obj, String fieldName, Object value) throws Exception {
+    public static void setFieldValue(Object obj, String fieldName, Object value) throws Exception {
         setFieldValue(obj, getField(obj.getClass(), fieldName), value);
     }
 
-    public Map<String, Field> getFields(Class clz) {
+    public static Map<String, Field> getFields(Class clz) {
         String className = clz.getName();
-        if (cache.get(className).isEmpty()) {
+        if (fieldsCache.get(className).isEmpty()) {
             cacheFields(clz);
         }
-        return cache.get(className);
+        return fieldsCache.get(className);
     }
 
-    public Field getField(Class clz, String fieldName) throws Exception {
+    public static Map<String, Method> getMethods(Class clz) {
+        String className = clz.getName();
+        if (methodsCache.get(className).isEmpty()) {
+            cacheMethods(clz);
+        }
+        return methodsCache.get(className);
+    }
+
+    public static Field getField(Class clz, String fieldName) throws Exception {
         Map<String, Field> fields = getFields(clz);
         Field o = fields.get(fieldName);
         if (null == o) {
             throw new Exception(clz.getName() + "不存在属性:" + fieldName);
+        }
+        return o;
+    }
+
+    public static Method getMethod(Class clz, String methodName) throws Exception {
+        Map<String, Method> methods = getMethods(clz);
+        Method o = methods.get(methodName);
+        if (null == o) {
+            throw new Exception(clz.getName() + "不存在方法:" + methodName);
         }
         return o;
     }
@@ -61,7 +69,7 @@ public class RefUtils {
                 if (superFields != null && superFields.length > 0) {
                     for (Field field : superFields) {
                         field.setAccessible(true);
-                        cache.put(clz.getName(), field.getName(), field);
+                        fieldsCache.put(clz.getName(), field.getName(), field);
                     }
                 }
                 superClass = superClass.getSuperclass();
@@ -73,7 +81,32 @@ public class RefUtils {
         if (objFields != null && objFields.length > 0) {
             for (Field field : objFields) {
                 field.setAccessible(true);
-                cache.put(clz.getName(), field.getName(), field);
+                fieldsCache.put(clz.getName(), field.getName(), field);
+            }
+        }
+    }
+
+    private static void cacheMethods(Class clz) {
+        Class superClass = clz.getSuperclass();
+        while (true) {
+            if (superClass != null && !superClass.equals(Object.class)) {
+                Method[] superMethods = superClass.getDeclaredMethods();
+                if (superMethods != null && superMethods.length > 0) {
+                    for (Method method : superMethods) {
+                        method.setAccessible(true);
+                        methodsCache.put(clz.getName(), method.getName(), method);
+                    }
+                }
+                superClass = superClass.getSuperclass();
+            } else {
+                break;
+            }
+        }
+        Method[] objMethods = clz.getDeclaredMethods();
+        if (objMethods != null && objMethods.length > 0) {
+            for (Method method : objMethods) {
+                method.setAccessible(true);
+                methodsCache.put(clz.getName(), method.getName(), method);
             }
         }
     }
@@ -90,20 +123,19 @@ public class RefUtils {
      * @param args
      */
     public static void main(String[] args) {
-        RefUtils refUtils = RefUtils.getInstance();
         Person obj = new Person();
         try {
-            System.out.println(refUtils.getFieldValue(obj, "personId"));
-            System.out.println(refUtils.getFieldValue(obj, "personName"));
-            System.out.println(refUtils.getFieldValue(obj, "age"));
+            System.out.println(RefUtils.getFieldValue(obj, "personId"));
+            System.out.println(RefUtils.getFieldValue(obj, "personName"));
+            System.out.println(RefUtils.getFieldValue(obj, "age"));
 
-            refUtils.setFieldValue(obj, "personId", "123");
-            refUtils.setFieldValue(obj, "personName", "123");
-            refUtils.setFieldValue(obj, "age", 123);
+            RefUtils.setFieldValue(obj, "personId", "123");
+            RefUtils.setFieldValue(obj, "personName", "123");
+            RefUtils.setFieldValue(obj, "age", 123);
 
-            System.out.println(refUtils.getFieldValue(obj, "personId"));
-            System.out.println(refUtils.getFieldValue(obj, "personName"));
-            System.out.println(refUtils.getFieldValue(obj, "age"));
+            System.out.println(RefUtils.getFieldValue(obj, "personId"));
+            System.out.println(RefUtils.getFieldValue(obj, "personName"));
+            System.out.println(RefUtils.getFieldValue(obj, "age"));
 
         } catch (Exception e) {
         }

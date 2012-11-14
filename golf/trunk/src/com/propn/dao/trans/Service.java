@@ -22,6 +22,7 @@ public abstract class Service {
      * @throws Exception
      */
     public static Object call(Atom... atoms) throws Exception {
+        System.out.println(Thread.currentThread().getId());
         return call(0, atoms);
     }
 

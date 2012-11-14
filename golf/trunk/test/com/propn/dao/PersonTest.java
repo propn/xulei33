@@ -1,6 +1,9 @@
 package com.propn.dao;
 
 import com.propn.dao.sql.Po;
+import com.propn.dao.trans.Atom;
+import com.propn.dao.trans.Service;
+import com.propn.dao.trans.Trans;
 
 public class PersonTest {
 
@@ -28,13 +31,20 @@ public class PersonTest {
         System.out.println(s.get("grade"));
         System.out.println(s.get("major"));
 
-        Person t = (Person) s.get("Counselor");
+        final Person t = (Person) s.get("Counselor");
 
         if (p.equals(t)) {
             System.out.println("1212");
             System.out.println(p.get("personName"));
         }
-        t.save();
+
+        System.out.println("currentThread :"+Thread.currentThread().getId());
+
+        Service.call(new Atom() {
+            public void run() throws Exception {
+                t.save();
+            }
+        });
     }
 
 }

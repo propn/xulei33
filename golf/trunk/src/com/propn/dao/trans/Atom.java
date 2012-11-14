@@ -11,8 +11,11 @@ import com.propn.dao.ds.ConnUtils;
 public class Atom implements Callable<Object> {
     private URI baseUri;
     private URI requestUri;
-    private final HttpServletRequest request;
+    private HttpServletRequest request;
     private HttpServletResponse response;
+
+    public Atom() {
+    }
 
     public Atom(URI baseUri, URI requestUri, final HttpServletRequest request, HttpServletResponse response) {
         this.baseUri = baseUri;
@@ -24,6 +27,7 @@ public class Atom implements Callable<Object> {
     @Override
     public Integer call() throws Exception {
         try {
+
             ConnUtils.setTransId("1"); // 初始化上下文事务
             // 业务处理
             // 1.doFilter

@@ -16,19 +16,23 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.propn.dao.trans.Atom;
 
-public class WebContainer implements Filter {
+public class GolfFilter implements Filter {
 
-    private static final String IGNORE = "^.+\\.(jsp|png|gif|jpg|js|css|jspx|jpeg|swf)$";
-    private Pattern ignorePtn;
+    private static final String IGNORE = "^(.+[.])(jsp|png|gif|jpg|js|css|jspx|jpeg|swf|html)$";
+    private static Pattern ignorePtn;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        // compile ignore Regular expression
         String regex = filterConfig.getInitParameter("ignore");
         if (!"null".equalsIgnoreCase(regex)) {
             ignorePtn = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
         }
-        // scan&register resources
+        String packages = filterConfig.getInitParameter("packages");
+        try {
+            ResUtils.init(packages);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -46,6 +50,15 @@ public class WebContainer implements Filter {
 
     }
 
+    /**
+     * 请求入口
+     * 
+     * @param request
+     * @param response
+     * @param chain
+     * @throws IOException
+     * @throws ServletException
+     */
     public void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         doFilter(request, response, chain, request.getRequestURI(), request.getServletPath(), request.getQueryString());
@@ -53,19 +66,14 @@ public class WebContainer implements Filter {
 
     private void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
             String requestURI, String servletPath, String queryString) throws IOException, ServletException {
-
         if (ignorePtn != null && ignorePtn.matcher(servletPath).matches()) {
             chain.doFilter(request, response);
             return;
         }
-
         final String requestURL = request.getRequestURL().toString();
-        final URI baseUri = URI.create(request.getRequestURL().substring(0,
-                requestURL.length() - servletPath.length() + 1));
+        final URI baseUri = URI.create(request.getRequestURL().substring(0,requestURL.length() - servletPath.length() + 1));
         final URI requestUri = URI.create(requestURL);
-
         service(baseUri, requestUri, request, response);
-
     }
 
     /**
@@ -85,11 +93,10 @@ public class WebContainer implements Filter {
             throws ServletException, IOException {
         try {
             Atom res = new Atom(baseUri, requestUri, request, response);
-            FutureTask<Object> resMgr = new FutureTask<Object>(res);
-            new Thread(resMgr).start();
+            FutureTask<Object> transMgr = new FutureTask<Object>(res);
+            new Thread(transMgr).start();
             Object rst;
-            rst = resMgr.get();
-            System.out.println("请求返回" + rst);
+            rst = transMgr.get();
         } catch (Exception e) {
             e.printStackTrace();
         }
