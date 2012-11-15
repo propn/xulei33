@@ -1,6 +1,5 @@
 package com.propn.golf.dao.trans;
 
-import java.net.URI;
 import java.util.concurrent.Callable;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,8 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.propn.golf.dao.ds.ConnUtils;
 
 public class Atom implements Callable<Object> {
-    private URI baseUri;
-    private URI requestUri;
     private HttpServletRequest request;
     private HttpServletResponse response;
 
@@ -18,8 +15,6 @@ public class Atom implements Callable<Object> {
     }
 
     public Atom(final HttpServletRequest request, HttpServletResponse response) {
-        this.baseUri = baseUri;
-        this.requestUri = requestUri;
         this.request = request;
         this.response = response;
     }

@@ -100,7 +100,7 @@ public class GolfFilter implements Filter {
         }
 
         try {
-            ReqCtx.init(request, res.getPath());
+            ReqCtx.init(request, response, res);
             Atom atom = new Atom(request, response);
             FutureTask<Object> transMgr = new FutureTask<Object>(atom);
             new Thread(transMgr).start();

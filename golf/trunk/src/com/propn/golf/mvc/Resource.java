@@ -15,6 +15,7 @@ public class Resource {
     private String[] produces;// Return ContentType
 
     private String path;
+    private String compiledPath;
     private String className;
     private Class clazz;
     private String methodName;
@@ -50,6 +51,14 @@ public class Resource {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public String getCompiledPath() {
+        return compiledPath;
+    }
+
+    public void setCompiledPath(String compiledPath) {
+        this.compiledPath = compiledPath;
     }
 
     public String getClassName() {

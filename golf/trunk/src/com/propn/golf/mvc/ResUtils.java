@@ -74,10 +74,10 @@ public class ResUtils {
                     Method method = methodsMap.get(it.next());
                     if (method.isAnnotationPresent(Path.class)) {
                         Resource res = buildRes(clz, method);
-                        if (null == resCache.get("path", res.getPath())) {
-                            resCache.put("path", res.getPath(), res);
+                        if (null == resCache.get("path", res.getCompiledPath())) {
+                            resCache.put("path", res.getCompiledPath(), res);
                             StringBuffer info = new StringBuffer("URL[");
-                            info.append(res.getPath());
+                            info.append(res.getCompiledPath());
                             info.append("] register to [");
                             info.append(res.getClassName());
                             info.append(".");
@@ -85,9 +85,9 @@ public class ResUtils {
                             info.append("]");
                             log.debug(info.toString());
                         } else {
-                            res = resCache.get("path", res.getPath());
+                            res = resCache.get("path", res.getCompiledPath());
                             StringBuffer error = new StringBuffer("URL[");
-                            error.append(res.getPath());
+                            error.append(res.getCompiledPath());
                             error.append("]multiple registrations![");
                             error.append(clz.getName());
                             error.append(".");
@@ -114,8 +114,9 @@ public class ResUtils {
         res.setMethod(method);
         String path = ((Path) clz.getAnnotation(Path.class)).value()
                 + ((Path) method.getAnnotation(Path.class)).value();
-        path = path.replaceAll(PATH_VARIABLE_REXP, "/?");
+        String compiledPath = path.replaceAll(PATH_VARIABLE_REXP, "/?");
         res.setPath(path);
+        res.setCompiledPath(compiledPath);
 
         String[] consumes = null;
         if (method.isAnnotationPresent(Consumes.class)) {

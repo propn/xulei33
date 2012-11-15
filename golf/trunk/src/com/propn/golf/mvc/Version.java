@@ -1,6 +1,7 @@
 package com.propn.golf.mvc;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
@@ -30,7 +31,8 @@ public class Version {
     HttpHeaders headers, @PathParam(value = "pathv")
     String version, @QueryParam(value = "aaa")
     String p, @HeaderParam(value = "t")
-    String t) {
+    String t, @CookieParam(value = "")
+    String name) {
         return version;
     }
 }

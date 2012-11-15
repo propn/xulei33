@@ -14,6 +14,11 @@ import java.util.Vector;
 
 public class MultMap<T, V> extends HashMap<T, List<V>> {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
     public List<V> put(T key, V value) {
         /* 判断该建是否已经存在吗,如果不存在 则放入一个新的Vector对象 */
         if (!super.containsKey(key)) {
