@@ -6,28 +6,26 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.propn.golf.dao.ds.ConnUtils;
+import com.propn.golf.mvc.ReqCtx;
+import com.propn.golf.mvc.Resource;
 
 public class Atom implements Callable<Object> {
+
     private HttpServletRequest request;
     private HttpServletResponse response;
+    private Resource res;
 
-    public Atom() {
-    }
-
-    public Atom(final HttpServletRequest request, HttpServletResponse response) {
+    public Atom(HttpServletRequest request, HttpServletResponse response, Resource res) {
         this.request = request;
         this.response = response;
+        this.res = res;
     }
 
     @Override
     public Integer call() throws Exception {
         try {
-
+            ReqCtx.init(request, response, res);
             ConnUtils.setTransId("1"); // 初始化上下文事务
-            // 业务处理
-            // 1.doFilter
-            // 2.doService
-            // 3.buildResp
             ConnUtils.commit();
         } catch (Exception e) {
             ConnUtils.rollbackAll();

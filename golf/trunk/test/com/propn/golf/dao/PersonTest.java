@@ -3,7 +3,6 @@ package com.propn.golf.dao;
 import com.propn.golf.dao.sql.Po;
 import com.propn.golf.dao.trans.Atom;
 import com.propn.golf.dao.trans.Service;
-import com.propn.golf.dao.trans.Trans;
 
 public class PersonTest {
 
@@ -38,9 +37,9 @@ public class PersonTest {
             System.out.println(p.get("personName"));
         }
 
-        System.out.println("currentThread :"+Thread.currentThread().getId());
+        System.out.println("currentThread :" + Thread.currentThread().getId());
 
-        Service.call(new Atom() {
+        Service.call(new Atom(null, null, null) {
             public void run() throws Exception {
                 t.save();
             }
