@@ -4,8 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class LRUCache<K, V> extends LinkedHashMap<K, V>
-{
+public class LRUCache<K, V> extends LinkedHashMap<K, V> {
 
     private static final long serialVersionUID = -5167631809472116969L;
 
@@ -17,114 +16,85 @@ public class LRUCache<K, V> extends LinkedHashMap<K, V>
 
     private final Lock lock = new ReentrantLock();
 
-    public LRUCache()
-    {
+    public LRUCache() {
         this(DEFAULT_MAX_CAPACITY);
     }
 
-    public LRUCache(int maxCapacity)
-    {
+    public LRUCache(int maxCapacity) {
         super(16, DEFAULT_LOAD_FACTOR, true);
         this.maxCapacity = maxCapacity;
     }
 
     @Override
-    protected boolean removeEldestEntry(java.util.Map.Entry<K, V> eldest)
-    {
+    protected boolean removeEldestEntry(java.util.Map.Entry<K, V> eldest) {
         return size() > maxCapacity;
     }
 
     @Override
-    public boolean containsKey(Object key)
-    {
-        try
-        {
+    public boolean containsKey(Object key) {
+        try {
             lock.lock();
             return super.containsKey(key);
-        }
-        finally
-        {
+        } finally {
             lock.unlock();
         }
     }
 
     @Override
-    public V get(Object key)
-    {
-        try
-        {
+    public V get(Object key) {
+        try {
             lock.lock();
             return super.get(key);
-        }
-        finally
-        {
+        } finally {
             lock.unlock();
         }
     }
 
     @Override
-    public V put(K key, V value)
-    {
-        try
-        {
+    public V put(K key, V value) {
+        try {
             lock.lock();
             return super.put(key, value);
-        }
-        finally
-        {
+        } finally {
             lock.unlock();
         }
     }
 
     @Override
-    public V remove(Object key)
-    {
-        try
-        {
+    public V remove(Object key) {
+        try {
             lock.lock();
             return super.remove(key);
-        }
-        finally
-        {
+        } finally {
             lock.unlock();
         }
     }
 
     @Override
-    public int size()
-    {
-        try
-        {
+    public int size() {
+        try {
             lock.lock();
             return super.size();
-        }
-        finally
-        {
+        } finally {
             lock.unlock();
         }
     }
 
     @Override
-    public void clear()
-    {
-        try
-        {
+    public void clear() {
+        try {
             lock.lock();
             super.clear();
-        }
-        finally
-        {
+        } finally {
             lock.unlock();
         }
     }
 
-    public int getMaxCapacity()
-    {
+    public int getMaxCapacity() {
         return maxCapacity;
     }
 
-    public void setMaxCapacity(int maxCapacity)
-    {
+    public void setMaxCapacity(int maxCapacity) {
         this.maxCapacity = maxCapacity;
     }
 

@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
  */
 public class SelectSqlParser extends SqlFilter {
 
+    @Override
     public String dealOptParam(String sql, Map param) throws Exception {
         String OPTIONAL_REXP = "\\[[#=!<>${}\\w\\s]*]";
         Pattern p = Pattern.compile(OPTIONAL_REXP);

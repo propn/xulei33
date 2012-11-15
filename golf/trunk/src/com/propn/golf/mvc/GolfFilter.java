@@ -58,7 +58,6 @@ public class GolfFilter implements Filter {
         } catch (ClassCastException e) {
             throw new ServletException("non-HTTP request or response");
         }
-
     }
 
     public void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -80,22 +79,14 @@ public class GolfFilter implements Filter {
             throws ServletException, IOException {
 
         Resource res = ResUtils.getMatchedRes(servletPath);
-
-        if (!validate(request, response, res)) {
-            // HTTP 404 Method Not Allowed
-            // 405 Method Not Allowed
-            // 415 Unsupported Media Type
-            return;
-        }
-
         String accept = request.getHeader("Accept");
         String[] produces = res.getProduces();
         String resptype = getOptimalType(accept, produces);
-        if (null == resptype) {
+        if (!validate(request, response, res, resptype)) {
+            // HTTP 404 Not Found
             // 406 Not Acceptable Content-Type
-            response.setStatus(406);
-            response.setContentType("text/plain");
-            response.getWriter().append("Not Acceptable Content-Type").flush();
+            // 405 Method Not Allowed
+            // 415 Unsupported Media Type
             return;
         }
 
@@ -115,15 +106,25 @@ public class GolfFilter implements Filter {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
-    private boolean validate(final HttpServletRequest request, HttpServletResponse response, Resource res)
-            throws IOException {
+    private boolean validate(final HttpServletRequest request, HttpServletResponse response, Resource res,
+            String resptype) throws IOException {
+
         if (null == res) {
-            // HTTP 401 (Unauthorized) "Authorization Required"
+            // HTTP 404 Not Found
             response.setStatus(404);
             response.setContentType("text/plain");
             response.getWriter().append("Not Found").flush();
+            return false;
+        }
+
+        if (null == resptype) {
+            // 406 Not Acceptable Content-Type
+            response.setStatus(406);
+            response.setContentType("text/plain");
+            response.getWriter().append("Not Acceptable Content-Type").flush();
             return false;
         }
 
@@ -137,6 +138,7 @@ public class GolfFilter implements Filter {
             response.getWriter().close();
             return false;
         }
+
         String[] consumes = res.getConsumes();
         String contentType = request.getContentType();
         if (null != contentType && consumes.length > 0) {

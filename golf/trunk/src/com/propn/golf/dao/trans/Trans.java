@@ -7,8 +7,7 @@ package com.propn.golf.dao.trans;
  * @author Administrator
  * 
  */
-public abstract class Trans
-{
+public abstract class Trans {
     /* 默认 */
     public static int REQUIRED = 0;
 

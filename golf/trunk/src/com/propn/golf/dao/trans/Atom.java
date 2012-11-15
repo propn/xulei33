@@ -1,5 +1,7 @@
 package com.propn.golf.dao.trans;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.propn.golf.dao.ds.ConnUtils;
 import com.propn.golf.mvc.ReqCtx;
 import com.propn.golf.mvc.Resource;
+import com.propn.golf.tools.BeanFactory;
 
 public class Atom implements Callable<Object> {
 
@@ -22,8 +25,9 @@ public class Atom implements Callable<Object> {
     }
 
     @Override
-    public Integer call() throws Exception {
+    public Object call() {
         try {
+            // 独立线程
             ReqCtx.init(request, response, res);
             ConnUtils.setTransId("1"); // 初始化上下文事务
             ConnUtils.commit();
@@ -33,5 +37,13 @@ public class Atom implements Callable<Object> {
             // ConnUtils.clean();
         }
         return 200;
+    }
+
+    private Object invoke(Resource res) throws Exception {
+        Class<?> clz = res.getClz();
+        Method method = res.getMethod();
+        Object Obj = BeanFactory.getInstance(clz);
+        method.getParameterTypes();
+        return res;
     }
 }

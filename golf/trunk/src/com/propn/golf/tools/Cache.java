@@ -12,7 +12,7 @@ public class Cache<T> {
 
     public Map<String, T> get(String componentName) {
         ConcurrentMap<String, T> value = cache.get(componentName);
-        if (value == null){
+        if (value == null) {
             return new HashMap<String, T>();
         }
         return new HashMap<String, T>(value);

@@ -109,18 +109,17 @@ public class ResUtils {
     private static Resource buildRes(Class clz, Method method) {
         Resource res = new Resource();
         res.setClassName(clz.getName());
-        res.setClazz(clz);
+        res.setClz(clz);
         res.setMethodName(method.getName());
         res.setMethod(method);
-        String path = ((Path) clz.getAnnotation(Path.class)).value()
-                + ((Path) method.getAnnotation(Path.class)).value();
+        String path = ((Path) clz.getAnnotation(Path.class)).value() + method.getAnnotation(Path.class).value();
         String compiledPath = path.replaceAll(PATH_VARIABLE_REXP, "/?");
         res.setPath(path);
         res.setCompiledPath(compiledPath);
 
         String[] consumes = null;
         if (method.isAnnotationPresent(Consumes.class)) {
-            consumes = ((Consumes) method.getAnnotation(Consumes.class)).value();
+            consumes = method.getAnnotation(Consumes.class).value();
         }
         if (null == consumes && clz.isAnnotationPresent(Consumes.class)) {
             consumes = ((Consumes) clz.getAnnotation(Consumes.class)).value();
@@ -128,7 +127,7 @@ public class ResUtils {
         res.setConsumes(consumes);
         String[] produces = null;
         if (method.isAnnotationPresent(Produces.class)) {
-            produces = ((Produces) method.getAnnotation(Produces.class)).value();
+            produces = method.getAnnotation(Produces.class).value();
         }
         if (null == produces && clz.isAnnotationPresent(Produces.class)) {
             produces = ((Produces) clz.getAnnotation(Produces.class)).value();

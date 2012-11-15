@@ -17,7 +17,7 @@ public class Resource {
     private String path;
     private String compiledPath;
     private String className;
-    private Class clazz;
+    private Class<?> clz;
     private String methodName;
     private Method method;
 
@@ -69,12 +69,12 @@ public class Resource {
         this.className = className;
     }
 
-    public Class getClazz() {
-        return clazz;
+    public Class<?> getClz() {
+        return clz;
     }
 
-    public void setClazz(Class clazz) {
-        this.clazz = clazz;
+    public void setClz(Class<?> clz) {
+        this.clz = clz;
     }
 
     public String getMethodName() {

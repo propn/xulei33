@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
  */
 public class UpdateSqlParser extends SqlFilter {
 
+    @Override
     public String dealOptParam(String sql, Map param) throws Exception {
         List<String> vars = getVars(sql);
         for (String var : vars) {

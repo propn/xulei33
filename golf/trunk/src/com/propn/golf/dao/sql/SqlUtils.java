@@ -69,7 +69,7 @@ public class SqlUtils {
         List<Field> columnFields = getColumnFields(clz);
         if (columnFields != null && columnFields.size() > 0) {
             for (Field field : columnFields) {
-                String column = ((Column) field.getAnnotation(Column.class)).name().toUpperCase();
+                String column = field.getAnnotation(Column.class).name().toUpperCase();
                 sqlStr.append(column).append(",");
                 valueStr.append("${").append(column).append("}").append(",");
             }
@@ -87,7 +87,7 @@ public class SqlUtils {
         List<Field> ids = getIdFields(clz);
         if (!ids.isEmpty()) {
             for (Field field : ids) {
-                String column = ((Column) field.getAnnotation(Column.class)).name().toUpperCase();
+                String column = field.getAnnotation(Column.class).name().toUpperCase();
                 sqlStr.append(column).append("=${").append(column).append("}").append(" AND ");
             }
             sqlStr.replace(sqlStr.length() - 4, sqlStr.length(), "");
@@ -104,7 +104,7 @@ public class SqlUtils {
         List<Field> columnFields = getColumnFields(clz);
         if (columnFields != null && columnFields.size() > 0) {
             for (Field field : columnFields) {
-                String column = ((Column) field.getAnnotation(Column.class)).name().toUpperCase();
+                String column = field.getAnnotation(Column.class).name().toUpperCase();
                 sqlStr.append(column).append("=").append("${").append(column).append("}").append(",");
             }
         }
@@ -113,7 +113,7 @@ public class SqlUtils {
         if (!ids.isEmpty()) {
             sqlStr.append(" WHERE ");
             for (Field field : ids) {
-                String column = ((Column) field.getAnnotation(Column.class)).name().toUpperCase();
+                String column = field.getAnnotation(Column.class).name().toUpperCase();
                 sqlStr.append(column).append("=${").append(column).append("}").append(" AND ");
             }
             sqlStr.replace(sqlStr.length() - 4, sqlStr.length(), "");
@@ -128,7 +128,7 @@ public class SqlUtils {
         List<Field> columnFields = getColumnFields(clz);
         if (columnFields != null && columnFields.size() > 0) {
             for (Field field : columnFields) {
-                String column = ((Column) field.getAnnotation(Column.class)).name().toUpperCase();
+                String column = field.getAnnotation(Column.class).name().toUpperCase();
                 sqlStr.append(column).append(",");
             }
         }
@@ -139,7 +139,7 @@ public class SqlUtils {
         if (!ids.isEmpty()) {
             sqlStr.append(" WHERE ");
             for (Field field : ids) {
-                String column = ((Column) field.getAnnotation(Column.class)).name().toUpperCase();
+                String column = field.getAnnotation(Column.class).name().toUpperCase();
                 sqlStr.append(column).append("=${").append(column).append("}").append(" AND ");
             }
             sqlStr.replace(sqlStr.length() - 4, sqlStr.length(), "");
