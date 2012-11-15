@@ -64,13 +64,15 @@ public class ClassScaner {
      */
     public Set<Class<?>> getPackageAllClasses(String basePackage, boolean recursive) throws IOException,
             ClassNotFoundException {
+        if (null == basePackage) {
+            throw new IOException("basePackage 不能为空!");
+        }
         Set<Class<?>> classes = new LinkedHashSet<Class<?>>();
         String packageName = basePackage;
         if (packageName.endsWith(".")) {
             packageName = packageName.substring(0, packageName.lastIndexOf('.'));
         }
         String package2Path = packageName.replace('.', '/');
-
         Enumeration<URL> dirs;
         try {
             dirs = Thread.currentThread().getContextClassLoader().getResources(package2Path);

@@ -11,6 +11,9 @@ import java.lang.reflect.Method;
  */
 public class Resource {
     private String httpMethod;// PUT, GET, POST , DELETE
+    private String[] consumes;// Accept ContentType
+    private String[] produces;// Return ContentType
+
     private String path;
     private String className;
     private Class clazz;
@@ -23,6 +26,22 @@ public class Resource {
 
     public void setHttpMethod(String httpMethod) {
         this.httpMethod = httpMethod;
+    }
+
+    public String[] getConsumes() {
+        return consumes;
+    }
+
+    public void setConsumes(String[] consumes) {
+        this.consumes = consumes;
+    }
+
+    public String[] getProduces() {
+        return produces;
+    }
+
+    public void setProduces(String[] produces) {
+        this.produces = produces;
     }
 
     public String getPath() {

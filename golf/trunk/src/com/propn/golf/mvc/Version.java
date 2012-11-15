@@ -10,28 +10,20 @@ import javax.ws.rs.core.MediaType;
 
 @Path("/version")
 @Consumes({ MediaType.TEXT_PLAIN, MediaType.TEXT_HTML })
-@Produces({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN })
+@Produces({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN, MediaType.TEXT_HTML })
 public class Version {
 
     @GET
-    @Path("/getVersion")
+    @Path("/get")
     public String getVersion(@Context
     HttpHeaders headers) {
-        String version = "";
+        String version = "1.0";
         return version;
     }
 
     @GET
     @Path("/getVersion/{pathv}/{abc}")
     public String getVersion2(@Context
-    HttpHeaders headers) {
-        String version = "";
-        return version;
-    }
-
-    @GET
-    @Path("/getVersion/{pathdv}/{abcd}")
-    public String getVersion3(@Context
     HttpHeaders headers) {
         String version = "";
         return version;

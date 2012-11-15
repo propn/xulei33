@@ -17,7 +17,7 @@ public class Atom implements Callable<Object> {
     public Atom() {
     }
 
-    public Atom(URI baseUri, URI requestUri, final HttpServletRequest request, HttpServletResponse response) {
+    public Atom(final HttpServletRequest request, HttpServletResponse response) {
         this.baseUri = baseUri;
         this.requestUri = requestUri;
         this.request = request;
