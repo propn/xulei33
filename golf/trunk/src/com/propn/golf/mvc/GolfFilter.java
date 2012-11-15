@@ -24,24 +24,30 @@ public class GolfFilter implements Filter {
 
     private static final Logger log = LoggerFactory.getLogger(GolfFilter.class);
     private static final String IGNORE = "^(.+[.])(jsp|png|gif|jpg|js|css|jspx|jpeg|swf|html)$";
-    private static Pattern ignorePtn;
+    private static Pattern ignorePattern;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
+        long begin = System.currentTimeMillis();
+        log.info("golf begin start.");
         String regex = filterConfig.getInitParameter("ignore");
         if (!"null".equalsIgnoreCase(regex)) {
-            ignorePtn = Pattern.compile(IGNORE, Pattern.CASE_INSENSITIVE);
+            ignorePattern = Pattern.compile(IGNORE, Pattern.CASE_INSENSITIVE);
+            log.debug("ignorePattern : " + IGNORE);
         }
         String packages = filterConfig.getInitParameter("packages");
         try {
             if ("null".equalsIgnoreCase(regex)) {
                 ResUtils.init("com", "org");
+                log.debug("packages : com, org");
             } else {
                 ResUtils.init(packages);
+                log.debug("packages : " + packages);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        log.info("golf started. Time used(millis): " + String.valueOf(System.currentTimeMillis() - begin));
     }
 
     @Override
@@ -57,7 +63,7 @@ public class GolfFilter implements Filter {
 
     public void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        if (ignorePtn.matcher(request.getServletPath()).matches()) {
+        if (ignorePattern.matcher(request.getServletPath()).matches()) {
             chain.doFilter(request, response);
             return;
         }
@@ -67,28 +73,16 @@ public class GolfFilter implements Filter {
     /**
      * Dispatch client requests to a resource class.
      * 
-     * @param baseUri the base URI of the request.
-     * @param requestUri the URI of the request.
-     * @param request the {@link HttpServletRequest} object that contains the request the client made to the Web
-     *            component.
-     * @param response the {@link HttpServletResponse} object that contains the response the Web component returns to
-     *            the client.
-     * @return the status code of the response.
      * @exception IOException if an input or output error occurs while the Web component is handling the HTTP request.
      * @exception ServletException if the HTTP request cannot be handled.
      */
     public void service(final HttpServletRequest request, HttpServletResponse response, final String servletPath)
             throws ServletException, IOException {
+
         Resource res = ResUtils.getMatchedRes(servletPath);
 
-        if (null == res) {
-            // HTTP 401 (Unauthorized) "Authorization Required"
-            response.setStatus(404);
-            response.setContentType("text/plain");
-            response.getWriter().append("Not Found").flush();
-            return;
-        }
         if (!validate(request, response, res)) {
+            // HTTP 404 Method Not Allowed
             // 405 Method Not Allowed
             // 415 Unsupported Media Type
             return;
@@ -104,7 +98,9 @@ public class GolfFilter implements Filter {
             response.getWriter().append("Not Acceptable Content-Type").flush();
             return;
         }
+
         try {
+            ReqCtx.init(request, res.getPath());
             Atom atom = new Atom(request, response);
             FutureTask<Object> transMgr = new FutureTask<Object>(atom);
             new Thread(transMgr).start();
@@ -124,6 +120,14 @@ public class GolfFilter implements Filter {
 
     private boolean validate(final HttpServletRequest request, HttpServletResponse response, Resource res)
             throws IOException {
+        if (null == res) {
+            // HTTP 401 (Unauthorized) "Authorization Required"
+            response.setStatus(404);
+            response.setContentType("text/plain");
+            response.getWriter().append("Not Found").flush();
+            return false;
+        }
+
         String acceptHttpMethods = res.getHttpMethod();
         if (!acceptHttpMethods.contains(request.getMethod())) {
             // 405 Method Not Allowed
@@ -165,5 +169,4 @@ public class GolfFilter implements Filter {
     public void destroy() {
 
     }
-
 }
