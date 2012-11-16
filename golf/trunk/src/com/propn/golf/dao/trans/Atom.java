@@ -43,29 +43,25 @@ public class Atom implements Callable<Object> {
 
     private Object invoke(Resource res) throws Exception {
         Class<?> clz = res.getClz();
-        Object obj = BeanFactory.getInstance(clz);
         Method method = res.getMethod();
+        Object obj = BeanFactory.getInstance(clz);
 
-        Class[] paramTypeList = method.getParameterTypes();
-        Class returnType = method.getReturnType();
-        System.out.println(returnType);
-        for (Class clazz : paramTypeList) {
-            System.out.println(clazz);
+        Class[] paramTypes = method.getParameterTypes();
+        for (Class clazz : paramTypes) {
+            System.out.println(clazz.getName());
         }
+        //
         Annotation[][] a = method.getParameterAnnotations();
         for (int i = 0; i < a.length; i++) {
             Annotation[] annotations = a[i];
-            for (int j = 0; j < annotations.length; j++) {
-                Annotation annotation = annotations[j];
-                System.out.println(annotation.getClass());
-            }
+            Annotation annotation = annotations[0];
+            System.out.println(annotation.annotationType().getSimpleName());
+            System.out.println(annotation.getClass());
         }
-        System.out.println(obj.getClass().getName());
-        System.out.println(method.getName());
-        Object rst = null;
 
-        rst = method.invoke(obj, null);
+        Object rst = null;
+        Object[] params = new Object[] {};
+        // rst = method.invoke(obj, params);
         return rst;
     }
-
 }

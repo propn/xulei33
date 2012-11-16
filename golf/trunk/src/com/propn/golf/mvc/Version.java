@@ -1,5 +1,8 @@
 package com.propn.golf.mvc;
 
+import javax.servlet.ServletInputStream;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
@@ -8,8 +11,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
 import com.propn.golf.dao.Person;
@@ -45,15 +46,19 @@ public class Version {
         return st;
     }
 
+    // /get2/121?aaa=21
     @GET
-    @Path("/get2/{pathv}/{abc}/{def}")
-    public String getVersion2(@Context
-    HttpHeaders headers, @PathParam(value = "pathv")
-    String version, @QueryParam(value = "aaa")
-    String p, @HeaderParam(value = "t")
-    String t, @CookieParam(value = "")
-    String name) {
-        version = "1.0";
+    @Path("/get2/{pathv}")
+    public String getVersion2(ServletRequest request, ServletResponse response, ServletInputStream inputStream,
+            @PathParam(value = "pathv")
+            String version, @QueryParam(value = "aaa")
+            String p, @HeaderParam(value = "t")
+            String t, @CookieParam(value = "name")
+            String name) {
+        System.out.println(version);
+        System.out.println(p);
+        System.out.println(t);
+        System.out.println(name);
         return version;
     }
 }

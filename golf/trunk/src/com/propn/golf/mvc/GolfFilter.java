@@ -61,11 +61,13 @@ public class GolfFilter implements Filter {
 
     public void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
+
         String servletPath = request.getServletPath();
         if (ignorePattern.matcher(servletPath).matches()) {
             chain.doFilter(request, response);
             return;
         }
+
         Resource res = ResUtils.getMatchedRes(servletPath);
         if (!validate(request, response, res)) {
             // HTTP 404 Not Found

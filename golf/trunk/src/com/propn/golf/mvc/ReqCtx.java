@@ -69,6 +69,20 @@ public class ReqCtx {
         return getQueryParam().get(parmName);
     }
 
+    // @FormParam
+    private static MultMap<String, Object> getFormParam() {
+        MultMap<String, Object> formParam = paramCtx.get().get("FormParam");
+        if (null == formParam) {
+            formParam = new MultMap<String, Object>();
+            paramCtx.get().put("FormParam", formParam);
+        }
+        return formParam;
+    }
+
+    public static List getFormParam(String parmName) {
+        return getFormParam().get(parmName);
+    }
+
     // @HeaderParam
     private static MultMap<String, Object> getHeaderParam() {
         MultMap<String, Object> headerParam = paramCtx.get().get("HeaderParam");
@@ -119,7 +133,14 @@ public class ReqCtx {
         initCookieParam(request);
         // @PathParam
         initPathParam(request.getServletPath(), res.getPath());
+        // @FormParam
+        initFormParam(request);
+
         log.debug("ReqCtx init end. Time used(millis):" + String.valueOf(System.currentTimeMillis() - start));
+    }
+
+    // TODO:
+    private static void initFormParam(HttpServletRequest request) {
     }
 
     private static void initQueryParam(String queryString) {
@@ -171,6 +192,7 @@ public class ReqCtx {
         for (int i = 0; i < params.length; i++) {
             String param = params[i];
             if (param.startsWith("{") && param.endsWith("}")) {
+                param = param.substring(1, param.length() - 1);
                 pathParam.put(param, paths[i]);
                 log.debug("PathParam [" + param + "=" + paths[i] + "]");
             }
