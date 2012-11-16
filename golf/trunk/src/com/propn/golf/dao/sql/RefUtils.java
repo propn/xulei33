@@ -9,7 +9,7 @@ import com.propn.golf.tools.Cache;
 
 /**
  * 
- * @author Thunder.xu
+ * @author Thunder.Hsu
  * 
  */
 public class RefUtils {
@@ -117,6 +117,16 @@ public class RefUtils {
 
     private static void setFieldValue(Object obj, Field field, Object value) throws Exception {
         field.set(obj, value);
+    }
+
+    private static void getMethodParams(Method method) {
+        Class[] paramTypeList = method.getParameterTypes();
+        Class returnType = method.getReturnType();
+        System.out.println(returnType);
+        for (Class clazz : paramTypeList) {
+            System.out.println(clazz);
+        }
+        System.out.println();
     }
 
     /**

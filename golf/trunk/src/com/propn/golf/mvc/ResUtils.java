@@ -26,13 +26,13 @@ import com.propn.golf.tools.Cache;
 import com.propn.golf.tools.ClassScaner;
 
 /**
- * @author Administrator
+ * @author Thunder.Hsu
  * 
  */
 public class ResUtils {
     private static final Logger log = LoggerFactory.getLogger(ResUtils.class);
     private static Cache<Resource> resCache = new Cache<Resource>();
-    private static final String PATH_VARIABLE_REXP = "[/]\\{\\S+\\}";
+    private static final String PATH_PARAM_REXP = "/?\\{(\\S*?)\\}";// 匹配 /{a}
 
     public static void init(String... packages) throws Exception {
         registerResouce(packages);
@@ -44,15 +44,17 @@ public class ResUtils {
             return res;
         } else {
             String[] paths = path.split("/");
-            for (int i = paths.length; i > 1; i--) {
-                String temp = "";
+            for (int i = paths.length - 1; i > 1; i--) {
+                StringBuffer temp = new StringBuffer();
                 for (int j = 1; j < i; j++) {
-                    temp = temp + "/" + paths[j];
+                    temp.append("/").append(paths[j]);
                 }
-                for (int j = i; j < paths.length; j++) {
-                    temp = temp + "/?";
+                for (int j = i; j < paths.length - 1; j++) {
+                    temp.append("/?");
                 }
-                res = getRes(path);
+                temp.append("/?");
+                log.debug("Search: " + temp);
+                res = getRes(temp.toString());
                 if (null != res) {
                     break;
                 }
@@ -113,7 +115,7 @@ public class ResUtils {
         res.setMethodName(method.getName());
         res.setMethod(method);
         String path = ((Path) clz.getAnnotation(Path.class)).value() + method.getAnnotation(Path.class).value();
-        String compiledPath = path.replaceAll(PATH_VARIABLE_REXP, "/?");
+        String compiledPath = path.replaceAll(PATH_PARAM_REXP, "/?");
         res.setPath(path);
         res.setCompiledPath(compiledPath);
 
@@ -163,7 +165,13 @@ public class ResUtils {
      */
     public static void main(String[] args) {
         try {
-            init("com.propn.golf.mvc");
+            // init("com.propn.golf.mvc");
+            String PATH_VARIABLE_REXP = "/?\\{(\\S*?)\\}";
+            String path = "/version/get2/{pathv}/{abc}/{def}";
+            String compiledPath = path.replaceAll(PATH_VARIABLE_REXP, "/?");
+
+            // /version/get2/?/?/?
+            System.out.println(compiledPath);
         } catch (Exception e) {
             e.printStackTrace();
         }

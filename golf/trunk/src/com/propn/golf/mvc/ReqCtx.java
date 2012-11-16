@@ -28,7 +28,7 @@ public class ReqCtx {
     private static InheritableThreadLocal<Map<String, MultMap<String, Object>>> paramCtx = new InheritableThreadLocal<Map<String, MultMap<String, Object>>>();
 
     // @Context
-    public static Map<String, Object> getContext() {
+    private static Map<String, Object> getContext() {
         Map<String, Object> context = ctx.get();
         if (null == context) {
             context = Collections.synchronizedMap(new HashMap<String, Object>());
@@ -42,7 +42,7 @@ public class ReqCtx {
     }
 
     // @PathParam
-    public static MultMap<String, Object> getPathParam() {
+    private static MultMap<String, Object> getPathParam() {
         MultMap<String, Object> pathParam = paramCtx.get().get("PathParam");
         if (null == pathParam) {
             pathParam = new MultMap<String, Object>();
@@ -56,7 +56,7 @@ public class ReqCtx {
     }
 
     // @QueryParam
-    public static MultMap<String, Object> getQueryParam() {
+    private static MultMap<String, Object> getQueryParam() {
         MultMap<String, Object> queryParam = paramCtx.get().get("QueryParam");
         if (null == queryParam) {
             queryParam = new MultMap<String, Object>();
@@ -70,7 +70,7 @@ public class ReqCtx {
     }
 
     // @HeaderParam
-    public static MultMap<String, Object> getHeaderParam() {
+    private static MultMap<String, Object> getHeaderParam() {
         MultMap<String, Object> headerParam = paramCtx.get().get("HeaderParam");
         if (null == headerParam) {
             headerParam = new MultMap<String, Object>();
@@ -84,7 +84,7 @@ public class ReqCtx {
     }
 
     // @CookieParam
-    public static MultMap<String, Object> getCookieParam() {
+    private static MultMap<String, Object> getCookieParam() {
         MultMap<String, Object> cookieParam = paramCtx.get().get("CookieParam");
         if (null == cookieParam) {
             cookieParam = new MultMap<String, Object>();

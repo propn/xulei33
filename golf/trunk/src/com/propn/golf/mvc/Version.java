@@ -21,18 +21,20 @@ public class Version {
     @Path("/get")
     public String getVersion(@Context
     HttpHeaders headers) {
+
         String version = "1.0";
         return version;
     }
 
     @GET
-    @Path("/getVersion/{pathv}/{abc}")
+    @Path("/get2/{pathv}/{abc}/{def}")
     public String getVersion2(@Context
     HttpHeaders headers, @PathParam(value = "pathv")
     String version, @QueryParam(value = "aaa")
     String p, @HeaderParam(value = "t")
     String t, @CookieParam(value = "")
     String name) {
+        version = "1.0";
         return version;
     }
 }

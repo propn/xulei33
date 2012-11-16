@@ -1,6 +1,6 @@
 package com.propn.golf.dao.trans;
 
-import java.lang.reflect.InvocationTargetException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
 
@@ -26,24 +26,46 @@ public class Atom implements Callable<Object> {
 
     @Override
     public Object call() {
+        Object rst = null;
         try {
             // 独立线程
             ReqCtx.init(request, response, res);
             ConnUtils.setTransId("1"); // 初始化上下文事务
+            rst = invoke(res);
             ConnUtils.commit();
         } catch (Exception e) {
             ConnUtils.rollbackAll();
         } finally {
             // ConnUtils.clean();
         }
-        return 200;
+        return rst;
     }
 
     private Object invoke(Resource res) throws Exception {
         Class<?> clz = res.getClz();
+        Object obj = BeanFactory.getInstance(clz);
         Method method = res.getMethod();
-        Object Obj = BeanFactory.getInstance(clz);
-        method.getParameterTypes();
-        return res;
+
+        Class[] paramTypeList = method.getParameterTypes();
+        Class returnType = method.getReturnType();
+        System.out.println(returnType);
+        for (Class clazz : paramTypeList) {
+            System.out.println(clazz);
+        }
+        Annotation[][] a = method.getParameterAnnotations();
+        for (int i = 0; i < a.length; i++) {
+            Annotation[] annotations = a[i];
+            for (int j = 0; j < annotations.length; j++) {
+                Annotation annotation = annotations[j];
+                System.out.println(annotation.getClass());
+            }
+        }
+        System.out.println(obj.getClass().getName());
+        System.out.println(method.getName());
+        Object rst = null;
+        rst = method.invoke(obj, null);
+        System.err.println(rst);
+        return rst;
     }
+
 }

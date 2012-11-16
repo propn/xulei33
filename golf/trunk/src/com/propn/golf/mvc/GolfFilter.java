@@ -1,6 +1,7 @@
 package com.propn.golf.mvc;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.regex.Pattern;
 
@@ -18,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.propn.golf.dao.trans.Atom;
-import com.propn.golf.tools.JsonUtils;
 
 public class GolfFilter implements Filter {
 
@@ -79,10 +79,8 @@ public class GolfFilter implements Filter {
             throws ServletException, IOException {
 
         Resource res = ResUtils.getMatchedRes(servletPath);
-        String accept = request.getHeader("Accept");
-        String[] produces = res.getProduces();
-        String resptype = getOptimalType(accept, produces);
-        if (!validate(request, response, res, resptype)) {
+
+        if (!validate(request, response, res)) {
             // HTTP 404 Not Found
             // 406 Not Acceptable Content-Type
             // 405 Method Not Allowed
@@ -90,41 +88,49 @@ public class GolfFilter implements Filter {
             return;
         }
 
-        try {
-            Atom atom = new Atom(request, response, res);
-            FutureTask<Object> transMgr = new FutureTask<Object>(atom);
-            new Thread(transMgr).start();
-            Object rst = transMgr.get();
-            if (null == rst) {
-                // 204 No Content
-                response.setStatus(204);
-            } else {
-                response.setStatus(200);
-                response.setContentType(resptype);
-                response.getWriter().append(JsonUtils.toJson(rst)).flush();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        String accept = request.getHeader("Accept");
+        String[] produces = res.getProduces();
+        String resptype = getOptimalType(accept, produces);
+        if (null == resptype) {
+            // 406 Not Acceptable Content-Type
+            response.setStatus(406);
+            response.setContentType("text/plain");
+            response.getWriter().append("Not Acceptable Content-Type").flush();
+            return;
         }
-
+        call(request, response, res, resptype);
     }
 
-    private boolean validate(final HttpServletRequest request, HttpServletResponse response, Resource res,
-            String resptype) throws IOException {
+    private void call(HttpServletRequest request, HttpServletResponse response, Resource res, String resptype)
+            throws IOException {
+        ViewBuilder handler = new ViewBuilder();
+        handler.setResp(response);
+        Atom atom = new Atom(request, response, res);
+        ThreadGroup g = new ThreadGroup("g");
+        FutureTask<Object> transMgr = new FutureTask<Object>(atom);
+        Thread t = new Thread(g, transMgr);
+        t.setUncaughtExceptionHandler(handler);
+        t.start();
+
+        Object rst = null;
+        try {
+            rst = transMgr.get();
+            handler.build(resptype, rst);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean validate(final HttpServletRequest request, HttpServletResponse response, Resource res)
+            throws IOException {
 
         if (null == res) {
             // HTTP 404 Not Found
             response.setStatus(404);
             response.setContentType("text/plain");
             response.getWriter().append("Not Found").flush();
-            return false;
-        }
-
-        if (null == resptype) {
-            // 406 Not Acceptable Content-Type
-            response.setStatus(406);
-            response.setContentType("text/plain");
-            response.getWriter().append("Not Acceptable Content-Type").flush();
             return false;
         }
 
