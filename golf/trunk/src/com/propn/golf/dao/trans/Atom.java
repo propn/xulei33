@@ -7,7 +7,6 @@ import java.util.concurrent.Callable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.propn.golf.dao.ds.ConnUtils;
 import com.propn.golf.mvc.ReqCtx;
 import com.propn.golf.mvc.Resource;
 import com.propn.golf.tools.BeanFactory;
@@ -29,12 +28,12 @@ public class Atom implements Callable<Object> {
         Object rst = null;
         try {
             ReqCtx.init(request, response, res);
-            ConnUtils.setTransId("1"); // 初始化上下文事务
+            // ConnUtils.setTransId("1"); // 初始化上下文事务
             rst = invoke(res);
-            ConnUtils.commit();
+            // ConnUtils.commit();
         } catch (Exception e) {
             e.printStackTrace();
-            ConnUtils.rollbackAll();
+            // ConnUtils.rollbackAll();
             return e;
         } finally {
             // ConnUtils.clean();
@@ -64,8 +63,8 @@ public class Atom implements Callable<Object> {
         System.out.println(obj.getClass().getName());
         System.out.println(method.getName());
         Object rst = null;
+
         rst = method.invoke(obj, null);
-        System.err.println(rst);
         return rst;
     }
 

@@ -12,6 +12,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
+import com.propn.golf.dao.Person;
+import com.propn.golf.dao.Student;
+
 @Path("/version")
 @Consumes({ MediaType.TEXT_PLAIN, MediaType.TEXT_HTML })
 @Produces({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN, MediaType.TEXT_HTML })
@@ -19,10 +22,27 @@ public class Version {
 
     @GET
     @Path("/get")
-    public String getVersion(@Context
-    HttpHeaders headers) {
+    public String getVersion() {
         String version = "1.0";
         return version;
+    }
+
+    @GET
+    @Path("/get/student")
+    public Student getStudent() throws Exception {
+        Person teacher = new Person();
+        teacher.set("personId", "03023001");
+        teacher.set("personName", "常继科");
+        teacher.set("age", 28);
+
+        Student st = new Student();
+        st.set("grade", 2003);
+        st.set("major", "computer");
+        st.set("Counselor", teacher);
+        st.set("personId", "03023152");
+        st.set("personName", "徐雷");
+        st.set("age", 18);
+        return st;
     }
 
     @GET

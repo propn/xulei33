@@ -143,6 +143,12 @@ public class GolfFilter implements Filter {
     }
 
     private String getOptimalType(String accept, String[] produces) {
+        if (null == produces || produces.length == 0) {
+            return "application/xml";
+        }
+        if (accept.contains("*/*")) {
+            return produces[0];
+        }
         for (String type : produces) {
             if (accept.contains(type)) {
                 return type;
