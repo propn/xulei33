@@ -1,7 +1,6 @@
 package com.propn.golf.mvc;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.regex.Pattern;
 
@@ -62,24 +61,12 @@ public class GolfFilter implements Filter {
 
     public void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        if (ignorePattern.matcher(request.getServletPath()).matches()) {
+        String servletPath = request.getServletPath();
+        if (ignorePattern.matcher(servletPath).matches()) {
             chain.doFilter(request, response);
             return;
         }
-        service(request, response, request.getServletPath());
-    }
-
-    /**
-     * Dispatch client requests to a resource class.
-     * 
-     * @exception IOException if an input or output error occurs while the Web component is handling the HTTP request.
-     * @exception ServletException if the HTTP request cannot be handled.
-     */
-    public void service(final HttpServletRequest request, HttpServletResponse response, final String servletPath)
-            throws ServletException, IOException {
-
         Resource res = ResUtils.getMatchedRes(servletPath);
-
         if (!validate(request, response, res)) {
             // HTTP 404 Not Found
             // 406 Not Acceptable Content-Type
@@ -102,25 +89,17 @@ public class GolfFilter implements Filter {
     }
 
     private void call(HttpServletRequest request, HttpServletResponse response, Resource res, String resptype)
-            throws IOException {
-        ViewBuilder handler = new ViewBuilder();
-        handler.setResp(response);
+            throws IOException, ServletException {
         Atom atom = new Atom(request, response, res);
-        ThreadGroup g = new ThreadGroup("g");
         FutureTask<Object> transMgr = new FutureTask<Object>(atom);
-        Thread t = new Thread(g, transMgr);
-        t.setUncaughtExceptionHandler(handler);
-        t.start();
-
+        new Thread(transMgr).start();
         Object rst = null;
         try {
             rst = transMgr.get();
-            handler.build(resptype, rst);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
+        ViewBuilder.build(request, response, resptype, rst);
     }
 
     private boolean validate(final HttpServletRequest request, HttpServletResponse response, Resource res)

@@ -30,6 +30,7 @@ import com.propn.golf.tools.ClassScaner;
  * 
  */
 public class ResUtils {
+
     private static final Logger log = LoggerFactory.getLogger(ResUtils.class);
     private static Cache<Resource> resCache = new Cache<Resource>();
     private static final String PATH_PARAM_REXP = "/?\\{(\\S*?)\\}";// 匹配 /{a}

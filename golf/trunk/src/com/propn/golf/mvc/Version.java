@@ -21,7 +21,6 @@ public class Version {
     @Path("/get")
     public String getVersion(@Context
     HttpHeaders headers) {
-
         String version = "1.0";
         return version;
     }

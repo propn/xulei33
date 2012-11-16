@@ -4,7 +4,11 @@
 package com.propn.golf.mvc;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.propn.golf.tools.JsonUtils;
@@ -13,30 +17,48 @@ import com.propn.golf.tools.JsonUtils;
  * @author Thunder.Hsu
  * 
  */
-public class ViewBuilder implements Thread.UncaughtExceptionHandler {
+public class ViewBuilder {
 
-    private static ThreadLocal<Throwable> error = new ThreadLocal<Throwable>();
-    private static ThreadLocal<HttpServletResponse> response = new ThreadLocal<HttpServletResponse>();
+    public static void build(HttpServletRequest request, HttpServletResponse response, String viewType, Object rst)
+            throws IOException, ServletException {
 
-    @Override
-    public void uncaughtException(Thread t, Throwable e) {
-        error.set(e);
-    }
+        // error view
+        if (rst instanceof Throwable) {
+            PrintWriter out = response.getWriter();
+            Throwable e = (Throwable) rst;
+            response.setStatus(500);
+            out.append(e.getMessage());
+            out.append(JsonUtils.toJson(e));
+            out.flush();
+            out.close();
+            return;
+        }
 
-    public void setResp(HttpServletResponse resp) {
-        response.set(resp);
-    }
+        // jsp view
+        if (rst instanceof String && ((String) rst).endsWith(".jsp")) {
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp");
+            dispatcher.include(request, response);
+            // out.close();
+            return;
+        }
 
-    public static void build(String resptype, Object rst) throws IOException {
-        Throwable e = error.get();
-        HttpServletResponse resp = response.get();
-        if (null == rst) {
-            // 204 No Content
-            resp.setStatus(204);
-        } else {
-            resp.setStatus(200);
-            resp.setContentType(resptype);
-            resp.getWriter().append(JsonUtils.toJson(rst)).flush();
+        // download view
+        String contentType = response.getContentType();
+        if (null != contentType && contentType.equalsIgnoreCase("application/x-msdownload")) {
+            return;
+        }
+
+        switch (Views.valueOf(viewType)) {
+        case json:
+            PrintWriter out = response.getWriter();
+            out.append(JsonUtils.toJson(rst));
+            out.flush();
+            out.close();
+            break;
+        case xml:
+            break;
+        default:
+            throw new ServletException("视图" + viewType + "不支持");
         }
     }
 }

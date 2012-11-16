@@ -28,13 +28,14 @@ public class Atom implements Callable<Object> {
     public Object call() {
         Object rst = null;
         try {
-            // 独立线程
             ReqCtx.init(request, response, res);
             ConnUtils.setTransId("1"); // 初始化上下文事务
             rst = invoke(res);
             ConnUtils.commit();
         } catch (Exception e) {
+            e.printStackTrace();
             ConnUtils.rollbackAll();
+            return e;
         } finally {
             // ConnUtils.clean();
         }
