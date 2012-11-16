@@ -5,6 +5,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.CookieParam;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
@@ -49,7 +50,7 @@ public class Version {
     // /get2/121?aaa=21
     @GET
     @Path("/get2/{pathv}")
-    public String getVersion2(ServletRequest request, ServletResponse response, ServletInputStream inputStream,
+    public String getVersion2(ServletRequest request, ServletResponse response, ServletInputStream ServletInputStream,
             @PathParam(value = "pathv")
             String version, @QueryParam(value = "aaa")
             String p, @HeaderParam(value = "t")

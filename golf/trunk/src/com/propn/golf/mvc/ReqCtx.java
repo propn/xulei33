@@ -118,7 +118,8 @@ public class ReqCtx {
         Map<String, Object> context = getContext();
         context.put("HttpServletRequest", request);
         context.put("HttpServletResponse", response);
-        context.put("InputStream", request.getInputStream());
+        context.put("ServletInputStream", request.getInputStream());
+        context.put("Cookie[]", request.getCookies());
 
         Map<String, MultMap<String, Object>> param = paramCtx.get();
         if (null == param) {
