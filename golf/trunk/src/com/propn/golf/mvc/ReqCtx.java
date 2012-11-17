@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class ReqCtx {
+
     private static final Logger log = LoggerFactory.getLogger(GolfFilter.class);
 
     private static InheritableThreadLocal<Map<String, Object>> ctx = new InheritableThreadLocal<Map<String, Object>>();
@@ -113,7 +114,6 @@ public class ReqCtx {
 
     public static void init(HttpServletRequest request, HttpServletResponse response, Resource res) throws IOException {
         long start = System.currentTimeMillis();
-        log.debug("ReqCtx init begin.");
         // @Context
         Map<String, Object> context = getContext();
         context.put("HttpServletRequest", request);
@@ -137,7 +137,7 @@ public class ReqCtx {
         // @FormParam
         initFormParam(request);
 
-        log.debug("ReqCtx init end. Time used(millis):" + String.valueOf(System.currentTimeMillis() - start));
+        log.debug("init ReqCtx cost time(millis):" + String.valueOf(System.currentTimeMillis() - start));
     }
 
     // TODO:

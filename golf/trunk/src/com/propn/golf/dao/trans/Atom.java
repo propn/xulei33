@@ -16,6 +16,9 @@ import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.propn.golf.mvc.ReqCtx;
 import com.propn.golf.mvc.Resource;
 import com.propn.golf.tools.BeanFactory;
@@ -24,9 +27,11 @@ import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
 
 public class Atom implements Callable<Object> {
 
-    private HttpServletRequest request;
+    private static final Logger log = LoggerFactory.getLogger(Atom.class);
+
+    private final HttpServletRequest request;
     private HttpServletResponse response;
-    private Resource res;
+    private final Resource res;
 
     public Atom(HttpServletRequest request, HttpServletResponse response, Resource res) {
         this.request = request;
@@ -52,12 +57,14 @@ public class Atom implements Callable<Object> {
         return rst;
     }
 
-    private Object invoke(Resource res) throws Exception {
+    private Object invoke(final Resource res) throws Exception {
+        long start = System.currentTimeMillis();
         Class<?> clz = res.getClz();
         Object obj = BeanFactory.getInstance(clz);
         Method method = res.getMethod();
         Class[] argsClass = method.getParameterTypes();
         if (argsClass.length == 0) {
+            log.debug("init method call cost time (millis):" + String.valueOf(System.currentTimeMillis() - start));
             return method.invoke(obj, null);
         }
         // 动态构造参数
@@ -65,23 +72,22 @@ public class Atom implements Callable<Object> {
         for (int i = 0; i < argsClass.length; i++) {
             Class temp = argsClass[i];
             if (temp.equals(ServletRequest.class)) {
-                args[i] = (ServletRequest) ReqCtx.getContext("HttpServletRequest");
+                args[i] = ReqCtx.getContext("HttpServletRequest");
                 continue;
             }
             if (temp.equals(ServletResponse.class)) {
-                args[i] = (ServletResponse) ReqCtx.getContext("HttpServletResponse");
+                args[i] = ReqCtx.getContext("HttpServletResponse");
                 continue;
             }
             if (temp.equals(ServletInputStream.class)) {
-                args[i] = (ServletInputStream) ReqCtx.getContext("ServletInputStream");
+                args[i] = ReqCtx.getContext("ServletInputStream");
                 continue;
             }
             if (temp.equals(Cookie[].class)) {
-                args[i] = (Cookie[]) ReqCtx.getContext("Cookie[]");
+                args[i] = ReqCtx.getContext("Cookie[]");
                 continue;
             }
             // 其他Java对象绑定
-
         }
 
         Annotation[][] a = method.getParameterAnnotations();
@@ -140,6 +146,7 @@ public class Atom implements Callable<Object> {
                 continue;
             }
         }
+        log.debug("init method call cost time (millis):" + String.valueOf(System.currentTimeMillis() - start));
         return method.invoke(obj, args);
     }
 }

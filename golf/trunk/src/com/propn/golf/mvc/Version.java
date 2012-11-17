@@ -55,10 +55,10 @@ public class Version {
             String p, @HeaderParam(value = "accept-language")
             String t, @CookieParam(value = "ys-healthcheck-summary-size-delta")
             String name) {
-        System.out.println(version);
+        /*System.out.println(version);
         System.out.println(p);
         System.out.println(t);
-        System.out.println(name);
+        System.out.println(name);*/
         return version;
     }
 }

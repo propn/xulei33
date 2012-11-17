@@ -17,7 +17,6 @@ public class ConnUtils {
 
     private static final ThreadLocal<String> transId = new ThreadLocal<String>();// 当前事务ID
     private static final ThreadLocal<Map<Integer, Map<String, Connection>>> transCtx = new ThreadLocal<Map<Integer, Map<String, Connection>>>();
-    private static final ThreadLocal<Object> rst = new ThreadLocal<Object>();// 数据库操作返回对象
 
     public static String getTransId() {
         return transId.get();
@@ -40,14 +39,6 @@ public class ConnUtils {
             i--;
         }
         return 0;
-    }
-
-    public static Object getRst() {
-        return rst.get();
-    }
-
-    public static void setRst(Object obj) {
-        rst.set(obj);
     }
 
     /**

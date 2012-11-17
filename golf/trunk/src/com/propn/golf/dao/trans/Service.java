@@ -57,7 +57,7 @@ public abstract class Service {
             }
             for (Atom atom : atoms) {
                 try {
-                    ConnUtils.setRst(atom.call());
+                    atom.call();
                 } catch (Exception e) {
                     log.debug(e.getMessage());
                     ConnUtils.rollbackAll();
@@ -71,7 +71,7 @@ public abstract class Service {
             }
             for (Atom atom : atoms) {
                 try {
-                    ConnUtils.setRst(atom.call());
+                    atom.call();
                 } catch (Exception e) {
                     log.debug("业务处理出错", e);
                     ConnUtils.rollbackAll();
@@ -89,7 +89,7 @@ public abstract class Service {
             Exception err = null;
             for (Atom atom : atoms) {
                 try {
-                    ConnUtils.setRst(atom.call());
+                    atom.call();
                 } catch (Exception e) {
                     err = e;
                     log.debug(e.getMessage());
@@ -104,6 +104,6 @@ public abstract class Service {
             }
         }
         ConnUtils.setTransId(transId);
-        return ConnUtils.getRst();
+        return null;
     }
 }
