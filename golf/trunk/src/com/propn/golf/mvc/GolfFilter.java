@@ -85,15 +85,15 @@ public class GolfFilter implements Filter {
 
         String accept = request.getHeader("Accept");
         String[] produces = res.getProduces();
-        String resptype = getOptimalType(accept, produces);
-        if (null == resptype) {
+        String viewType = getOptimalType(accept, produces);
+        if (null == viewType) {
             // 406 Not Acceptable Content-Type
             response.setStatus(406);
             response.setContentType("text/plain");
             response.getWriter().append("Not Acceptable Content-Type").flush();
             return;
         }
-        call(request, response, res, resptype);
+        call(request, response, res, viewType);
     }
 
     private void call(HttpServletRequest request, HttpServletResponse response, Resource res, String resptype)

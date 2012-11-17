@@ -142,19 +142,13 @@ public class XmlView {
      * @param node
      */
     public void bind(Object object, Node node) {
-
         configure(object);
-
         handleAttributes(object, node);
-
         NodeList nodeList = node.getChildNodes();
-
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node child = nodeList.item(i);
-
             this.processChildNode(object, child);
         }
-
     }
 
     /**
@@ -162,7 +156,6 @@ public class XmlView {
      */
     private void configure(Object object) {
         Class<?> clazz = object.getClass();
-
         _listMap = new LinkedHashMap<String, List<Object>>();
         _fields = new LinkedHashMap<String, Field>();
         _nodeNameToFieldNameMap = new LinkedHashMap<String, String>();
@@ -211,17 +204,13 @@ public class XmlView {
      * @param node
      */
     private void processChildNode(Object object, Node node) {
-
         // only handle element nodes
         if (node.getNodeType() != Node.ELEMENT_NODE)
             return;
-
         // only mess with the node is it doesn't start with an underscore
         String nodeName = node.getNodeName();
-
         if (nodeName.startsWith("_"))
             return;
-
         // if the node has attributes of children it is an object
         NodeList children = node.getChildNodes();
         for (int i = 0; i < children.getLength(); i++) {
@@ -231,20 +220,16 @@ public class XmlView {
                 this.processObjectChildNode(object, node);
                 return;
             }
-
         }
-
         // if this node has attributes it must be treated like an object
         if (node.hasAttributes()) {
             this.processObjectChildNode(object, node);
             return;
         }
-
         // determine the name of the field and if it is a list...
         FieldType type = determineFieldType(node, nodeName);
         String fieldName = type.getFieldName();
         boolean isList = type.isList();
-
         // if this node is a list of single value objects...
         if (isList) {
 

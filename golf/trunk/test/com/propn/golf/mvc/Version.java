@@ -30,6 +30,7 @@ public class Version {
 
     @GET
     @Path("/get/student")
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public Student getStudent() throws Exception {
         Person teacher = new Person();
         teacher.set("personId", "03023001");
@@ -55,10 +56,9 @@ public class Version {
             String p, @HeaderParam(value = "accept-language")
             String t, @CookieParam(value = "ys-healthcheck-summary-size-delta")
             String name) {
-        /*System.out.println(version);
-        System.out.println(p);
-        System.out.println(t);
-        System.out.println(name);*/
+        /*
+         * System.out.println(version); System.out.println(p); System.out.println(t); System.out.println(name);
+         */
         return version;
     }
 }

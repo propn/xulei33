@@ -63,6 +63,7 @@ public class ViewBuilder {
         }
         // application/xml
         if (viewType.equals(MediaType.APPLICATION_XML)) {
+            response.setContentType(MediaType.APPLICATION_XML);
             PrintWriter out = response.getWriter();
             out.append(XmlView.newInstance().toXML(rst));
             out.flush();

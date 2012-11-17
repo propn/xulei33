@@ -14,5 +14,7 @@ public class Student extends Person {
     int grade;
     @Column(name = "major")
     String major;
+
+    @XmlElement(name = "Counselor")
     Person Counselor;
 }
