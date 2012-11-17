@@ -19,6 +19,12 @@ import org.slf4j.LoggerFactory;
 
 import com.propn.golf.dao.trans.Atom;
 
+/**
+ * 
+ * 
+ * @author Thunder.Hsu
+ * @CreateDate 2012-11-17
+ */
 public class GolfFilter implements Filter {
 
     private static final Logger log = LoggerFactory.getLogger(GolfFilter.class);

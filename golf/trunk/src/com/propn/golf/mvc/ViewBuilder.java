@@ -16,8 +16,10 @@ import javax.ws.rs.core.MediaType;
 import com.propn.golf.tools.JsonUtils;
 
 /**
- * @author Thunder.Hsu
  * 
+ * 
+ * @author Thunder.Hsu
+ * @CreateDate 2012-11-17
  */
 public class ViewBuilder {
 

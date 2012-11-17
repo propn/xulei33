@@ -19,6 +19,8 @@ import javax.ws.rs.QueryParam;
 import com.propn.golf.mvc.ReqCtx;
 import com.propn.golf.mvc.Resource;
 import com.propn.golf.tools.BeanFactory;
+import com.propn.golf.tools.StringUtils;
+import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
 
 public class Atom implements Callable<Object> {
 
@@ -63,11 +65,11 @@ public class Atom implements Callable<Object> {
         for (int i = 0; i < argsClass.length; i++) {
             Class temp = argsClass[i];
             if (temp.equals(ServletRequest.class)) {
-                args[i] = (ServletRequest) ReqCtx.getContext("ServletRequest");
+                args[i] = (ServletRequest) ReqCtx.getContext("HttpServletRequest");
                 continue;
             }
             if (temp.equals(ServletResponse.class)) {
-                args[i] = (ServletResponse) ReqCtx.getContext("ServletResponse");
+                args[i] = (ServletResponse) ReqCtx.getContext("HttpServletResponse");
                 continue;
             }
             if (temp.equals(ServletInputStream.class)) {
@@ -101,36 +103,42 @@ public class Atom implements Callable<Object> {
             // @QueryParam
             if (annotation.annotationType().equals(QueryParam.class)) {
                 QueryParam p = (QueryParam) annotation;
-                // TODO:list2Str
-                args[i] = ReqCtx.getQueryParam(p.value()).get(0);
+                if (argsClass[i].equals(List.class)) {
+                    args[i] = ReqCtx.getQueryParam(p.value());
+                } else {
+                    args[i] = StringUtils.list2Stirng(ReqCtx.getQueryParam(p.value()));
+                }
                 continue;
             }
 
             // @FormParam
             if (annotation.annotationType().equals(FormParam.class)) {
                 FormParam p = (FormParam) annotation;
-                // list2Str
-                args[i] = ReqCtx.getFormParam(p.value()).get(0);
+                if (argsClass[i].equals(List.class)) {
+                    args[i] = ReqCtx.getQueryParam(p.value());
+                } else {
+                    args[i] = StringUtils.list2Stirng(ReqCtx.getQueryParam(p.value()));
+                }
                 continue;
             }
 
             // @HeaderParam
             if (annotation.annotationType().equals(HeaderParam.class)) {
                 HeaderParam p = (HeaderParam) annotation;
-                // null
-                args[i] = ReqCtx.getHeaderParam(p.value()).get(0);
+                if (null != ReqCtx.getHeaderParam(p.value())) {
+                    args[i] = ReqCtx.getHeaderParam(p.value()).get(0);
+                }
                 continue;
             }
 
             // @CookieParam
             if (annotation.annotationType().equals(CookieParam.class)) {
                 CookieParam p = (CookieParam) annotation;
-                // null
-                args[i] = ReqCtx.getCookieParam(p.value()).get(0);
+                if (null != ReqCtx.getCookieParam(p.value())) {
+                    args[i] = ReqCtx.getCookieParam(p.value()).get(0);
+                }
                 continue;
             }
-            // System.out.println(annotation.annotationType().getSimpleName());
-            // System.out.println(annotation.getClass());
         }
         return method.invoke(obj, args);
     }

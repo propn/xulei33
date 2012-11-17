@@ -5,7 +5,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.CookieParam;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
@@ -47,14 +46,14 @@ public class Version {
         return st;
     }
 
-    // /get2/121?aaa=21
+    // http://localhost:8080/golf/version/get2/12?aaa=23&aaa=24
     @GET
     @Path("/get2/{pathv}")
     public String getVersion2(ServletRequest request, ServletResponse response, ServletInputStream ServletInputStream,
             @PathParam(value = "pathv")
             String version, @QueryParam(value = "aaa")
-            String p, @HeaderParam(value = "t")
-            String t, @CookieParam(value = "name")
+            String p, @HeaderParam(value = "accept-language")
+            String t, @CookieParam(value = "ys-healthcheck-summary-size-delta")
             String name) {
         System.out.println(version);
         System.out.println(p);
