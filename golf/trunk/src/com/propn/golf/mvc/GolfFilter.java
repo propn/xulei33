@@ -59,10 +59,12 @@ public class GolfFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
             ServletException {
         try {
-            doFilter((HttpServletRequest) request, (HttpServletResponse) response, chain);
+            request = (HttpServletRequest) request;
+            response = (HttpServletResponse) response;
         } catch (ClassCastException e) {
             throw new ServletException("non-HTTP request or response");
         }
+        doFilter((HttpServletRequest) request, (HttpServletResponse) response, chain);
     }
 
     public void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)

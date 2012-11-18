@@ -1,16 +1,26 @@
 package com.propn.golf.tools;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -25,7 +35,11 @@ import org.dom4j.io.SAXReader;
 import org.dom4j.io.SAXValidator;
 import org.dom4j.io.XMLWriter;
 import org.dom4j.util.XMLErrorHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
+
+import com.propn.golf.mvc.ResUtils;
 
 /**
  * 
@@ -39,9 +53,60 @@ import org.xml.sax.SAXException;
  * @Version : 1.0
  */
 public class XmlUtils {
-
-    private static final boolean VALIDATE = true;
+    private static final Logger log = LoggerFactory.getLogger(ResUtils.class);
     private static final String ENCODING = "UTF-8";
+    private static JAXBContext context = null;
+    private static Marshaller marshaller = null;
+    private static Unmarshaller unmarshaller = null;
+
+    public static String toXml(Object obj) throws JAXBException, IOException, ClassNotFoundException {
+        if (null == context) {
+            long start = System.currentTimeMillis();
+            context = JAXBContext.newInstance(loadJaxbClass("com.propn;com.golf".split(";")));
+            marshaller = context.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_ENCODING, ENCODING);
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            marshaller.setProperty(Marshaller.JAXB_FRAGMENT, false);
+            log.debug("init JAXBContext cost time(millis):" + String.valueOf(System.currentTimeMillis() - start));
+        }
+        StringWriter sw = new StringWriter();
+        marshaller.marshal(obj, sw);
+        return sw.toString();
+    }
+
+    public static <T> T fromXml(Class<?> stream, String xml) throws JAXBException, IOException, ClassNotFoundException {
+        if (null == context) {
+            context = JAXBContext.newInstance(loadJaxbClass("com".split(";")));
+            unmarshaller = context.createUnmarshaller();
+        }
+        JAXBElement<T> element = (JAXBElement<T>) unmarshaller.unmarshal(new ByteArrayInputStream(xml.getBytes()));
+        return element.getValue();
+    }
+
+    private static Class[] loadJaxbClass(String[] packages) throws IOException, ClassNotFoundException {
+        long start = System.currentTimeMillis();
+        Set<Class<?>> calssList = new LinkedHashSet<Class<?>>();
+        List<String> classFilters = new ArrayList<String>();
+        ClassScaner handler = new ClassScaner(true, true, classFilters);
+        for (String pkg : packages) {
+            calssList.addAll(handler.getPackageAllClasses(pkg, true));
+        }
+        List<Class<?>> rst = new ArrayList<Class<?>>();
+        for (Class clz : calssList) {
+            if (clz.isAnnotationPresent(XmlRootElement.class)) {
+                rst.add(clz);
+                log.debug("register jaxb class " + clz.getName());
+            }
+        }
+        Class[] clz = new Class[rst.size()];
+        int i = 0;
+        for (Class<?> c : rst) {
+            clz[i] = c;
+            i++;
+        }
+        log.debug("scan JAXBContext Class cost time(millis):" + String.valueOf(System.currentTimeMillis() - start));
+        return clz;
+    }
 
     /**
      * 将字符串转为XML

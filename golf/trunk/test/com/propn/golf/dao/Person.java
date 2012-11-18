@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.propn.golf.dao.sql.Po;
@@ -22,6 +24,7 @@ import com.propn.golf.dao.sql.Po;
 @Entity
 @Table(name = "Person")
 @XmlRootElement(name = "Person")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Person extends Po {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

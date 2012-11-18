@@ -12,8 +12,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.MediaType;
+import javax.xml.bind.JAXBException;
 
 import com.propn.golf.tools.JsonUtils;
+import com.propn.golf.tools.XmlUtils;
 
 /**
  * 
@@ -65,7 +67,13 @@ public class ViewBuilder {
         if (viewType.equals(MediaType.APPLICATION_XML)) {
             response.setContentType(MediaType.APPLICATION_XML);
             PrintWriter out = response.getWriter();
-            out.append(XmlView.newInstance().toXML(rst));
+            try {
+                out.append(XmlUtils.toXml(rst));
+            } catch (JAXBException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
             out.flush();
             out.close();
             return;
