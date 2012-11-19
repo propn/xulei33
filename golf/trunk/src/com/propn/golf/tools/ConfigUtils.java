@@ -3,7 +3,7 @@ package com.propn.golf.tools;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import com.propn.golf.dao.sql.Constants;
+import com.propn.golf.Constants;
 
 public class ConfigUtils {
 

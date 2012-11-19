@@ -34,6 +34,22 @@ public class TransTest {
                         System.out.print(po.get("personName") + "   ");
                         System.out.println();
                     }
+
+                    Service.call(3, new TransAtom() {
+                        @Override
+                        public Object call() throws Exception {
+                            p.set("personName", "东升");
+                            p.update();
+                            List<Po> rsts = p.getList();
+                            for (Po po : rsts) {
+                                System.out.print(po.get("age") + "   ");
+                                System.out.print(po.get("personId") + "   ");
+                                System.out.print(po.get("personName") + "   ");
+                                System.out.println();
+                            }
+                            return null;
+                        }
+                    });
                     return null;
                 }
             });
