@@ -15,6 +15,7 @@ import com.propn.golf.dao.sql.SelectSqlParser;
 import com.propn.golf.dao.sql.SqlFilter;
 import com.propn.golf.dao.sql.SqlMapExe;
 import com.propn.golf.dao.sql.SqlUtils;
+import com.propn.golf.dao.sql.UpdateSqlParser;
 
 /**
  * @author Thunder.Hsu
@@ -24,22 +25,16 @@ public class DbUtils {
 
     public static void intsert(Po po) throws Exception {
         String sql = SqlUtils.getInsertSql(po.getClass());
-        System.out.println(sql);
         SqlFilter filter = new InsertSqlParser();
         Object[] param = filter.doFilter(sql, po);
-        System.out.println(param[0]);
-        System.out.println(param[1]);
         Connection conn = ConnUtils.getConnection();
         SqlMapExe.excuteUpdate(conn, (String) param[0], (Object[]) param[1]);
     }
 
-    public static List<Po> qryObjList(Po obj) throws Exception {
+    public static List<Po> qryPoList(Po obj) throws Exception {
         String sql = SqlUtils.getSelectSql(obj.getClass());
-        System.out.println(sql);
         SqlFilter filter = new SelectSqlParser();
         Object[] param = filter.doFilter(sql, obj);
-        System.out.println(param[0]);
-        System.out.println(param[1]);
         Connection conn = ConnUtils.getConnection();
         List<Map<String, Object>> maps = SqlMapExe.qryMapList(conn, (String) param[0], (Object[]) param[1]);
         // 转换结果
@@ -52,9 +47,26 @@ public class DbUtils {
         return rst;
     }
 
+    public static int update(Po po) throws Exception {
+        String sql = SqlUtils.getUpdateSql(po.getClass());
+        SqlFilter filter = new UpdateSqlParser();
+        Object[] param = filter.doFilter(sql, po);
+        Connection conn = ConnUtils.getConnection();
+        return SqlMapExe.excuteUpdate(conn, (String) param[0], (Object[]) param[1]);
+    }
+
+    public static int delete(Po po) throws Exception {
+        String sql = SqlUtils.getDeleteSql(po.getClass());
+        SqlFilter filter = new UpdateSqlParser();
+        Object[] param = filter.doFilter(sql, po);
+        Connection conn = ConnUtils.getConnection();
+        return SqlMapExe.excuteUpdate(conn, (String) param[0], (Object[]) param[1]);
+    }
+
     /**
      * @param args
      */
     public static void main(String[] args) {
+
     }
 }

@@ -19,12 +19,19 @@ public class TransTest {
             Service.call(new TransAtom() {
                 @Override
                 public Object call() throws Exception {
+                    // 删除
+                    p.delete();
+                    // 增加
                     p.save();
+                    // 修改
+                    p.set("personName", "张东升");
+                    p.update();
+                    // 查询
                     List<Po> rsts = p.getList();
                     for (Po po : rsts) {
-                        System.out.print(po.get("age"));
-                        System.out.print(po.get("personId"));
-                        System.out.print(po.get("personName"));
+                        System.out.print(po.get("age") + "   ");
+                        System.out.print(po.get("personId") + "   ");
+                        System.out.print(po.get("personName") + "   ");
                         System.out.println();
                     }
                     return null;

@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.Column;
 import javax.xml.bind.JAXBException;
 
 import com.propn.golf.dao.DbUtils;
@@ -57,22 +56,6 @@ public abstract class Po implements Serializable, Cloneable {
         return map;
     }
 
-    public Map toColumnMap() throws Exception {
-        Map<String, Object> map = new HashMap();
-        Map<String, Field> fields = RefUtils.getFields(this.getClass());
-        for (Iterator it = fields.values().iterator(); it.hasNext();) {
-            Field field = (Field) it.next();
-            Object v = field.get(this);
-            String column = field.getAnnotation(Column.class).name();
-            if (v instanceof Po) {
-                map.put(null == column ? field.getName().toUpperCase() : column.toUpperCase(), ((Po) v).toColumnMap());
-            } else {
-                map.put(null == column ? field.getName().toUpperCase() : column.toUpperCase(), v);
-            }
-        }
-        return map;
-    }
-
     // 序列化工具
     public String toJson() {
         return JsonUtils.toJson(this, this.getClass());
@@ -104,7 +87,7 @@ public abstract class Po implements Serializable, Cloneable {
      * @throws Exception
      */
     public List<Po> getList() throws Exception {
-        return DbUtils.qryObjList(this);
+        return DbUtils.qryPoList(this);
     }
 
     /**
@@ -115,14 +98,15 @@ public abstract class Po implements Serializable, Cloneable {
      * @return
      */
     List<Po> query(String qryCode, Object param) {
-
         return null;
     }
 
-    void update() {
+    public int update() throws Exception {
+        return DbUtils.update(this);
     }
 
-    void delete() {
+    public int delete() throws Exception {
+        return DbUtils.delete(this);
     }
 
 }

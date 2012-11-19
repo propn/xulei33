@@ -22,7 +22,6 @@ public abstract class Service {
      * @throws Exception
      */
     public static Object call(TransAtom... atoms) throws Exception {
-        System.out.println(Thread.currentThread().getId());
         return call(0, atoms);
     }
 
