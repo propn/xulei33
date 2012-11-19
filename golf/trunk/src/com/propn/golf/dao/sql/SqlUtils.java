@@ -11,6 +11,7 @@ import javax.persistence.Table;
 
 import com.propn.golf.dao.Student;
 import com.propn.golf.tools.Cache;
+import com.propn.golf.tools.StringUtils;
 
 /**
  * 
@@ -70,8 +71,11 @@ public class SqlUtils {
         if (columnFields != null && columnFields.size() > 0) {
             for (Field field : columnFields) {
                 String column = field.getAnnotation(Column.class).name().toUpperCase();
+                if (StringUtils.isBlank(column)) {
+                    column = StringUtils.camel4underline(field.getName());
+                }
                 sqlStr.append(column).append(",");
-                valueStr.append("${").append(column).append("}").append(",");
+                valueStr.append("${").append(field.getName()).append("}").append(",");
             }
         }
         sqlStr.replace(sqlStr.length() - 1, sqlStr.length(), ")");
@@ -88,7 +92,10 @@ public class SqlUtils {
         if (!ids.isEmpty()) {
             for (Field field : ids) {
                 String column = field.getAnnotation(Column.class).name().toUpperCase();
-                sqlStr.append(column).append("=${").append(column).append("}").append(" AND ");
+                if (StringUtils.isBlank(column)) {
+                    column = StringUtils.camel4underline(field.getName());
+                }
+                sqlStr.append(column).append("=${").append(field.getName()).append("}").append(" AND ");
             }
             sqlStr.replace(sqlStr.length() - 4, sqlStr.length(), "");
         } else {
@@ -105,7 +112,10 @@ public class SqlUtils {
         if (columnFields != null && columnFields.size() > 0) {
             for (Field field : columnFields) {
                 String column = field.getAnnotation(Column.class).name().toUpperCase();
-                sqlStr.append(column).append("=").append("${").append(column).append("}").append(",");
+                if (StringUtils.isBlank(column)) {
+                    column = StringUtils.camel4underline(field.getName());
+                }
+                sqlStr.append(column).append("=").append("${").append(field.getName()).append("}").append(",");
             }
         }
         sqlStr.replace(sqlStr.length() - 1, sqlStr.length(), "");
@@ -114,7 +124,10 @@ public class SqlUtils {
             sqlStr.append(" WHERE ");
             for (Field field : ids) {
                 String column = field.getAnnotation(Column.class).name().toUpperCase();
-                sqlStr.append(column).append("=${").append(column).append("}").append(" AND ");
+                if (StringUtils.isBlank(column)) {
+                    column = StringUtils.camel4underline(field.getName());
+                }
+                sqlStr.append(column).append("=${").append(field.getName()).append("}").append(" AND ");
             }
             sqlStr.replace(sqlStr.length() - 4, sqlStr.length(), "");
         } else {
@@ -129,6 +142,9 @@ public class SqlUtils {
         if (columnFields != null && columnFields.size() > 0) {
             for (Field field : columnFields) {
                 String column = field.getAnnotation(Column.class).name().toUpperCase();
+                if (StringUtils.isBlank(column)) {
+                    column = StringUtils.camel4underline(field.getName());
+                }
                 sqlStr.append(column).append(",");
             }
         }
@@ -140,7 +156,10 @@ public class SqlUtils {
             sqlStr.append(" WHERE ");
             for (Field field : ids) {
                 String column = field.getAnnotation(Column.class).name().toUpperCase();
-                sqlStr.append(column).append("=${").append(column).append("}").append(" AND ");
+                if (StringUtils.isBlank(column)) {
+                    column = StringUtils.camel4underline(field.getName());
+                }
+                sqlStr.append(column).append("=${").append(field.getName()).append("}").append(" AND ");
             }
             sqlStr.replace(sqlStr.length() - 4, sqlStr.length(), "");
         }

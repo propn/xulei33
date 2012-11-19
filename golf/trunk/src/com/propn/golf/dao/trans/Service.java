@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.propn.golf.dao.ds.ConnUtils;
 
 /**
- * @author Thunder.xu
+ * @author Thunder.Hsu
  * 
  */
 public abstract class Service {
@@ -21,7 +21,7 @@ public abstract class Service {
      * @param atoms 原子操作对象
      * @throws Exception
      */
-    public static Object call(Atom... atoms) throws Exception {
+    public static Object call(TransAtom... atoms) throws Exception {
         System.out.println(Thread.currentThread().getId());
         return call(0, atoms);
     }
@@ -31,7 +31,7 @@ public abstract class Service {
      * @param propagation_requires_new
      * @param atoms
      */
-    public static Object call(boolean propagation_requires_new, Atom... atoms) throws Exception {
+    public static Object call(boolean propagation_requires_new, TransAtom... atoms) throws Exception {
         if (propagation_requires_new) {
             return call(Trans.REQUIRES_NEW, atoms);
         } else {
@@ -46,7 +46,7 @@ public abstract class Service {
      * @param atoms
      * @throws Exception
      */
-    private static Object call(int propagation, Atom... atoms) throws Exception {
+    private static Object call(int propagation, TransAtom... atoms) throws Exception {
         String transId = ConnUtils.getTransId();
         if (null == transId) {
             ConnUtils.setTransId("1"); // 初始化上下文事务
@@ -55,7 +55,7 @@ public abstract class Service {
             if (null != transId) {
                 ConnUtils.setTransId(ConnUtils.getTransId() + (ConnUtils.getCurrentTransId() + 1));
             }
-            for (Atom atom : atoms) {
+            for (TransAtom atom : atoms) {
                 try {
                     atom.call();
                 } catch (Exception e) {
@@ -69,7 +69,7 @@ public abstract class Service {
             if (null != transId) {
                 ConnUtils.setTransId(transId + "0");
             }
-            for (Atom atom : atoms) {
+            for (TransAtom atom : atoms) {
                 try {
                     atom.call();
                 } catch (Exception e) {
@@ -87,7 +87,7 @@ public abstract class Service {
                 ConnUtils.setTransId(ConnUtils.getTransId() + (ConnUtils.getCurrentTransId() + 1));
             }
             Exception err = null;
-            for (Atom atom : atoms) {
+            for (TransAtom atom : atoms) {
                 try {
                     atom.call();
                 } catch (Exception e) {

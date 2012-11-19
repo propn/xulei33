@@ -44,16 +44,17 @@ public class H2 {
             Class.forName("org.h2.Driver");
             Connection conn = DriverManager.getConnection("jdbc:h2:" + dbDir, user, password);
             Statement stat = conn.createStatement();
-            stat.execute("  drop   table   News");
-            stat.execute("  create   table   News( title varchar(10),content  varchar(255))");
-            stat.execute("  insert into News(title,content) values('adfafs','asdffaasdfa' )");
-            ResultSet result = stat.executeQuery("select * from News ");
+            // stat.execute("  drop   table   PERSON");
+            // stat.execute("  create   table   PERSON(PERSON_ID varchar(10), PERSON_NAME varchar(64),AGE number)");
+            stat.execute("  insert into PERSON (AGE,PERSON_ID,PERSON_NAME) values('1','徐雷',28 )");
+            ResultSet result = stat.executeQuery("select * from PERSON");
             int i = 1;
             while (result.next()) {
-                System.out.println(i++ + ":" + result.getString("title"));
+                System.out.println(i++ + ":" + result.getString("PERSON_NAME"));
             }
-            String sql = "CREATE TABLE BaseEntity( id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,url VARCHAR(100),  site VARCHAR(50), pubDate TIMESTAMP(8), inDate TIMESTAMP(8) )";
-            stat.execute(sql);
+            // String sql =
+            // "CREATE TABLE BaseEntity( id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,url VARCHAR(100),  site VARCHAR(50), pubDate TIMESTAMP(8), inDate TIMESTAMP(8) )";
+            // stat.execute(sql);
             result.close();
             stat.close();
             conn.close();

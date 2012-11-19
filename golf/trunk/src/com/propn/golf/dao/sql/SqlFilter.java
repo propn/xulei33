@@ -35,7 +35,7 @@ public abstract class SqlFilter implements Filter {
     public Object[] doFilter(String sql, final Object params) throws Exception {
         Map parm = new HashMap();
         if (params instanceof Po) {
-            parm = ((Po) params).toColumnMap();
+            parm = ((Po) params).toMap();
         } else if (params instanceof Map) {
             parm = (Map) params;
         }

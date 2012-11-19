@@ -3,25 +3,29 @@
  */
 package com.propn.golf.dao.sql;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.Column;
+import javax.xml.bind.JAXBException;
 
 import com.propn.golf.dao.DbUtils;
 import com.propn.golf.tools.JsonUtils;
+import com.propn.golf.tools.XmlUtils;
 
 /**
  * @author Thunder.Hsu
  * 
  */
-public abstract class Po implements Serializable {
+public abstract class Po implements Serializable, Cloneable {
 
-    // 属性设置
+    // 属性
     public Object get(String fieldName) throws Exception {
         Object value = RefUtils.getFieldValue(this, fieldName);
         return value;
@@ -31,10 +35,17 @@ public abstract class Po implements Serializable {
         RefUtils.setFieldValue(this, fieldName, value);
     }
 
+    public void set(Map<String, Object> map) throws Exception {
+        Set<String> fieldNames = map.keySet();
+        for (String fieldName : fieldNames) {
+            RefUtils.setFieldValue(this, fieldName, map.get(fieldName));
+        }
+    }
+
     Map toMap() throws Exception {
         Map<String, Object> map = new HashMap();
         Map<String, Field> fields = RefUtils.getFields(this.getClass());
-        for (Iterator it = fields.keySet().iterator(); it.hasNext();) {
+        for (Iterator it = fields.values().iterator(); it.hasNext();) {
             Field field = (Field) it.next();
             Object v = field.get(this);
             if (v instanceof Po) {
@@ -63,27 +74,25 @@ public abstract class Po implements Serializable {
     }
 
     // 序列化工具
-    String toJson() {
+    public String toJson() {
         return JsonUtils.toJson(this, this.getClass());
     }
 
-    //
-    String toXml() {
-        return null;
+    public String toXml() throws JAXBException, IOException, ClassNotFoundException {
+        return XmlUtils.toXml(this);
     }
 
     // 数据库操作CRUD
     public void save() throws Exception {
-        System.out.println("currentThread :" + Thread.currentThread().getId());
         DbUtils.intsert(this);
     }
 
-    Po getById(Object id) {
+    public Po getById(Object id) {
         // 校验主键
         return null;
     }
 
-    Po getOne() {
+    public Po getOne() throws Exception {
         List<Po> pos = getList();
         return null != pos && pos.size() > 0 ? pos.get(0) : null;
     }
@@ -92,9 +101,10 @@ public abstract class Po implements Serializable {
      * 模版equel查询
      * 
      * @return
+     * @throws Exception
      */
-    List<Po> getList() {
-        return null;
+    public List<Po> getList() throws Exception {
+        return DbUtils.qryObjList(this);
     }
 
     /**
@@ -110,11 +120,9 @@ public abstract class Po implements Serializable {
     }
 
     void update() {
-        // DbUtils.getInstance().update(this);
     }
 
     void delete() {
-        // DbUtils.getInstance().delete(this);
     }
 
 }

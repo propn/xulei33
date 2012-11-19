@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 字符串工具类
@@ -65,4 +67,56 @@ public class StringUtils {
         }
         return sb.toString();
     }
+
+    /**
+     * 驼峰转下划线
+     * 
+     * @param param
+     * @return
+     */
+    public static String camel4underline(String param) {
+        Pattern p = Pattern.compile("[A-Z]");
+        if (param == null || param.equals("")) {
+            return "";
+        }
+        StringBuilder builder = new StringBuilder(param);
+        Matcher mc = p.matcher(param);
+        int i = 0;
+        while (mc.find()) {
+            builder.replace(mc.start() + i, mc.end() + i, "_" + mc.group().toLowerCase());
+            i++;
+        }
+        if ('_' == builder.charAt(0)) {
+            builder.deleteCharAt(0);
+        }
+        return builder.toString().toUpperCase();
+    }
+
+    /**
+     * 下划线转驼峰
+     * 
+     * @param columnName
+     * @return
+     */
+    public static String underline4camel(String columnName) {
+
+        if (columnName == null || columnName.equals("")) {
+            return "";
+        }
+
+        if (columnName.indexOf("_") < 0) {
+            return columnName.toLowerCase();
+        }
+
+        columnName = columnName.toLowerCase();
+        Pattern p = Pattern.compile("_[a-z]");
+        Matcher mc = p.matcher(columnName);
+        StringBuilder builder = new StringBuilder(columnName);
+        int i = 0;
+        while (mc.find()) {
+            builder.replace(mc.start() + i, mc.end() + i, mc.group().toUpperCase());
+        }
+        return builder.toString().replaceAll("_", "");
+    }
+
 }

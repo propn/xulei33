@@ -19,6 +19,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.propn.golf.tools.StringUtils;
+
 /**
  * <pre>
  * 功能描述：Sql工具
@@ -66,20 +68,19 @@ public class SqlMapExe {
      * 查询返回List<Map<String, Object>>结构
      * 
      * @param sql
-     * @param params
+     * @param param
      * @return
      * @throws SQLException
      */
-    public static List<Map<String, Object>> qryMapList(Connection conn, String sql, String[] params)
-            throws SQLException {
+    public static List<Map<String, Object>> qryMapList(Connection conn, String sql, Object[] param) throws SQLException {
         List<Map<String, Object>> rstList = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
             stmt = conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            if (null != params && params.length > 0) {
-                for (int i = 0; i < params.length; i++) {
-                    setParam(stmt, i + 1, params[i]);
+            if (null != param && param.length > 0) {
+                for (int i = 0; i < param.length; i++) {
+                    setParam(stmt, i + 1, param[i]);
                 }
             }
             rs = stmt.executeQuery();
@@ -112,7 +113,7 @@ public class SqlMapExe {
         return rst;
     }
 
-    public static Object qryOne(Connection conn, String sql, String[] params) throws Exception {
+    public static Object qryOne(Connection conn, String sql, Object[] params) throws Exception {
         Object rst = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -331,7 +332,6 @@ public class SqlMapExe {
         for (int column = 0; column < columnCount; column++) {
             String columnName = metaData.getColumnLabel(column + 1);
             int colunmType = metaData.getColumnType(column + 1);
-            columnName = columnName.toLowerCase();
             map.put(columnName, colunmType);
         }
         return map;
@@ -364,7 +364,7 @@ public class SqlMapExe {
         for (String columnName : metaData.keySet()) {
             int columnType = metaData.get(columnName);
             Object object = rs.getObject(columnName);
-            map.put(columnName, convert(object, columnType));
+            map.put(StringUtils.underline4camel(columnName), convert(object, columnType));
         }
         return map;
     }

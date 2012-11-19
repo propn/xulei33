@@ -1,4 +1,4 @@
-package com.propn.golf.dao.trans;
+package com.propn.golf.mvc;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -19,8 +19,6 @@ import javax.ws.rs.QueryParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.propn.golf.mvc.ReqCtx;
-import com.propn.golf.mvc.Resource;
 import com.propn.golf.tools.BeanFactory;
 import com.propn.golf.tools.StringUtils;
 import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;

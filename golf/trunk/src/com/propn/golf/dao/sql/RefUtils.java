@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.propn.golf.dao.Person;
 import com.propn.golf.tools.Cache;
+import com.propn.golf.tools.Convertes;
 
 /**
  * 
@@ -115,8 +116,16 @@ public class RefUtils {
         return field.get(obj);
     }
 
+    /**
+     * 类型转换
+     * 
+     * @param obj
+     * @param field
+     * @param value
+     * @throws Exception
+     */
     private static void setFieldValue(Object obj, Field field, Object value) throws Exception {
-        field.set(obj, value);
+        field.set(obj, Convertes.convert(value, field.getType()));
     }
 
     private static void getMethodParams(Method method) {

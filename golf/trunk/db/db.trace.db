@@ -1,3 +1,24 @@
 11-13 16:39:43 jdbc[2]: exception
 org.h2.jdbc.JdbcSQLException: Table "NEWS" not found; SQL statement:
   drop   table   News [42102-169]
+11-19 10:10:48 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Table "PERSON" not found; SQL statement:
+INSERT INTO PERSON (AGE,PERSON_ID,PERSON_NAME) VALUES (?,?,?) [42102-169]
+11-19 10:18:15 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Table "PERSON" not found; SQL statement:
+INSERT INTO PERSON (AGE,PERSON_ID,PERSON_NAME) VALUES (?,?,?) [42102-169]
+11-19 10:22:54 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Column "title" not found [42122-169]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:329)
+	at org.h2.message.DbException.get(DbException.java:169)
+	at org.h2.message.DbException.get(DbException.java:146)
+	at org.h2.jdbc.JdbcResultSet.getColumnIndex(JdbcResultSet.java:2893)
+	at org.h2.jdbc.JdbcResultSet.get(JdbcResultSet.java:2979)
+	at org.h2.jdbc.JdbcResultSet.getString(JdbcResultSet.java:291)
+	at com.propn.golf.dao.ds.H2.main(H2.java:53)
+11-19 10:23:14 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Table "PERSON" already exists; SQL statement:
+  create   table   PERSON(PERSON_ID varchar(10), PERSON_NAME varchar(64),AGE number) [42101-169]
+11-19 10:23:26 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Table "BASEENTITY" already exists; SQL statement:
+CREATE TABLE BaseEntity( id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,url VARCHAR(100),  site VARCHAR(50), pubDate TIMESTAMP(8), inDate TIMESTAMP(8) ) [42101-169]
