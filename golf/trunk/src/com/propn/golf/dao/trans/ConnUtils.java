@@ -14,9 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.propn.golf.Constants;
 
 public class ConnUtils {
-
     private static final Logger log = LoggerFactory.getLogger(ConnUtils.class);
-
     /* 当前线程事务状态,transId序列 */
     private static final ThreadLocal<String> transStatus = new ThreadLocal<String>();
     /* {CurrentTransId,{dsCode,Connection}} */
@@ -62,13 +60,16 @@ public class ConnUtils {
      * @throws Exception
      */
     public static Connection getConn(String dsCode) throws Exception {
-        log.debug("currentTransStatus  " + transStatus.get());
+        log.debug("currentTransStatus[{}] ", transStatus.get());
         if (null == getTransStatus()) {
             throw new Exception("当前操作不在数据库事务中,请使用Service.call进行数据库操作！");
         }
 
+        int currentPropagation = getCurrentPropagation();
+        log.debug("currentPropagation[{}] ", currentPropagation);
+
         int currentTransId = getCurrentTransId();
-        log.debug("currentTransId   " + currentTransId);
+        log.debug("currentTransId[{}] ", currentTransId);
 
         if (null == dsCode) {
             dsCode = Constants.DEFAULT_DATASOURCE;
@@ -78,38 +79,40 @@ public class ConnUtils {
         Map<Integer, Map<String, Connection>> connCache = connCtx.get();// {currenttransId,{dsCode,Connection}}
         if (null == connCache)// 事务Cache
         {
+            log.debug("init TransStatus[{}] connCache.", getTransStatus());
             connCache = Collections.synchronizedMap(new HashMap<Integer, Map<String, Connection>>());
-            log.debug("init ThreadLocal transCache");
+            connCtx.set(connCache);
+
+            log.debug("init currentTransId[{}] connMap", currentTransId);
             Map<String, Connection> connMap = Collections.synchronizedMap(new HashMap<String, Connection>());
-            log.debug("init ThreadLocal connCache");
+            connCache.put(currentTransId, connMap);
+
+            log.debug("init dsCode[{}] Conn ", dsCode);
             conn = DsUtils.getDataSource(dsCode).getConnection();
             connMap.put(dsCode, conn);
-            log.debug("init ThreadLocal Conn");
-            connCache.put(currentTransId, connMap);
-            connCtx.set(connCache);
-            log.debug("init transCtx");
         } else {
             Map<String, Connection> connMap = connCache.get(currentTransId);
             if (null == connMap) {
+                log.debug("init currentTransId[{}] connMap", currentTransId);
                 connMap = Collections.synchronizedMap(new HashMap<String, Connection>());
-                log.debug("init ThreadLocal connCache");
+                connCache.put(currentTransId, connMap);
+
+                log.debug("init dsCode[{}] Conn", dsCode);
                 conn = DsUtils.getDataSource(dsCode).getConnection();
                 connMap.put(dsCode, conn);
-                log.debug("init ThreadLocal Conn");
-                connCache.put(currentTransId, connMap);
-                log.debug("init transCtx");
             } else {
                 conn = connMap.get(dsCode);
                 if (null == conn) {
+                    log.debug("init dsCode[{}] conn ", dsCode);
                     conn = DsUtils.getDataSource(dsCode).getConnection();
                     connMap.put(dsCode, conn);
-                    log.debug("init {} cache ", dsCode);
                 }
             }
         }
+
         conn.setAutoCommit(false);
         conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-        log.debug("getConn:{} . Thread:{} .", dsCode, Thread.currentThread().getId());
+        log.debug("getConn dscode[{}] ", dsCode);
 
         // 嵌套事务
         if (Trans.NEST == getCurrentPropagation()) {
@@ -144,7 +147,6 @@ public class ConnUtils {
                 }
             }
         }
-        System.out.println(conn.toString());
         return conn;
     }
 
@@ -163,26 +165,29 @@ public class ConnUtils {
      * 
      */
     public static void commit() {
-        if (null == connCtx.get() || null == connCtx.get().get(getCurrentTransId())) {
+        String trans = getTransStatus();
+        int currentPropagation = getCurrentPropagation();
+        if (currentPropagation != 1) {
             return;
         }
-        Map<String, Connection> cache = connCtx.get().get(getCurrentTransId());
-        for (Connection conn : cache.values()) {
+        Map<Integer, Map<String, Connection>> connCache = connCtx.get();
+        int currentTransId = getCurrentTransId();
+        Map<String, Connection> connMap = connCache.get(currentTransId);
+        for (Connection conn : connMap.values()) {
             if (conn != null) {
                 try {
                     conn.commit();
                 } catch (SQLException e) {
-                    log.debug("事务提交失败：" + getCurrentTransId(), e);
+                    log.debug("Trans[{}] commit error!：", trans, e);
                 } finally {
                     try {
                         conn.close();
                     } catch (SQLException e) {
-                        log.debug("数据库连接关闭失败：" + getCurrentTransId(), e);
+                        log.debug("Trans[{}]  conn.close error!", trans, e);
                     }
                 }
             }
         }
-        log.debug("提交并关闭数据库连接 ,事务Id:{} ", getCurrentTransId());
         clean();
     }
 
@@ -191,65 +196,111 @@ public class ConnUtils {
      * 
      */
     public static void rollback() {
-        if (null == connCtx.get() || null == connCtx.get().get(getCurrentTransId())) {
-            return;
+        // 事务传播行为
+        int currentPropagation = getCurrentPropagation();
+        int currentTransId = getCurrentTransId();
+        if (currentPropagation == Trans.NEW) {
+            rollbackByTransId(currentTransId);
+        } else {
+            Map<String, Map<String, Savepoint>> savepointCache = savePointCtx.get();
+            if (null == savepointCache) {
+                rollbackByTransId(currentTransId);
+            } else {
+                String trans = getLastTrans();
+                Map<String, Savepoint> savepointMap = savepointCache.get(trans);
+                if (null == savepointMap) {
+                    rollbackByTransId(currentTransId);
+                } else {
+                    Map<String, Connection> connMap = connCtx.get().get(currentTransId);
+                    for (Map.Entry<String, Connection> entry : connMap.entrySet()) {
+                        Connection conn = entry.getValue();
+                        String dsCode = entry.getKey();
+                        Savepoint savepoint = savepointMap.get(dsCode);
+                        if (null == savepoint) {
+                            try {
+                                conn.rollback();
+                            } catch (SQLException e) {
+                                log.debug("事务回滚失败：dsCode[{}] ", dsCode, e);
+                            } finally {
+                                try {
+                                    conn.close();
+                                } catch (SQLException e) {
+                                    log.debug("数据库连接关闭失败：dsCode[{}] ", dsCode, e);
+                                }
+                            }
+                        } else {
+                            try {
+                                conn.rollback(savepoint);
+                            } catch (SQLException e) {
+                                log.debug("事务回滚失败：dsCode[{}] ", dsCode, e);
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    // Clean
+                    savepointMap = null;
+                    savepointCache.remove(trans);
+                    // set new
+                    String newTransStatus = trans.substring(0, trans.length() - 1);
+                    setTransStatus(newTransStatus);
+                    log.debug("Trans rollback to trans[{}] !", newTransStatus);
+                }
+            }
         }
-        rollbackByTransId(getCurrentTransId());
     }
 
-    public static void rollbackByTransId(int id) {
-        Map<String, Connection> connCache = connCtx.get().get(id);
-
-        if (null == connCache) {
-            return;
+    /**
+     * 获取最后一个回滚点
+     * 
+     * @TODO:test
+     * @return
+     */
+    static String getLastTrans() {
+        String trans = getTransStatus();
+        if (trans.endsWith(String.valueOf(Trans.NEST))) {
+            return trans;
         }
+        char[] ids = trans.toCharArray();
+        for (int i = ids.length - 1; i >= 0;) {
+            if (Integer.valueOf("" + ids[i]) != Trans.REQUIRED) {
+                return trans.substring(0, i + 1);
+            }
+            i--;
+        }
+        return null;
+    }
+
+    public static void rollbackByTransId(int transId) {
+        String trans = getTransStatus();
+        Map<String, Connection> connCache = connCtx.get().get(transId);
         for (Map.Entry<String, Connection> entry : connCache.entrySet()) {
             Connection conn = entry.getValue();
             if (conn != null) {
                 try {
-                    if (Trans.NEST == id) {
-                        Map<String, Savepoint> savePointCache = savePointCtx.get().get(id);
-                        Savepoint savepoint = savePointCache.get(entry.getKey());
-                        conn.releaseSavepoint(savepoint);
-                    } else {
-                        conn.rollback();
-                    }
+                    conn.rollback();
                 } catch (SQLException e) {
-                    log.debug("事务回滚失败：" + id, e);
+                    log.debug("trans[{}] rollback error! ", trans, e);
                 } finally {
                     try {
                         conn.close();
                     } catch (SQLException e) {
-                        log.debug("数据库连接关闭失败：" + id, e);
+                        log.debug("trans[{}] conn close error! " + trans, e);
                     }
                 }
             }
         }
-        log.debug("回滚并关闭数据库连接 ,事务Id:{} ", id);
-        cleanById(id);
-    }
-
-    public static void rollbackAll() {
-        Map<Integer, Map<String, Connection>> map = connCtx.get();
-        if (null == map) {
-            return;
-        }
-        Object[] trans = map.keySet().toArray();
-        for (int i = 0; i < trans.length; i++) {
-            int id = (Integer) trans[i];
-            rollbackByTransId(id);
-        }
+        cleanById(transId);
     }
 
     /**
      * @throws SQLException
      * 
      */
-    public static void cleanById(int id) {
-        Map<String, Connection> cache = connCtx.get().get(id);
-        cache = null;
-        connCtx.get().remove(id);
-        log.debug("销毁事务对象:{}", id);
+    public static void cleanById(int transId) {
+        Map<String, Connection> connMap = connCtx.get().get(transId);
+        connMap = null;
+        connCtx.get().remove(transId);
+        log.debug("remove trans[{}] ", transId);
     }
 
     /**
@@ -257,10 +308,12 @@ public class ConnUtils {
      * 
      */
     public static void clean() {
-        Map<String, Connection> cache = connCtx.get().get(getCurrentTransId());
-        cache = null;
-        connCtx.get().remove(getCurrentTransId());
-        log.debug("销毁事务对象:{}", getCurrentTransId());
+        String trans = getTransStatus();
+        int currentTransId = getCurrentTransId();
+        Map<String, Connection> cacheMap = connCtx.get().get(currentTransId);
+        cacheMap = null;
+        connCtx.get().remove(currentTransId);
+        log.debug("remove trans[{}] ", trans);
     }
 
 }
