@@ -22,3 +22,15 @@ org.h2.jdbc.JdbcSQLException: Table "PERSON" already exists; SQL statement:
 11-19 10:23:26 jdbc[2]: exception
 org.h2.jdbc.JdbcSQLException: Table "BASEENTITY" already exists; SQL statement:
 CREATE TABLE BaseEntity( id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,url VARCHAR(100),  site VARCHAR(50), pubDate TIMESTAMP(8), inDate TIMESTAMP(8) ) [42101-169]
+11-20 21:58:47 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLException: Timeout trying to lock table ; SQL statement:
+UPDATE PERSON SET AGE=?,PERSON_ID=?,PERSON_NAME=? WHERE PERSON_ID=?  [50200-169]
+11-20 22:02:29 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Timeout trying to lock table ; SQL statement:
+UPDATE PERSON SET AGE=?,PERSON_ID=?,PERSON_NAME=? WHERE PERSON_ID=?  [50200-169]
+11-20 22:02:43 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Timeout trying to lock table ; SQL statement:
+UPDATE PERSON SET AGE=?,PERSON_ID=?,PERSON_NAME=? WHERE PERSON_ID=?  [50200-169]
+11-20 22:02:58 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Timeout trying to lock table ; SQL statement:
+UPDATE PERSON SET AGE=?,PERSON_ID=?,PERSON_NAME=? WHERE PERSON_ID=?  [50200-169]
