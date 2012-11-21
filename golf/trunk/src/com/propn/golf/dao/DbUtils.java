@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.propn.golf.dao.ds.ConnUtils;
 import com.propn.golf.dao.sql.InsertSqlParser;
 import com.propn.golf.dao.sql.Po;
 import com.propn.golf.dao.sql.SelectSqlParser;
@@ -16,6 +15,7 @@ import com.propn.golf.dao.sql.SqlFilter;
 import com.propn.golf.dao.sql.SqlMapExe;
 import com.propn.golf.dao.sql.SqlUtils;
 import com.propn.golf.dao.sql.UpdateSqlParser;
+import com.propn.golf.dao.trans.ConnUtils;
 
 /**
  * @author Thunder.Hsu
