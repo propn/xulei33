@@ -23,7 +23,7 @@ public class TransTest2 {
 
         System.out.println("---------------------------------------------");
         try {
-            Trans.call(new Trans() {
+            Trans.transNew(new Trans() {
                 @Override
                 public Object call() throws Exception {
                     p.delete();
@@ -37,7 +37,7 @@ public class TransTest2 {
 
         System.out.println("---------------------------------------------");
         try {
-            Trans.call(new Trans() {
+            Trans.transNew(new Trans() {
                 @Override
                 public Object call() throws Exception {
                     p.save();
@@ -50,7 +50,7 @@ public class TransTest2 {
 
         System.out.println("---------------------------------------------");
         try {
-            Trans.call(new Trans() {
+            Trans.transNew(new Trans() {
                 @Override
                 public Object call() throws Exception {
                     p.set("personName", "东升");
@@ -66,7 +66,7 @@ public class TransTest2 {
 
         System.out.println("---------------------------------------------");
         try {
-            List<Po> ps = (List<Po>) Trans.call(new Trans() {
+            List<Po> ps = (List<Po>) Trans.transNew(new Trans() {
                 @Override
                 public Object call() throws Exception {
                     return p.qryList();

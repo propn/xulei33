@@ -8,7 +8,7 @@ public class TransTest0 {
     public void T0() {
         System.out.println("----------------------1-----------------------");
         try {
-            Trans.call(new Trans() {
+            Trans.transNew(new Trans() {
                 @Override
                 public Object call() throws Exception {
                     return null;
@@ -26,12 +26,12 @@ public class TransTest0 {
     public void T1() {
         System.out.println("----------------------1-----------------------");
         try {
-            Trans.call(new Trans() {
+            Trans.transNew(new Trans() {
                 @Override
                 public Object call() throws Exception {
                     try {
                         System.out.println("----------------------10-----------------------");
-                        Trans.call(new Trans() {
+                        Trans.transNew(new Trans() {
                             @Override
                             public Object call() throws Exception {
                                 return null;
@@ -56,12 +56,12 @@ public class TransTest0 {
 
         try {
             System.out.println("----------------------1-----------------------");
-            Trans.call(new Trans() {
+            Trans.transNew(new Trans() {
                 @Override
                 public Object call() throws Exception {
                     try {
                         System.out.println("----------------------10-----------------------");
-                        Trans.call(new Trans() {
+                        Trans.transNew(new Trans() {
                             @Override
                             public Object call() throws Exception {
                                 throw new Exception();

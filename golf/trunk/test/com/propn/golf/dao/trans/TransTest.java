@@ -1,7 +1,5 @@
 package com.propn.golf.dao.trans;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 public class TransTest {
@@ -9,7 +7,7 @@ public class TransTest {
     @Test
     public void testCallTrans() {
         try {
-            Trans.call(new Trans() {
+            Trans.transNew(new Trans() {
                 @Override
                 public Object call() throws Exception {
                     return null;
@@ -23,7 +21,7 @@ public class TransTest {
     @Test
     public void testCallIntTrans() {
         try {
-            Trans.call(Trans.REQUIRED, new Trans() {
+            Trans.transNew(new Trans() {
                 @Override
                 public Object call() throws Exception {
                     return null;
@@ -34,7 +32,7 @@ public class TransTest {
         }
 
         try {
-            Trans.call(Trans.NEW, new Trans() {
+            Trans.transNew(new Trans() {
                 @Override
                 public Object call() throws Exception {
                     return null;
@@ -45,7 +43,7 @@ public class TransTest {
         }
 
         try {
-            Trans.call(Trans.NEST, new Trans() {
+            Trans.transNew(new Trans() {
                 @Override
                 public Object call() throws Exception {
                     return null;

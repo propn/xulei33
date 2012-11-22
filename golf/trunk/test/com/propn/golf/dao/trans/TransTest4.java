@@ -17,7 +17,7 @@ public class TransTest4 {
         p.setPersonName("徐雷");
 
         System.out.println("delete begin ");
-        Trans.call(new Trans() {
+        Trans.transNew(new Trans() {
             @Override
             public Object call() throws Exception {
                 p.delete();
@@ -29,14 +29,14 @@ public class TransTest4 {
 
         try {
             System.out.println("insert 徐雷  begin");
-            Trans.call(new Trans() {
+            Trans.transNew(new Trans() {
                 @Override
                 public Object call() throws Exception {
                     p.save();
                     System.out.println("------------------------------------nest");
                     System.out.println("update 东升 begin ");
                     try {
-                        Trans.call(Trans.NEST, new Trans() {
+                        Trans.transNest(new Trans() {
                             @Override
                             public Object call() throws Exception {
                                 p.setPersonName("东升");
@@ -58,7 +58,7 @@ public class TransTest4 {
 
         System.out.println();
         System.out.println("查询 ");
-        List<Person> list = (List<Person>) Trans.call(new Trans() {
+        List<Person> list = (List<Person>) Trans.transNew(new Trans() {
             @Override
             public Object call() throws Exception {
                 return p.qryList();

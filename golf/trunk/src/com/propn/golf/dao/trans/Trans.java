@@ -18,6 +18,7 @@ public abstract class Trans implements Callable<Object> {
 
     /* 默认,同一个Connection,当前上下文存在事务则使用当前事务,没有则新建事务 */
     static int REQUIRED = 0;
+
     /* 新建事务,使用新数据库连接,独立Commit和rollbcak */
     static int NEW = 1;
     /* 嵌套事务, 同一个Connection,由上下文事务一起Commit */
@@ -37,7 +38,7 @@ public abstract class Trans implements Callable<Object> {
      * @param atoms 原子操作对象
      * @throws Exception
      */
-    static Object call(Trans atom) throws Exception {
+    private static Object call(Trans atom) throws Exception {
         return call(REQUIRED, atom);
     }
 
@@ -47,7 +48,7 @@ public abstract class Trans implements Callable<Object> {
      * @param atom
      * @throws Exception
      */
-    static Object call(int propagation, Trans atom) throws Exception {
+    private static Object call(int propagation, Trans atom) throws Exception {
         Object rst = null;
         String trans = ConnUtils.getTransStatus();
         if (null == trans || null == ConnUtils.getConnCtx() || null == ConnUtils.getConnMap()) {
