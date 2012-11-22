@@ -44,7 +44,8 @@ public class Version {
         st.set("personId", "03023152");
         st.set("personName", "徐雷");
         st.set("age", 18);
-        return st;
+//        return st;
+        throw new Exception("22");
     }
 
     // http://localhost:8080/golf/version/get2/12?aaa=23&aaa=24

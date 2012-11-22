@@ -32,7 +32,15 @@ public class ConnUtils {
         transStatus.set(status);
     }
 
-    private static String getCurrentTransId() {
+    static Map<String, Map<String, Connection>> getConnCtx() {
+        return connCtx.get();
+    }
+
+    static Map<String, Connection> getConnMap() {
+        return getConnCtx().get(getCurrentTransId());
+    }
+
+    static String getCurrentTransId() {
         String id = transStatus.get();
         if (null == id) {
             return "";
@@ -40,7 +48,6 @@ public class ConnUtils {
         char[] ids = id.toCharArray();
         for (int i = ids.length - 1; i >= 0;) {
             if (Integer.valueOf("" + ids[i]) == Trans.NEW) {
-                // return Integer.valueOf(String.valueOf(ids[i]));
                 return id.substring(0, i + 1);
             }
             i--;
@@ -191,14 +198,24 @@ public class ConnUtils {
      * 
      */
     static void commit() {
-        String trans = getTransStatus();
+
         int currentPropagation = getCurrentPropagation();
-        if (currentPropagation != 1) {
+        if (currentPropagation != 1) {// 0,2不提交事务
             return;
         }
+
         Map<String, Map<String, Connection>> connCache = connCtx.get();
+        if (null == connCache) {
+            return;
+        }
+
         String currentTransId = getCurrentTransId();
         Map<String, Connection> connMap = connCache.get(currentTransId);
+        if (null == connMap) {
+            return;
+        }
+
+        String trans = getTransStatus();
         for (Connection conn : connMap.values()) {
             if (conn != null) {
                 try {
@@ -223,21 +240,20 @@ public class ConnUtils {
      */
     static void rollback() {
         // 事务传播行为
-        String currentTrans = getTransStatus();
         int currentPropagation = getCurrentPropagation();
-        String currentTransId = getCurrentTransId();
         if (currentPropagation == Trans.NEW) {
-            rollbackByTransId(currentTransId);
+            rollbackConn();
         } else {
             Map<String, Map<String, Savepoint>> savepointCache = savePointCtx.get();
             if (null == savepointCache) {
-                rollbackByTransId(currentTransId);
+                rollbackConn();
             } else {
                 String trans = getLastTrans();
                 Map<String, Savepoint> savepointMap = savepointCache.get(trans);
                 if (null == savepointMap) {
-                    rollbackByTransId(currentTransId);
+                    rollbackConn();
                 } else {
+                    String currentTransId = getCurrentTransId();
                     Map<String, Connection> connMap = connCtx.get().get(currentTransId);
                     for (Map.Entry<String, Connection> entry : connMap.entrySet()) {
                         Connection conn = entry.getValue();
@@ -276,10 +292,18 @@ public class ConnUtils {
         }
     }
 
-    static void rollbackByTransId(String transId) {
+    static void rollbackConn() {
+        Map<String, Map<String, Connection>> connCache = connCtx.get();
+        if (null == connCache) {
+            return;
+        }
+        String transId = getCurrentTransId();
+        Map<String, Connection> connMap = connCache.get(transId);
+        if (null == connMap) {
+            return;
+        }
         String trans = getTransStatus();
-        Map<String, Connection> connCache = connCtx.get().get(transId);
-        for (Map.Entry<String, Connection> entry : connCache.entrySet()) {
+        for (Map.Entry<String, Connection> entry : connMap.entrySet()) {
             Connection conn = entry.getValue();
             if (conn != null) {
                 try {
@@ -295,18 +319,7 @@ public class ConnUtils {
                 }
             }
         }
-        cleanById(transId);
-    }
-
-    /**
-     * @throws SQLException
-     * 
-     */
-    private static void cleanById(String transId) {
-        Map<String, Connection> connMap = connCtx.get().get(transId);
-        connMap = null;
-        connCtx.get().remove(transId);
-        log.debug("remove trans[{}] ", transId);
+        clean();
     }
 
     /**
@@ -314,12 +327,12 @@ public class ConnUtils {
      * 
      */
     private static void clean() {
-        String trans = getTransStatus();
-        String currentTransId = getCurrentTransId();
-        Map<String, Connection> cacheMap = connCtx.get().get(currentTransId);
-        cacheMap = null;
-        connCtx.get().remove(currentTransId);
-        log.debug("remove trans[{}] ", trans);
+        Map<String, Map<String, Connection>> connCache = connCtx.get();
+        if (null == connCache) {
+            return;
+        }
+        connCache.remove(getCurrentTransId());
+        log.debug("remove trans[{}] ", getTransStatus());
     }
 
 }

@@ -40,10 +40,12 @@ public abstract class Trans {
     public static Object call(int propagation, TransAtom atom) throws Exception {
         Object rst = null;
         String trans = ConnUtils.getTransStatus();
-        if (null == trans) {
-            trans = "";
+        if (null == trans || null == ConnUtils.getConnCtx() || null == ConnUtils.getConnMap()) {
+            if (null == trans || "".equals(trans)) {
+                trans = "";
+                propagation = NEW;
+            }
             ConnUtils.setTransStatus(trans);
-            propagation = NEW;
         }
 
         if (propagation == NEW) {// 独立隔离事务，独立提交,回滚影响父事务
@@ -55,7 +57,7 @@ public abstract class Trans {
             } catch (Exception e) {
                 ConnUtils.rollback();
                 log.debug("trans[{}] rollback! ", newTrans);
-                throw new RuntimeException(e);
+                throw e;
             }
             ConnUtils.commit();
             ConnUtils.setTransStatus(trans);
@@ -69,7 +71,7 @@ public abstract class Trans {
             } catch (Exception e) {
                 ConnUtils.rollback();
                 log.debug("trans[{}] rollback! ", newTrans);
-                throw new RuntimeException(e);
+                throw e;
             }
             ConnUtils.commit();
             ConnUtils.setTransStatus(trans);
@@ -83,7 +85,7 @@ public abstract class Trans {
             } catch (Exception e) {
                 ConnUtils.rollback();
                 log.debug("trans[{}] rollback! ", newTrans);
-                throw new RuntimeException(e);
+                throw e;
             }
             ConnUtils.commit();
             ConnUtils.setTransStatus(trans);
