@@ -8,15 +8,15 @@ public class TransTest0 {
     public void T0() {
         System.out.println("----------------------1-----------------------");
         try {
-            Trans.call(new TransAtom() {
+            Trans.call(new Trans() {
                 @Override
                 public Object call() throws Exception {
-                    // return null;
-                    throw new Exception();
+                    return null;
+                    // throw new Exception();
                 }
             });
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
         }
         System.out.println("----------------------1-----------------------");
 
@@ -26,12 +26,12 @@ public class TransTest0 {
     public void T1() {
         System.out.println("----------------------1-----------------------");
         try {
-            Trans.call(new TransAtom() {
+            Trans.call(new Trans() {
                 @Override
                 public Object call() throws Exception {
                     try {
                         System.out.println("----------------------10-----------------------");
-                        Trans.call(new TransAtom() {
+                        Trans.call(new Trans() {
                             @Override
                             public Object call() throws Exception {
                                 return null;
@@ -53,31 +53,31 @@ public class TransTest0 {
 
     @Test
     public void T2() {
-        System.out.println("----------------------1-----------------------");
+
         try {
-            Trans.call(new TransAtom() {
+            System.out.println("----------------------1-----------------------");
+            Trans.call(new Trans() {
                 @Override
                 public Object call() throws Exception {
                     try {
-                        System.out.println("----------------------11-----------------------");
-                        Trans.call(new TransAtom() {
+                        System.out.println("----------------------10-----------------------");
+                        Trans.call(new Trans() {
                             @Override
                             public Object call() throws Exception {
                                 throw new Exception();
                             }
                         });
-                        System.out.println("----------------------11-----------------------");
+                        System.out.println("----------------------10-----------------------");
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        // e.printStackTrace();
                     }
                     return null;
                 }
             });
+            System.out.println("----------------------1-----------------------");
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
         }
-        System.out.println("----------------------1-----------------------");
-
     }
 
 }

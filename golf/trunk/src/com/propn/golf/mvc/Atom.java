@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.propn.golf.dao.trans.Trans;
-import com.propn.golf.dao.trans.TransAtom;
 import com.propn.golf.tools.BeanFactory;
 import com.propn.golf.tools.StringUtils;
 import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
@@ -63,7 +62,7 @@ public class Atom implements Callable<Object> {
         Class[] argsClass = method.getParameterTypes();
         if (argsClass.length == 0) {
             log.debug("init method call cost time (millis):" + String.valueOf(System.currentTimeMillis() - start));
-            Object rst = Trans.call(new TransAtom() {
+            Object rst = Trans.call(new Trans() {
                 @Override
                 public Object call() throws Exception {
                     return method.invoke(obj, null);
@@ -152,7 +151,7 @@ public class Atom implements Callable<Object> {
         }
         log.debug("init method call cost time (millis):" + String.valueOf(System.currentTimeMillis() - start));
         // 使用独立数据库事务调用服务方法!
-        Object rst = Trans.call(new TransAtom() {
+        Object rst = Trans.call(new Trans() {
             @Override
             public Object call() throws Exception {
                 return method.invoke(obj, args);

@@ -7,9 +7,9 @@ import org.junit.Test;
 public class TransTest {
 
     @Test
-    public void testCallTransAtom() {
+    public void testCallTrans() {
         try {
-            Trans.call(new TransAtom() {
+            Trans.call(new Trans() {
                 @Override
                 public Object call() throws Exception {
                     return null;
@@ -21,9 +21,9 @@ public class TransTest {
     }
 
     @Test
-    public void testCallIntTransAtom() {
+    public void testCallIntTrans() {
         try {
-            Trans.call(Trans.REQUIRED, new TransAtom() {
+            Trans.call(Trans.REQUIRED, new Trans() {
                 @Override
                 public Object call() throws Exception {
                     return null;
@@ -34,7 +34,7 @@ public class TransTest {
         }
 
         try {
-            Trans.call(Trans.NEW, new TransAtom() {
+            Trans.call(Trans.NEW, new Trans() {
                 @Override
                 public Object call() throws Exception {
                     return null;
@@ -45,7 +45,7 @@ public class TransTest {
         }
 
         try {
-            Trans.call(Trans.NEST, new TransAtom() {
+            Trans.call(Trans.NEST, new Trans() {
                 @Override
                 public Object call() throws Exception {
                     return null;

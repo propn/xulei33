@@ -22,7 +22,7 @@ public class TransTest3 {
         }
         System.out.println("------------------删除---------------------------");
         try {
-            Trans.call(new TransAtom() {
+            Trans.call(new Trans() {
                 @Override
                 public Object call() throws Exception {
                     p.delete();
@@ -36,7 +36,7 @@ public class TransTest3 {
 
         System.out.println("-------------------新增--------------------------");
         try {
-            Trans.call(new TransAtom() {
+            Trans.call(new Trans() {
                 @Override
                 public Object call() throws Exception {
                     p.save();
@@ -49,7 +49,7 @@ public class TransTest3 {
 
         System.out.println("------------------查询---------------------------");
         try {
-            List<Po> ps = (List<Po>) Trans.call(new TransAtom() {
+            List<Po> ps = (List<Po>) Trans.call(new Trans() {
                 @Override
                 public Object call() throws Exception {
                     return p.getList();

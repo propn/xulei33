@@ -2,7 +2,6 @@ package com.propn.golf.dao;
 
 import com.propn.golf.dao.sql.Po;
 import com.propn.golf.dao.trans.Trans;
-import com.propn.golf.dao.trans.TransAtom;
 
 public class PersonTest {
 
@@ -39,7 +38,7 @@ public class PersonTest {
 
         System.out.println("currentThread :" + Thread.currentThread().getId());
 
-        Trans.call(new TransAtom() {
+        Trans.call(new Trans() {
             @Override
             public Object call() throws Exception {
                 t.save();

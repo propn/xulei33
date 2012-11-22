@@ -3,6 +3,8 @@
  */
 package com.propn.golf.dao.trans;
 
+import java.util.concurrent.Callable;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,7 +12,7 @@ import org.slf4j.LoggerFactory;
  * @author Thunder.Hsu
  * 
  */
-public abstract class Trans {
+public abstract class Trans implements Callable<Object> {
 
     private static final Logger log = LoggerFactory.getLogger(Trans.class);
 
@@ -27,7 +29,7 @@ public abstract class Trans {
      * @param atoms 原子操作对象
      * @throws Exception
      */
-    public static Object call(TransAtom atom) throws Exception {
+    public static Object call(Trans atom) throws Exception {
         return call(REQUIRED, atom);
     }
 
@@ -37,7 +39,7 @@ public abstract class Trans {
      * @param atom
      * @throws Exception
      */
-    public static Object call(int propagation, TransAtom atom) throws Exception {
+    public static Object call(int propagation, Trans atom) throws Exception {
         Object rst = null;
         String trans = ConnUtils.getTransStatus();
         if (null == trans || null == ConnUtils.getConnCtx() || null == ConnUtils.getConnMap()) {
@@ -51,45 +53,51 @@ public abstract class Trans {
         if (propagation == NEW) {// 独立隔离事务，独立提交,回滚影响父事务
             String newTrans = trans + NEW;
             ConnUtils.setTransStatus(newTrans);
-            log.debug("trans[{}] begin...", newTrans);
+            log.debug("trans[{}] begin.", newTrans);
             try {
                 rst = atom.call();
             } catch (Exception e) {
                 ConnUtils.rollback();
-                log.debug("trans[{}] rollback! ", newTrans);
+                ConnUtils.setTransStatus(trans);
+                log.debug("trans[{}] end rollback. ", newTrans);
+                log.debug("trans[{}] end. ", newTrans);
                 throw e;
             }
             ConnUtils.commit();
             ConnUtils.setTransStatus(trans);
-            log.debug("trans[{}] commit! ", newTrans);
+            log.debug("trans[{}] end! ", newTrans);
         } else if (propagation == REQUIRED) {// 同父事务在同一个事务中
             String newTrans = trans + REQUIRED;
             ConnUtils.setTransStatus(newTrans);
-            log.debug("trans[{}] begin...", newTrans);
+            log.debug("trans[{}] begin.", newTrans);
             try {
                 rst = atom.call();
             } catch (Exception e) {
                 ConnUtils.rollback();
-                log.debug("trans[{}] rollback! ", newTrans);
+                ConnUtils.setTransStatus(trans);
+                log.debug("trans[{}] end rollback. ", newTrans);
+                log.debug("trans[{}] end. ", newTrans);
                 throw e;
             }
             ConnUtils.commit();
             ConnUtils.setTransStatus(trans);
-            log.debug("trans[{}] commit! ", newTrans);
+            log.debug("trans[{}] end. ", newTrans);
         } else if (propagation == NEST) {// 嵌套事务,同一个Connection
             String newTrans = trans + NEST;
             ConnUtils.setTransStatus(newTrans);
-            log.debug("trans[{}] begin...", newTrans);
+            log.debug("trans[{}] begin.", newTrans);
             try {
                 rst = atom.call();
             } catch (Exception e) {
                 ConnUtils.rollback();
-                log.debug("trans[{}] rollback! ", newTrans);
+                ConnUtils.setTransStatus(trans);
+                log.debug("trans[{}] end rollback. ", newTrans);
+                log.debug("trans[{}] end. ", newTrans);
                 throw e;
             }
             ConnUtils.commit();
             ConnUtils.setTransStatus(trans);
-            log.debug("trans[{}] commit! ", newTrans);
+            log.debug("trans[{}] end. ", newTrans);
         }
         return rst;
     }

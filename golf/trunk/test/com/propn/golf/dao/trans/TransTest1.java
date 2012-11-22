@@ -21,7 +21,7 @@ public class TransTest1 {
             p.set("personName", "徐雷");
             try {
                 System.out.println("---------------1-------------");
-                Trans.call(new TransAtom() {
+                Trans.call(new Trans() {
                     @Override
                     public Object call() throws Exception {
                         // 清空数据库数据
@@ -32,7 +32,7 @@ public class TransTest1 {
                 });
                 
                 System.out.println("---------------1-------------");
-                Trans.call(new TransAtom() {
+                Trans.call(new Trans() {
                     @Override
                     public Object call() throws Exception {
                         System.out.println("---------------查询数据库数据-------------");
@@ -50,7 +50,7 @@ public class TransTest1 {
                         System.out.println("---------------开始嵌入事务处理--------------");
                         try {
                             System.out.println("---------------12-------------");
-                            Trans.call(Trans.NEST, new TransAtom() {
+                            Trans.call(Trans.NEST, new Trans() {
                                 @Override
                                 public Object call() throws Exception {
                                     System.out.println("--------------新增数据俊岭-------------");
@@ -59,7 +59,7 @@ public class TransTest1 {
 
                                     System.out.println("---------------开始独立事务处理--------------");
                                     System.out.println("---------------121-------------");
-                                    Trans.call(Trans.NEW, new TransAtom() {
+                                    Trans.call(Trans.NEW, new Trans() {
                                         @Override
                                         public Object call() throws Exception {
                                             System.out.println("-----------新增数据亮亮----------------");
@@ -68,7 +68,7 @@ public class TransTest1 {
 
                                             System.out.println("------------开始嵌套事务处理-----------------");
                                             System.out.println("---------------1212-------------");
-                                            Trans.call(Trans.NEST, new TransAtom() {
+                                            Trans.call(Trans.NEST, new Trans() {
                                                 @Override
                                                 public Object call() throws Exception {
                                                     System.out.println("-----------新增数据东升----------------");
@@ -106,7 +106,7 @@ public class TransTest1 {
 
             // ............
             System.out.println("-----------------1---------------------");
-            List<Po> pos = (List<Po>) Trans.call(new TransAtom() {
+            List<Po> pos = (List<Po>) Trans.call(new Trans() {
                 @Override
                 public Object call() throws Exception {
                     List<Po> list = p.getList();

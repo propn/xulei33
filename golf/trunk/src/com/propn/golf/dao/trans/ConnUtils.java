@@ -198,24 +198,25 @@ public class ConnUtils {
      * 
      */
     static void commit() {
-
+        String trans = getTransStatus();
         int currentPropagation = getCurrentPropagation();
         if (currentPropagation != 1) {// 0,2不提交事务
+            log.debug("trans[{}] delegate to parent.", trans);
             return;
         }
 
         Map<String, Map<String, Connection>> connCache = connCtx.get();
         if (null == connCache) {
+            log.debug("trans[{}] has no conn.", trans);
             return;
         }
 
         String currentTransId = getCurrentTransId();
         Map<String, Connection> connMap = connCache.get(currentTransId);
         if (null == connMap) {
+            log.debug("trans[{}] has no conn.", trans);
             return;
         }
-
-        String trans = getTransStatus();
         for (Connection conn : connMap.values()) {
             if (conn != null) {
                 try {
@@ -231,6 +232,7 @@ public class ConnUtils {
                 }
             }
         }
+        log.debug("trans[{}] commit.", trans);
         clean();
     }
 
@@ -260,13 +262,14 @@ public class ConnUtils {
                         String dsCode = entry.getKey();
                         Savepoint savepoint = savepointMap.get(dsCode);
                         if (null == savepoint) {
-                            try {
+                            try {// 保存点建立之后创建的数据库连接
                                 conn.rollback();
                             } catch (SQLException e) {
                                 log.debug("事务回滚失败：dsCode[{}] ", dsCode, e);
                             } finally {
                                 try {
                                     conn.close();
+                                    connMap.remove(dsCode);
                                 } catch (SQLException e) {
                                     log.debug("数据库连接关闭失败：dsCode[{}] ", dsCode, e);
                                 }
@@ -276,11 +279,10 @@ public class ConnUtils {
                                 conn.rollback(savepoint);
                             } catch (SQLException e) {
                                 log.debug("事务回滚失败：dsCode[{}] ", dsCode, e);
-                                e.printStackTrace();
                             }
                         }
                     }
-                    // Clean
+                    // Clean SavepointMap
                     savepointMap = null;
                     savepointCache.remove(trans);
                     // set new
@@ -293,16 +295,22 @@ public class ConnUtils {
     }
 
     static void rollbackConn() {
+        String trans = getTransStatus();
+        log.debug("trans[{}] begin rollback. ", trans);
+
         Map<String, Map<String, Connection>> connCache = connCtx.get();
         if (null == connCache) {
+            log.debug("trans[{}] has no conn. ", trans);
             return;
         }
+
         String transId = getCurrentTransId();
         Map<String, Connection> connMap = connCache.get(transId);
         if (null == connMap) {
+            log.debug("trans[{}] has no conn. ", trans);
             return;
         }
-        String trans = getTransStatus();
+
         for (Map.Entry<String, Connection> entry : connMap.entrySet()) {
             Connection conn = entry.getValue();
             if (conn != null) {
@@ -327,12 +335,13 @@ public class ConnUtils {
      * 
      */
     private static void clean() {
+        String trans = getTransStatus();
         Map<String, Map<String, Connection>> connCache = connCtx.get();
         if (null == connCache) {
             return;
         }
         connCache.remove(getCurrentTransId());
-        log.debug("remove trans[{}] ", getTransStatus());
+        log.debug("remove trans[{}] ", trans);
     }
 
 }
