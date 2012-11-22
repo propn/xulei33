@@ -33,16 +33,6 @@ public abstract class Trans implements Callable<Object> {
     }
 
     /**
-     * 执行一组原子操作，默认的事务级别为: TRANSACTION_READ_COMMITTED。 事务传播为 PROPAGATION_REQUIRED
-     * 
-     * @param atoms 原子操作对象
-     * @throws Exception
-     */
-    private static Object call(Trans atom) throws Exception {
-        return call(REQUIRED, atom);
-    }
-
-    /**
      * 服务调用
      * 
      * @param atom
