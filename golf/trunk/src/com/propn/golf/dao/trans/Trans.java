@@ -32,19 +32,6 @@ public abstract class Trans {
     }
 
     /**
-     * 
-     * @param propagation_requires_new
-     * @param atom
-     */
-    public static Object call(boolean propagation_requires_new, TransAtom atom) throws Exception {
-        if (propagation_requires_new) {
-            return call(NEW, atom);
-        } else {
-            return call(REQUIRED, atom);
-        }
-    }
-
-    /**
      * 服务调用
      * 
      * @param atom

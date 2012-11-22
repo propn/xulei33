@@ -19,6 +19,8 @@ import javax.ws.rs.QueryParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.propn.golf.dao.trans.Trans;
+import com.propn.golf.dao.trans.TransAtom;
 import com.propn.golf.tools.BeanFactory;
 import com.propn.golf.tools.StringUtils;
 import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
@@ -42,15 +44,13 @@ public class Atom implements Callable<Object> {
         Object rst = null;
         try {
             ReqCtx.init(request, response, res);
-            // ConnUtils.setTransId("1"); // 初始化上下文事务
+            long t0 = System.currentTimeMillis();
             rst = invoke(res);
-            // ConnUtils.commit();
+            log.debug("method call cost time (millis):" + String.valueOf(System.currentTimeMillis() - t0));
         } catch (Exception e) {
             e.printStackTrace();
-            // ConnUtils.rollbackAll();
             return e;
         } finally {
-            // ConnUtils.clean();
         }
         return rst;
     }
@@ -58,15 +58,21 @@ public class Atom implements Callable<Object> {
     private Object invoke(final Resource res) throws Exception {
         long start = System.currentTimeMillis();
         Class<?> clz = res.getClz();
-        Object obj = BeanFactory.getInstance(clz);
-        Method method = res.getMethod();
+        final Object obj = BeanFactory.getInstance(clz);
+        final Method method = res.getMethod();
         Class[] argsClass = method.getParameterTypes();
         if (argsClass.length == 0) {
             log.debug("init method call cost time (millis):" + String.valueOf(System.currentTimeMillis() - start));
-            return method.invoke(obj, null);
+            Object rst = Trans.call(new TransAtom() {
+                @Override
+                public Object call() throws Exception {
+                    return method.invoke(obj, null);
+                }
+            });
+            return rst;
         }
         // 动态构造参数
-        Object[] args = new Object[argsClass.length];// 函数入参
+        final Object[] args = new Object[argsClass.length];// 函数入参
         for (int i = 0; i < argsClass.length; i++) {
             Class temp = argsClass[i];
             if (temp.equals(ServletRequest.class)) {
@@ -145,6 +151,13 @@ public class Atom implements Callable<Object> {
             }
         }
         log.debug("init method call cost time (millis):" + String.valueOf(System.currentTimeMillis() - start));
-        return method.invoke(obj, args);
+        // 使用独立数据库事务调用服务方法!
+        Object rst = Trans.call(new TransAtom() {
+            @Override
+            public Object call() throws Exception {
+                return method.invoke(obj, args);
+            }
+        });
+        return rst;
     }
 }
