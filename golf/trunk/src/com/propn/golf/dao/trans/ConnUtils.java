@@ -32,7 +32,7 @@ public class ConnUtils {
         transStatus.set(status);
     }
 
-    static String getCurrentTransId() {
+    private static String getCurrentTransId() {
         String id = transStatus.get();
         if (null == id) {
             return "";
