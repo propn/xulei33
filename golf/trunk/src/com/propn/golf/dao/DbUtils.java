@@ -27,7 +27,7 @@ public class DbUtils {
         String sql = SqlUtils.getInsertSql(po.getClass());
         SqlFilter filter = new InsertSqlParser();
         Object[] param = filter.doFilter(sql, po);
-        Connection conn = ConnUtils.getConnection();
+        Connection conn = ConnUtils.getConn();
         SqlMapExe.excuteUpdate(conn, (String) param[0], (Object[]) param[1]);
     }
 
@@ -35,7 +35,7 @@ public class DbUtils {
         String sql = SqlUtils.getSelectSql(obj.getClass());
         SqlFilter filter = new SelectSqlParser();
         Object[] param = filter.doFilter(sql, obj);
-        Connection conn = ConnUtils.getConnection();
+        Connection conn = ConnUtils.getConn();
         List<Map<String, Object>> maps = SqlMapExe.qryMapList(conn, (String) param[0], (Object[]) param[1]);
         // 转换结果
         List<Po> rst = new ArrayList<Po>();
@@ -51,7 +51,7 @@ public class DbUtils {
         String sql = SqlUtils.getUpdateSql(po.getClass());
         SqlFilter filter = new UpdateSqlParser();
         Object[] param = filter.doFilter(sql, po);
-        Connection conn = ConnUtils.getConnection();
+        Connection conn = ConnUtils.getConn();
         return SqlMapExe.excuteUpdate(conn, (String) param[0], (Object[]) param[1]);
     }
 
@@ -59,7 +59,7 @@ public class DbUtils {
         String sql = SqlUtils.getDeleteSql(po.getClass());
         SqlFilter filter = new UpdateSqlParser();
         Object[] param = filter.doFilter(sql, po);
-        Connection conn = ConnUtils.getConnection();
+        Connection conn = ConnUtils.getConn();
         return SqlMapExe.excuteUpdate(conn, (String) param[0], (Object[]) param[1]);
     }
 

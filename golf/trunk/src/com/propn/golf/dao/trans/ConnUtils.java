@@ -18,7 +18,7 @@ public class ConnUtils {
     /* 当前线程事务状态,transId序列 */
     private static final ThreadLocal<String> transStatus = new ThreadLocal<String>();
     /* {CurrentTransId,{dsCode,Connection}} */
-    private static final ThreadLocal<Map<Integer, Map<String, Connection>>> connCtx = new ThreadLocal<Map<Integer, Map<String, Connection>>>();
+    private static final ThreadLocal<Map<String, Map<String, Connection>>> connCtx = new ThreadLocal<Map<String, Map<String, Connection>>>();
     /* {transStatus,{dsCode,SavePoint}} */
     private static final ThreadLocal<Map<String, Map<String, Savepoint>>> savePointCtx = new ThreadLocal<Map<String, Map<String, Savepoint>>>();
 
@@ -30,19 +30,20 @@ public class ConnUtils {
         transStatus.set(status);
     }
 
-    static int getCurrentTransId() {
+    static String getCurrentTransId() {
         String id = transStatus.get();
         if (null == id) {
-            return 0;
+            return "";
         }
         char[] ids = id.toCharArray();
         for (int i = ids.length - 1; i >= 0;) {
             if (Integer.valueOf("" + ids[i]) == Trans.NEW) {
-                return Integer.valueOf(String.valueOf(ids[i]));
+                // return Integer.valueOf(String.valueOf(ids[i]));
+                return id.substring(0, i + 1);
             }
             i--;
         }
-        return 0;
+        return "";
     }
 
     private static int getCurrentPropagation() {
@@ -51,6 +52,27 @@ public class ConnUtils {
             return 0;
         }
         return Integer.parseInt(id.substring(id.length() - 1));
+    }
+
+    /**
+     * 获取最后一个回滚点
+     * 
+     * @TODO:test
+     * @return
+     */
+    private static String getLastTrans() {
+        String trans = getTransStatus();
+        if (trans.endsWith(String.valueOf(Trans.NEST))) {
+            return trans;
+        }
+        char[] ids = trans.toCharArray();
+        for (int i = ids.length - 1; i >= 0;) {
+            if (Integer.valueOf("" + ids[i]) != Trans.REQUIRED) {
+                return trans.substring(0, i + 1);
+            }
+            i--;
+        }
+        return null;
     }
 
     /**
@@ -68,7 +90,7 @@ public class ConnUtils {
         int currentPropagation = getCurrentPropagation();
         log.debug("currentPropagation[{}] ", currentPropagation);
 
-        int currentTransId = getCurrentTransId();
+        String currentTransId = getCurrentTransId();
         log.debug("currentTransId[{}] ", currentTransId);
 
         if (null == dsCode) {
@@ -76,11 +98,11 @@ public class ConnUtils {
         }
 
         Connection conn = null;
-        Map<Integer, Map<String, Connection>> connCache = connCtx.get();// {currenttransId,{dsCode,Connection}}
+        Map<String, Map<String, Connection>> connCache = connCtx.get();// {currenttransId,{dsCode,Connection}}
         if (null == connCache)// 事务Cache
         {
             log.debug("init TransStatus[{}] connCache.", getTransStatus());
-            connCache = Collections.synchronizedMap(new HashMap<Integer, Map<String, Connection>>());
+            connCache = Collections.synchronizedMap(new HashMap<String, Map<String, Connection>>());
             connCtx.set(connCache);
 
             log.debug("init currentTransId[{}] connMap", currentTransId);
@@ -89,6 +111,8 @@ public class ConnUtils {
 
             log.debug("init dsCode[{}] Conn ", dsCode);
             conn = DsUtils.getDataSource(dsCode).getConnection();
+            conn.setAutoCommit(false);
+            conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
             connMap.put(dsCode, conn);
         } else {
             Map<String, Connection> connMap = connCache.get(currentTransId);
@@ -99,21 +123,21 @@ public class ConnUtils {
 
                 log.debug("init dsCode[{}] Conn", dsCode);
                 conn = DsUtils.getDataSource(dsCode).getConnection();
+                conn.setAutoCommit(false);
+                conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
                 connMap.put(dsCode, conn);
             } else {
                 conn = connMap.get(dsCode);
                 if (null == conn) {
                     log.debug("init dsCode[{}] conn ", dsCode);
                     conn = DsUtils.getDataSource(dsCode).getConnection();
+                    conn.setAutoCommit(false);
+                    conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
                     connMap.put(dsCode, conn);
                 }
             }
         }
-
-        conn.setAutoCommit(false);
-        conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
         log.debug("getConn dscode[{}] ", dsCode);
-
         // 嵌套事务
         if (Trans.NEST == getCurrentPropagation()) {
             Map<String, Map<String, Savepoint>> savePointCache = savePointCtx.get();// {currenttransId,{dsCode,savePoint}}
@@ -155,7 +179,7 @@ public class ConnUtils {
      * @return
      * @throws Exception
      */
-    public static Connection getConnection() throws Exception {
+    public static Connection getConn() throws Exception {
         return getConn(null);
     }
 
@@ -170,8 +194,8 @@ public class ConnUtils {
         if (currentPropagation != 1) {
             return;
         }
-        Map<Integer, Map<String, Connection>> connCache = connCtx.get();
-        int currentTransId = getCurrentTransId();
+        Map<String, Map<String, Connection>> connCache = connCtx.get();
+        String currentTransId = getCurrentTransId();
         Map<String, Connection> connMap = connCache.get(currentTransId);
         for (Connection conn : connMap.values()) {
             if (conn != null) {
@@ -197,8 +221,9 @@ public class ConnUtils {
      */
     public static void rollback() {
         // 事务传播行为
+        String currentTrans = getTransStatus();
         int currentPropagation = getCurrentPropagation();
-        int currentTransId = getCurrentTransId();
+        String currentTransId = getCurrentTransId();
         if (currentPropagation == Trans.NEW) {
             rollbackByTransId(currentTransId);
         } else {
@@ -249,28 +274,7 @@ public class ConnUtils {
         }
     }
 
-    /**
-     * 获取最后一个回滚点
-     * 
-     * @TODO:test
-     * @return
-     */
-    static String getLastTrans() {
-        String trans = getTransStatus();
-        if (trans.endsWith(String.valueOf(Trans.NEST))) {
-            return trans;
-        }
-        char[] ids = trans.toCharArray();
-        for (int i = ids.length - 1; i >= 0;) {
-            if (Integer.valueOf("" + ids[i]) != Trans.REQUIRED) {
-                return trans.substring(0, i + 1);
-            }
-            i--;
-        }
-        return null;
-    }
-
-    public static void rollbackByTransId(int transId) {
+    public static void rollbackByTransId(String transId) {
         String trans = getTransStatus();
         Map<String, Connection> connCache = connCtx.get().get(transId);
         for (Map.Entry<String, Connection> entry : connCache.entrySet()) {
@@ -296,7 +300,7 @@ public class ConnUtils {
      * @throws SQLException
      * 
      */
-    public static void cleanById(int transId) {
+    public static void cleanById(String transId) {
         Map<String, Connection> connMap = connCtx.get().get(transId);
         connMap = null;
         connCtx.get().remove(transId);
@@ -309,7 +313,7 @@ public class ConnUtils {
      */
     public static void clean() {
         String trans = getTransStatus();
-        int currentTransId = getCurrentTransId();
+        String currentTransId = getCurrentTransId();
         Map<String, Connection> cacheMap = connCtx.get().get(currentTransId);
         cacheMap = null;
         connCtx.get().remove(currentTransId);
