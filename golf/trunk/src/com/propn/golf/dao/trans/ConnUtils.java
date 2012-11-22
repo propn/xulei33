@@ -14,7 +14,9 @@ import org.slf4j.LoggerFactory;
 import com.propn.golf.Constants;
 
 public class ConnUtils {
+
     private static final Logger log = LoggerFactory.getLogger(ConnUtils.class);
+
     /* 当前线程事务状态,transId序列 */
     private static final ThreadLocal<String> transStatus = new ThreadLocal<String>();
     /* {CurrentTransId,{dsCode,Connection}} */
@@ -72,7 +74,7 @@ public class ConnUtils {
             }
             i--;
         }
-        return null;
+        return "";
     }
 
     /**
@@ -188,7 +190,7 @@ public class ConnUtils {
      * @throws Exception
      * 
      */
-    public static void commit() {
+    static void commit() {
         String trans = getTransStatus();
         int currentPropagation = getCurrentPropagation();
         if (currentPropagation != 1) {
@@ -219,7 +221,7 @@ public class ConnUtils {
      * @throws SQLException
      * 
      */
-    public static void rollback() {
+    static void rollback() {
         // 事务传播行为
         String currentTrans = getTransStatus();
         int currentPropagation = getCurrentPropagation();
@@ -274,7 +276,7 @@ public class ConnUtils {
         }
     }
 
-    public static void rollbackByTransId(String transId) {
+    static void rollbackByTransId(String transId) {
         String trans = getTransStatus();
         Map<String, Connection> connCache = connCtx.get().get(transId);
         for (Map.Entry<String, Connection> entry : connCache.entrySet()) {
@@ -300,7 +302,7 @@ public class ConnUtils {
      * @throws SQLException
      * 
      */
-    public static void cleanById(String transId) {
+    private static void cleanById(String transId) {
         Map<String, Connection> connMap = connCtx.get().get(transId);
         connMap = null;
         connCtx.get().remove(transId);
@@ -311,7 +313,7 @@ public class ConnUtils {
      * @throws SQLException
      * 
      */
-    public static void clean() {
+    private static void clean() {
         String trans = getTransStatus();
         String currentTransId = getCurrentTransId();
         Map<String, Connection> cacheMap = connCtx.get().get(currentTransId);
