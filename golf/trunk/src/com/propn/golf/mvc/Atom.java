@@ -62,7 +62,7 @@ public class Atom implements Callable<Object> {
         Class[] argsClass = method.getParameterTypes();
         if (argsClass.length == 0) {
             log.debug("init method call cost time (millis):" + String.valueOf(System.currentTimeMillis() - start));
-            Object rst = Trans.call(new Trans() {
+            Object rst = Trans.transNew(new Trans() {
                 @Override
                 public Object call() throws Exception {
                     return method.invoke(obj, null);
@@ -151,7 +151,7 @@ public class Atom implements Callable<Object> {
         }
         log.debug("init method call cost time (millis):" + String.valueOf(System.currentTimeMillis() - start));
         // 使用独立数据库事务调用服务方法!
-        Object rst = Trans.call(new Trans() {
+        Object rst = Trans.transNew(new Trans() {
             @Override
             public Object call() throws Exception {
                 return method.invoke(obj, args);

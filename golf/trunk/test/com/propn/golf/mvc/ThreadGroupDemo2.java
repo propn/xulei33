@@ -2,6 +2,7 @@ package com.propn.golf.mvc;
 
 import java.util.concurrent.FutureTask;
 
+
 public class ThreadGroupDemo2 {
     public static void main(String[] args) {
         // 建立异常处理者

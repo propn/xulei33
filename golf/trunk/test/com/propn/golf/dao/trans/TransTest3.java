@@ -52,7 +52,7 @@ public class TransTest3 {
             List<Po> ps = (List<Po>) Trans.call(new Trans() {
                 @Override
                 public Object call() throws Exception {
-                    return p.getList();
+                    return p.qryList();
                 }
             });
             for (Po po : ps) {

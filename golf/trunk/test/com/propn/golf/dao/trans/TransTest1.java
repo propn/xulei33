@@ -36,7 +36,7 @@ public class TransTest1 {
                     @Override
                     public Object call() throws Exception {
                         System.out.println("---------------查询数据库数据-------------");
-                        List<Po> list = p.getList();
+                        List<Po> list = p.qryList();
                         for (Po p : list) {
                             System.out.print(p.get("personName") + "  ");
                             System.out.print(p.get("personId") + "  ");
@@ -91,7 +91,7 @@ public class TransTest1 {
                         }
 
                         System.out.println("-------------查询数据库记录---------------");
-                        list = p.getList();
+                        list = p.qryList();
                         for (Po p : list) {
                             System.out.print(p.get("personName") + "  ");
                             System.out.print(p.get("personId") + "  ");
@@ -109,7 +109,7 @@ public class TransTest1 {
             List<Po> pos = (List<Po>) Trans.call(new Trans() {
                 @Override
                 public Object call() throws Exception {
-                    List<Po> list = p.getList();
+                    List<Po> list = p.qryList();
                     return list;
                 }
             });

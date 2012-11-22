@@ -17,11 +17,19 @@ public abstract class Trans implements Callable<Object> {
     private static final Logger log = LoggerFactory.getLogger(Trans.class);
 
     /* 默认,同一个Connection,当前上下文存在事务则使用当前事务,没有则新建事务 */
-    public static int REQUIRED = 0;
+    static int REQUIRED = 0;
     /* 新建事务,使用新数据库连接,独立Commit和rollbcak */
-    public static int NEW = 1;
+    static int NEW = 1;
     /* 嵌套事务, 同一个Connection,由上下文事务一起Commit */
-    public static int NEST = 2;
+    static int NEST = 2;
+
+    public static Object transNest(Trans atom) throws Exception {
+        return call(NEST, atom);
+    }
+
+    public static Object transNew(Trans atom) throws Exception {
+        return call(NEW, atom);
+    }
 
     /**
      * 执行一组原子操作，默认的事务级别为: TRANSACTION_READ_COMMITTED。 事务传播为 PROPAGATION_REQUIRED
@@ -29,7 +37,7 @@ public abstract class Trans implements Callable<Object> {
      * @param atoms 原子操作对象
      * @throws Exception
      */
-    public static Object call(Trans atom) throws Exception {
+    static Object call(Trans atom) throws Exception {
         return call(REQUIRED, atom);
     }
 
@@ -39,7 +47,7 @@ public abstract class Trans implements Callable<Object> {
      * @param atom
      * @throws Exception
      */
-    public static Object call(int propagation, Trans atom) throws Exception {
+    static Object call(int propagation, Trans atom) throws Exception {
         Object rst = null;
         String trans = ConnUtils.getTransStatus();
         if (null == trans || null == ConnUtils.getConnCtx() || null == ConnUtils.getConnMap()) {

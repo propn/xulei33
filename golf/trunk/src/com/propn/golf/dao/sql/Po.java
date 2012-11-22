@@ -76,7 +76,7 @@ public abstract class Po implements Serializable, Cloneable {
     }
 
     public Po getOne() throws Exception {
-        List<Po> pos = getList();
+        List<Po> pos = qryList();
         return null != pos && pos.size() > 0 ? pos.get(0) : null;
     }
 
@@ -86,7 +86,7 @@ public abstract class Po implements Serializable, Cloneable {
      * @return
      * @throws Exception
      */
-    public List<Po> getList() throws Exception {
+    public List<Po> qryList() throws Exception {
         return DbUtils.qryPoList(this);
     }
 

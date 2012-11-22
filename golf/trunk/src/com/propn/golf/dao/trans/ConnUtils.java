@@ -91,16 +91,14 @@ public class ConnUtils {
      * @throws Exception
      */
     public static Connection getConn(String dsCode) throws Exception {
-        log.debug("currentTransStatus[{}] ", transStatus.get());
+
         if (null == getTransStatus()) {
             throw new Exception("当前操作不在数据库事务中,请使用Service.call进行数据库操作！");
         }
-
         int currentPropagation = getCurrentPropagation();
-        log.debug("currentPropagation[{}] ", currentPropagation);
-
         String currentTransId = getCurrentTransId();
-        log.debug("currentTransId[{}] ", currentTransId);
+        log.debug("get Conn in trans[{}] propagation[{}] transId[{}] ", transStatus.get(), currentPropagation,
+                currentTransId);
 
         if (null == dsCode) {
             dsCode = Constants.DEFAULT_DATASOURCE;
@@ -110,11 +108,11 @@ public class ConnUtils {
         Map<String, Map<String, Connection>> connCache = connCtx.get();// {currenttransId,{dsCode,Connection}}
         if (null == connCache)// 事务Cache
         {
-            log.debug("init TransStatus[{}] connCache.", getTransStatus());
+            log.debug("init trans[{}] connCache.", getTransStatus());
             connCache = Collections.synchronizedMap(new HashMap<String, Map<String, Connection>>());
             connCtx.set(connCache);
 
-            log.debug("init currentTransId[{}] connMap", currentTransId);
+            log.debug("init transId[{}] connMap", currentTransId);
             Map<String, Connection> connMap = Collections.synchronizedMap(new HashMap<String, Connection>());
             connCache.put(currentTransId, connMap);
 
@@ -126,7 +124,7 @@ public class ConnUtils {
         } else {
             Map<String, Connection> connMap = connCache.get(currentTransId);
             if (null == connMap) {
-                log.debug("init currentTransId[{}] connMap", currentTransId);
+                log.debug("init transId[{}] connMap", currentTransId);
                 connMap = Collections.synchronizedMap(new HashMap<String, Connection>());
                 connCache.put(currentTransId, connMap);
 

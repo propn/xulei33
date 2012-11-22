@@ -38,7 +38,7 @@ public class PersonTest {
 
         System.out.println("currentThread :" + Thread.currentThread().getId());
 
-        Trans.call(new Trans() {
+        Trans.transNew(new Trans() {
             @Override
             public Object call() throws Exception {
                 t.save();
