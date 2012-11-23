@@ -28,14 +28,14 @@ import com.propn.golf.dao.sql.Po;
 public class Person extends Po {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "person_id")
+    @Column
     @NotNull(message = "may not be null")
     private String personId;
 
-    @Column(name = "person_Name", nullable = false)
+    @Column
     private String personName;
 
-    @Column(name = "age")
+    @Column
     @Min(value = 18, message = "You have to be 18 to drive a car")
     private int age;
 

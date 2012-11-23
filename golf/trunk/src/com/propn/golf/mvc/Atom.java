@@ -5,8 +5,6 @@ import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
 
 import javax.servlet.ServletInputStream;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,8 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import com.propn.golf.dao.trans.Trans;
 import com.propn.golf.tools.BeanFactory;
-import com.propn.golf.tools.StringUtils;
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
+import com.propn.golf.tools.ConvertUtils;
 
 public class Atom implements Callable<Object> {
 
@@ -72,62 +69,59 @@ public class Atom implements Callable<Object> {
         }
         // 动态构造参数
         final Object[] args = new Object[argsClass.length];// 函数入参
+
+        // 按照参数类型进行绑定
         for (int i = 0; i < argsClass.length; i++) {
             Class temp = argsClass[i];
-            if (temp.equals(ServletRequest.class)) {
+            if (temp.equals(HttpServletRequest.class)) {
                 args[i] = ReqCtx.getContext("HttpServletRequest");
                 continue;
             }
-            if (temp.equals(ServletResponse.class)) {
+            if (temp.equals(HttpServletResponse.class)) {
                 args[i] = ReqCtx.getContext("HttpServletResponse");
                 continue;
             }
             if (temp.equals(ServletInputStream.class)) {
-                args[i] = ReqCtx.getContext("ServletInputStream");
+                args[i] = ReqCtx.getContext("InputStream");
                 continue;
             }
             if (temp.equals(Cookie[].class)) {
                 args[i] = ReqCtx.getContext("Cookie[]");
                 continue;
             }
-            // 其他Java对象绑定
         }
 
+        // 绑定基础对象参数PathParam/QueryParam/FormParam/HeaderParam/CookieParam
         Annotation[][] a = method.getParameterAnnotations();
         for (int i = 0; i < a.length; i++) {
-            if (null != args[i]) {// initiative with ParameterType
+            if (null != args[i]) {// 已经绑定
                 continue;
             }
             Annotation[] annotations = a[i];
             if (null == annotations || annotations.length == 0) {
-                throw new Exception(method.getName() + "'s params[" + i + "] init error!no Annotation!");
+                if (argsClass[i].getPackage().equals("java.lang")) {
+                    throw new Exception(method.getName() + "'s params[" + i + "] init error!no Annotation!");
+                }
+                continue;
             }
             Annotation annotation = annotations[0];
             // @PathParam
             if (annotation.annotationType().equals(PathParam.class)) {
                 PathParam p = (PathParam) annotation;
-                args[i] = ReqCtx.getPathParam(p.value()).get(0);
+                args[i] = ConvertUtils.convert(ReqCtx.getPathParam(p.value()).get(0), argsClass[i]);
                 continue;
             }
             // @QueryParam
             if (annotation.annotationType().equals(QueryParam.class)) {
                 QueryParam p = (QueryParam) annotation;
-                if (argsClass[i].equals(List.class)) {
-                    args[i] = ReqCtx.getQueryParam(p.value());
-                } else {
-                    args[i] = StringUtils.list2Stirng(ReqCtx.getQueryParam(p.value()));
-                }
+                args[i] = ConvertUtils.convert(ReqCtx.getQueryParam(p.value()), argsClass[i]);
                 continue;
             }
 
             // @FormParam
             if (annotation.annotationType().equals(FormParam.class)) {
                 FormParam p = (FormParam) annotation;
-                if (argsClass[i].equals(List.class)) {
-                    args[i] = ReqCtx.getQueryParam(p.value());
-                } else {
-                    args[i] = StringUtils.list2Stirng(ReqCtx.getQueryParam(p.value()));
-                }
+                args[i] = ConvertUtils.convert(ReqCtx.getFormParam(p.value()), argsClass[i]);
                 continue;
             }
 
@@ -135,16 +129,15 @@ public class Atom implements Callable<Object> {
             if (annotation.annotationType().equals(HeaderParam.class)) {
                 HeaderParam p = (HeaderParam) annotation;
                 if (null != ReqCtx.getHeaderParam(p.value())) {
-                    args[i] = ReqCtx.getHeaderParam(p.value()).get(0);
+                    args[i] = ConvertUtils.convert(ReqCtx.getHeaderParam(p.value()).get(0), argsClass[i]);
                 }
                 continue;
             }
-
             // @CookieParam
             if (annotation.annotationType().equals(CookieParam.class)) {
                 CookieParam p = (CookieParam) annotation;
                 if (null != ReqCtx.getCookieParam(p.value())) {
-                    args[i] = ReqCtx.getCookieParam(p.value()).get(0);
+                    args[i] = ConvertUtils.convert(ReqCtx.getCookieParam(p.value()).get(0), argsClass[i]);
                 }
                 continue;
             }

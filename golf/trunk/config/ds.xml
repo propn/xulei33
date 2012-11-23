@@ -16,7 +16,7 @@
 		<code>default</code>
 		<jndi/>
 		<driverClass>org.h2.Driver</driverClass>
-		<jdbcUrl>jdbc:h2:./db/db;LOCK_MODE=3;MVCC=TRUE</jdbcUrl>
+		<jdbcUrl>jdbc:h2:E:\java\golf\workspace\golf\db\default;LOCK_MODE=3;MVCC=TRUE</jdbcUrl>
 		<username>sa</username>
 		<password>sa</password>
 		<maxConnectionAgeInSeconds>60</maxConnectionAgeInSeconds>

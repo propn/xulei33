@@ -3,30 +3,59 @@
  */
 package com.propn.golf.mvc;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.MediaType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.propn.golf.tools.StringUtils;
+
 /**
- * @author Thunder.hsu
+ * @author Thunder.Hsu
  * 
  */
 public class ReqCtx {
-
+    static final String charsetName = "UTF-8";
     private static final Logger log = LoggerFactory.getLogger(GolfFilter.class);
 
     private static InheritableThreadLocal<Map<String, Object>> ctx = new InheritableThreadLocal<Map<String, Object>>();
     private static InheritableThreadLocal<Map<String, MultMap<String, Object>>> paramCtx = new InheritableThreadLocal<Map<String, MultMap<String, Object>>>();
+
+    public static void init(HttpServletRequest request, HttpServletResponse response, Resource res) throws IOException {
+        long start = System.currentTimeMillis();
+        Map<String, MultMap<String, Object>> param = paramCtx.get();
+        if (null == param) {
+            param = new HashMap<String, MultMap<String, Object>>();
+            paramCtx.set(param);
+        }
+        // @Context
+        initContext(request, response);
+        // @QueryParam
+        initQueryParam(request.getQueryString());
+        // @HeaderParam
+        initHeaderParam(request);
+        // @CookieParam
+        initCookieParam(request);
+        // @PathParam
+        initPathParam(request.getServletPath(), res.getPath());
+        // @FormParam
+        initFormParam(request);
+        log.debug("init ReqCtx cost time(millis):" + String.valueOf(System.currentTimeMillis() - start));
+    }
 
     // @Context
     private static Map<String, Object> getContext() {
@@ -112,59 +141,84 @@ public class ReqCtx {
         return getCookieParam().get(parmName);
     }
 
-    public static void init(HttpServletRequest request, HttpServletResponse response, Resource res) throws IOException {
-        long start = System.currentTimeMillis();
-        // @Context
+    private static void initContext(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Map<String, Object> context = getContext();
         context.put("HttpServletRequest", request);
         context.put("HttpServletResponse", response);
-        context.put("ServletInputStream", request.getInputStream());
+        ByteArrayInputStream bin = StringUtils.servletInputStream2ByteArrayInputStream(request.getInputStream());
+        context.put("InputStream", bin);
         context.put("Cookie[]", request.getCookies());
+    }
 
-        Map<String, MultMap<String, Object>> param = paramCtx.get();
-        if (null == param) {
-            param = new HashMap<String, MultMap<String, Object>>();
-            paramCtx.set(param);
+    private static void initPathParam(String servletPath, String path) throws UnsupportedEncodingException {
+        if (servletPath.equals(path)) {
+            return;
         }
-        // @QueryParam
-        initQueryParam(request.getQueryString());
-        // @HeaderParam
-        initHeaderParam(request);
-        // @CookieParam
-        initCookieParam(request);
-        // @PathParam
-        initPathParam(request.getServletPath(), res.getPath());
-        // @FormParam
-        initFormParam(request);
-
-        log.debug("init ReqCtx cost time(millis):" + String.valueOf(System.currentTimeMillis() - start));
+        MultMap<String, Object> pathParam = getPathParam();
+        String[] params = path.split("/");
+        String[] paths = servletPath.split("/");
+        for (int i = 0; i < params.length; i++) {
+            String param = params[i];
+            if (param.startsWith("{") && param.endsWith("}")) {
+                param = param.substring(1, param.length() - 1);
+                String v = URLDecoder.decode(paths[i], charsetName);
+                pathParam.put(param, v);
+                log.debug("PathParam [" + param + "=" + v + "]");
+            }
+        }
     }
 
-    // TODO:
-    private static void initFormParam(HttpServletRequest request) {
-    }
-
-    private static void initQueryParam(String queryString) {
+    private static void initQueryParam(String queryString) throws UnsupportedEncodingException {
         if (null == queryString) {
             return;
         }
         MultMap<String, Object> mMap = getQueryParam();
         String[] parms = queryString.split("&");
         for (String parm : parms) {
-            String[] p = parm.split("=");
-            mMap.put(p[0], p[1]);
-            log.debug("QueryParam [" + p[0] + "=" + p[1] + "]");
+            String[] pv = parm.split("=");
+            String p = URLDecoder.decode(pv[0], charsetName);
+            String v = URLDecoder.decode(pv[1], charsetName);
+            mMap.put(p, v);
+            log.debug("QueryParam [" + p + "=" + v + "]");
         }
     }
 
-    private static void initHeaderParam(HttpServletRequest request) {
+    private static void initFormParam(HttpServletRequest request) throws IOException {
+        MultMap<String, Object> mMap = getFormParam();
+        if (null != request.getContentType() && MediaType.APPLICATION_FORM_URLENCODED.equals(request.getContentType())) {
+            ByteArrayInputStream bin = (ByteArrayInputStream) getContext("InputStream");
+            byte[] b = new byte[bin.available()];
+            bin.read(b, 0, bin.available());
+            String entity = new String(b, charsetName);
+            final StringTokenizer tokenizer = new StringTokenizer(entity, "&");
+            String token;
+            while (tokenizer.hasMoreTokens()) {
+                token = tokenizer.nextToken();
+                int idx = token.indexOf('=');
+                if (idx < 0) {
+                    String param = URLDecoder.decode(token, charsetName);
+                    mMap.put(URLDecoder.decode(token, charsetName), null);
+                    log.debug("FormParam [" + param + "=" + null + "]");
+                } else if (idx > 0) {
+                    String param = URLDecoder.decode(token.substring(0, idx), charsetName);
+                    String v = URLDecoder.decode(token.substring(idx + 1), charsetName);
+                    mMap.put(param, v);
+                    log.debug("FormParam [" + param + "=" + v + "]");
+                }
+            }
+        }
+    }
+
+    private static void initHeaderParam(HttpServletRequest request) throws UnsupportedEncodingException {
         MultMap<String, Object> headerParam = getHeaderParam();
-        Enumeration headerNames = request.getHeaderNames();
+        Enumeration<?> headerNames = request.getHeaderNames();
         while (headerNames.hasMoreElements()) {
             String headerName = (String) headerNames.nextElement();
-            Enumeration headers = request.getHeaders(headerName);
+            // headerName = URLDecoder.decode(headerName, charsetName);
+            Enumeration<?> headers = request.getHeaders(headerName);
             while (headers.hasMoreElements()) {
-                Object headerValue = headers.nextElement();
+                String headerValue = (String) headers.nextElement();
+                // headerValue = URLDecoder.decode(headerValue, charsetName);
                 headerParam.put(headerName, headerValue);
                 log.debug("HeaderParam [" + headerName + "=" + headerValue + "]");
             }
@@ -183,20 +237,4 @@ public class ReqCtx {
         }
     }
 
-    private static void initPathParam(String servletPath, String path) {
-        if (servletPath.equals(path)) {
-            return;
-        }
-        MultMap<String, Object> pathParam = getPathParam();
-        String[] params = path.split("/");
-        String[] paths = servletPath.split("/");
-        for (int i = 0; i < params.length; i++) {
-            String param = params[i];
-            if (param.startsWith("{") && param.endsWith("}")) {
-                param = param.substring(1, param.length() - 1);
-                pathParam.put(param, paths[i]);
-                log.debug("PathParam [" + param + "=" + paths[i] + "]");
-            }
-        }
-    }
 }

@@ -17,7 +17,6 @@ import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * 
  * 
@@ -68,8 +67,8 @@ public class GolfFilter implements Filter {
 
     public void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-
         String servletPath = request.getServletPath();
+        
         if (ignorePattern.matcher(servletPath).matches()) {
             chain.doFilter(request, response);
             return;
@@ -106,6 +105,7 @@ public class GolfFilter implements Filter {
         try {
             rst = transMgr.get();
         } catch (Exception e) {
+            // FutureTask
             throw new RuntimeException(e);
         }
         ViewBuilder.build(request, response, resptype, rst);
@@ -146,6 +146,7 @@ public class GolfFilter implements Filter {
                 response.setContentType(MediaType.TEXT_PLAIN);
                 response.setHeader("Support", temp.toString());
                 response.getWriter().append("Unsupported Media Type!").flush();// Support
+                return false;
             }
         }
         return true;

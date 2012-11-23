@@ -13,6 +13,11 @@ import org.slf4j.LoggerFactory;
 
 import com.propn.golf.Constants;
 
+/**
+ * 
+ * @author Thunder.Hsu
+ * 
+ */
 public class ConnUtils {
 
     private static final Logger log = LoggerFactory.getLogger(ConnUtils.class);
@@ -210,7 +215,7 @@ public class ConnUtils {
             }
         }
         log.debug("trans[{}] commit.", trans);
-        clean();
+        cleanCtx();
     }
 
     /**
@@ -300,14 +305,13 @@ public class ConnUtils {
                 }
             }
         }
-        clean();
+        cleanCtx();
     }
 
     /**
-     * @throws SQLException
      * 
      */
-    private static void clean() {
+    private static void cleanCtx() {
         String trans = getTransStatus();
         Map<String, Map<String, Connection>> connCache = connCtx.get();
         if (null == connCache) {
@@ -316,5 +320,4 @@ public class ConnUtils {
         connCache.remove(getCurrentTransId());
         log.debug("remove trans[{}] ", trans);
     }
-
 }

@@ -1,12 +1,17 @@
 package com.propn.golf.mvc;
 
+import java.sql.Connection;
+import java.sql.Statement;
+
 import javax.servlet.ServletInputStream;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.CookieParam;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -15,11 +20,32 @@ import javax.ws.rs.core.MediaType;
 
 import com.propn.golf.dao.Person;
 import com.propn.golf.dao.Student;
+import com.propn.golf.dao.trans.ConnUtils;
 
 @Path("/version")
 @Consumes({ MediaType.TEXT_PLAIN, MediaType.TEXT_HTML })
 @Produces({ MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN, MediaType.TEXT_HTML })
 public class Version {
+
+    @POST
+    @Path("/addPerson")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Person addPerson(@FormParam(value = "personId")
+    String personId, @FormParam(value = "personName")
+    String personName, @FormParam(value = "age")
+    int age, Person person) throws Exception {
+        Connection conn = ConnUtils.getConn();
+        Statement stat = conn.createStatement();
+        stat.execute("  create   table   PERSON(PERSON_ID varchar(10), PERSON_NAME varchar(64),AGE number)");
+        stat.close();
+        // System.out.println(person.toJson());
+        Person p = new Person();
+        p.setAge(age);
+        p.setPersonId(personId);
+        p.setPersonName(personName);
+        p.save();
+        return p;
+    }
 
     @GET
     @Path("/get")
@@ -44,8 +70,8 @@ public class Version {
         st.set("personId", "03023152");
         st.set("personName", "徐雷");
         st.set("age", 18);
-//        return st;
-        throw new Exception("22");
+        return st;
+        // throw new Exception("22");
     }
 
     // http://localhost:8080/golf/version/get2/12?aaa=23&aaa=24

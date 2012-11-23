@@ -1,5 +1,6 @@
 package com.propn.golf.dao.trans;
 
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +27,11 @@ public class DsUtils {
         try {
             ic = new InitialContext();
             // 初始化数据源
-            Document doc = XmlUtils.load(ClassLoader.getSystemResourceAsStream("ds.xml"));
+            InputStream dsIn = ClassLoader.getSystemResourceAsStream("ds.xml");
+            if (null == dsIn) {
+                dsIn = Thread.currentThread().getContextClassLoader().getResourceAsStream("ds.xml");
+            }
+            Document doc = XmlUtils.load(dsIn);
             Map DataSources = (Map) XmlUtils.doc2Map(doc).get("DataSources");
             Object obj = DataSources.get("DataSource");
             if (obj instanceof Map) {

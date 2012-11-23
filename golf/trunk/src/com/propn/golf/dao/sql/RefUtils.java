@@ -6,7 +6,7 @@ import java.util.Map;
 
 import com.propn.golf.dao.Person;
 import com.propn.golf.tools.Cache;
-import com.propn.golf.tools.Convertes;
+import com.propn.golf.tools.ConvertUtils;
 
 /**
  * 
@@ -125,7 +125,7 @@ public class RefUtils {
      * @throws Exception
      */
     private static void setFieldValue(Object obj, Field field, Object value) throws Exception {
-        field.set(obj, Convertes.convert(value, field.getType()));
+        field.set(obj, ConvertUtils.convert(value, field.getType()));
     }
 
     private static void getMethodParams(Method method) {
