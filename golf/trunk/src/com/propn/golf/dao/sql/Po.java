@@ -14,7 +14,7 @@ import java.util.Set;
 
 import javax.xml.bind.JAXBException;
 
-import com.propn.golf.dao.DbUtils;
+import com.propn.golf.dao.PoUtils;
 import com.propn.golf.tools.JsonUtils;
 import com.propn.golf.tools.XmlUtils;
 
@@ -67,7 +67,7 @@ public abstract class Po implements Serializable, Cloneable {
 
     // 数据库操作CRUD
     public void save() throws Exception {
-        DbUtils.intsert(this);
+        PoUtils.intsert(this);
     }
 
     public Po getById(Object id) {
@@ -83,11 +83,13 @@ public abstract class Po implements Serializable, Cloneable {
     /**
      * 模版equel查询
      * 
+     * @param <T>
+     * 
      * @return
      * @throws Exception
      */
     public List<Po> qryList() throws Exception {
-        return DbUtils.qryPoList(this);
+        return PoUtils.qryPoList(this);
     }
 
     /**
@@ -102,11 +104,11 @@ public abstract class Po implements Serializable, Cloneable {
     }
 
     public int update() throws Exception {
-        return DbUtils.update(this);
+        return PoUtils.update(this);
     }
 
     public int delete() throws Exception {
-        return DbUtils.delete(this);
+        return PoUtils.delete(this);
     }
 
 }

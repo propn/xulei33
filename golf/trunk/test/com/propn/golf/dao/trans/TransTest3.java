@@ -20,6 +20,7 @@ public class TransTest3 {
         } catch (Exception e1) {
             e1.printStackTrace();
         }
+        
         System.out.println("------------------删除---------------------------");
         try {
             Trans.transNew(new Trans() {

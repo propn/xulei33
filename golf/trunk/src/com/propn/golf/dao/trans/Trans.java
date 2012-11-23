@@ -16,12 +16,9 @@ public abstract class Trans implements Callable<Object> {
 
     private static final Logger log = LoggerFactory.getLogger(Trans.class);
 
-    /* 默认,同一个Connection,当前上下文存在事务则使用当前事务,没有则新建事务 */
-    static int REQUIRED = 0;
-
-    /* 新建事务,使用新数据库连接,独立Commit和rollbcak */
+    /* 新建事务,独立Commit和rollbcak */
     static int NEW = 1;
-    /* 嵌套事务, 同一个Connection,由上下文事务一起Commit */
+    /* 嵌套事务,同一个Connection,由上下文事务一起Commit */
     static int NEST = 2;
 
     public static Object transNest(Trans atom) throws Exception {
@@ -62,25 +59,11 @@ public abstract class Trans implements Callable<Object> {
                 log.debug("trans[{}] end. ", newTrans);
                 throw e;
             }
+            log.debug("trans[{}] begin commit. ", newTrans);
             ConnUtils.commit();
-            ConnUtils.setTransStatus(trans);
+            log.debug("trans[{}] end commit. ", newTrans);
             log.debug("trans[{}] end! ", newTrans);
-        } else if (propagation == REQUIRED) {// 同父事务在同一个事务中
-            String newTrans = trans + REQUIRED;
-            ConnUtils.setTransStatus(newTrans);
-            log.debug("trans[{}] begin.", newTrans);
-            try {
-                rst = atom.call();
-            } catch (Exception e) {
-                ConnUtils.rollback();
-                ConnUtils.setTransStatus(trans);
-                log.debug("trans[{}] end rollback. ", newTrans);
-                log.debug("trans[{}] end. ", newTrans);
-                throw e;
-            }
-            ConnUtils.commit();
             ConnUtils.setTransStatus(trans);
-            log.debug("trans[{}] end. ", newTrans);
         } else if (propagation == NEST) {// 嵌套事务,同一个Connection
             String newTrans = trans + NEST;
             ConnUtils.setTransStatus(newTrans);

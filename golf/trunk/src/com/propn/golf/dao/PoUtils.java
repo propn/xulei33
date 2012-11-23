@@ -21,7 +21,7 @@ import com.propn.golf.dao.trans.ConnUtils;
  * @author Thunder.Hsu
  * 
  */
-public class DbUtils {
+public class PoUtils {
 
     public static void intsert(Po po) throws Exception {
         String sql = SqlUtils.getInsertSql(po.getClass());

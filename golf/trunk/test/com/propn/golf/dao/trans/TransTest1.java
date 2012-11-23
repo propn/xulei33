@@ -8,121 +8,77 @@ import com.propn.golf.dao.Person;
 import com.propn.golf.dao.sql.Po;
 
 public class TransTest1 {
-    /**
-     * @param args
-     */
-    @Test
-    public void T1() {
-        try {
 
-            final Person p = new Person();
-            p.set("age", 28);
+    @Test
+    public void T2() {
+
+        final Person p = new Person();
+        try {
             p.set("personId", "1");
             p.set("personName", "徐雷");
-            try {
-                System.out.println("---------------1-------------");
-                Trans.transNew(new Trans() {
-                    @Override
-                    public Object call() throws Exception {
-                        // 清空数据库数据
-                        System.out.println("---------------清空数据库数据-------------");
-                        p.delete();
-                        return null;
-                    }
-                });
-                
-                System.out.println("---------------1-------------");
-                Trans.transNew(new Trans() {
-                    @Override
-                    public Object call() throws Exception {
-                        System.out.println("---------------查询数据库数据-------------");
-                        List<Po> list = p.qryList();
-                        for (Po p : list) {
-                            System.out.print(p.get("personName") + "  ");
-                            System.out.print(p.get("personId") + "  ");
-                            System.out.println(p.get("age"));
-                        }
+            p.set("age", 28);
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
 
-                        // 新增
-                        System.out.println("---------------新增数据徐雷-------------");
-                        p.save();
-
-                        System.out.println("---------------开始嵌入事务处理--------------");
-                        try {
-                            System.out.println("---------------12-------------");
-                            Trans.transNest(new Trans() {
-                                @Override
-                                public Object call() throws Exception {
-                                    System.out.println("--------------新增数据俊岭-------------");
-                                    p.set("personName", "俊岭");
-                                    p.save();
-
-                                    System.out.println("---------------开始独立事务处理--------------");
-                                    System.out.println("---------------121-------------");
-                                    Trans.transNew( new Trans() {
-                                        @Override
-                                        public Object call() throws Exception {
-                                            System.out.println("-----------新增数据亮亮----------------");
-                                            p.set("personName", "亮亮");
-                                            p.save();
-
-                                            System.out.println("------------开始嵌套事务处理-----------------");
-                                            System.out.println("---------------1212-------------");
-                                            Trans.transNest(new Trans() {
-                                                @Override
-                                                public Object call() throws Exception {
-                                                    System.out.println("-----------新增数据东升----------------");
-                                                    p.set("personName", "东升");
-                                                    p.save();
-                                                    return null;
-                                                }
-                                            });
-                                            return null;
-                                        }
-                                    });
-                                    System.out.println("---------------独立事务完成提交--------------");
-                                    System.out.println("--------------嵌入事务回滚-----------");
-                                    throw new Exception();
-                                }
-                            });
-
-                        } catch (Exception e) {
-                            throw e;
-                        }
-
-                        System.out.println("-------------查询数据库记录---------------");
-                        list = p.qryList();
-                        for (Po p : list) {
-                            System.out.print(p.get("personName") + "  ");
-                            System.out.print(p.get("personId") + "  ");
-                            System.out.println(p.get("age"));
-                        }
-                        return null;
-                    }
-                });
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            // ............
-            System.out.println("-----------------1---------------------");
-            List<Po> pos = (List<Po>) Trans.transNew(new Trans() {
+        System.out.println("-----------------------1----------------------");
+        try {
+            Trans.transNew(new Trans() {
                 @Override
                 public Object call() throws Exception {
-                    List<Po> list = p.qryList();
-                    return list;
+                    p.delete();
+                    return null;
                 }
-            });
 
-            System.out.println("--------------------------------------");
-            for (Po p1 : pos) {
-                System.out.print(p1.get("personName") + "  ");
-                System.out.print(p1.get("personId") + "  ");
-                System.out.println(p1.get("age"));
-            }
-            System.out.println("--------------------------------------");
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
+        
+        System.out.println("----------------------1-----------------------");
+        try {
+            Trans.transNew(new Trans() {
+                @Override
+                public Object call() throws Exception {
+                    p.save();
+                    return null;
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("---------------------1------------------------");
+        try {
+            Trans.transNew(new Trans() {
+                @Override
+                public Object call() throws Exception {
+                    p.set("personName", "东升");
+                    p.update();
+                    return null;
+                    // throw new Exception();
+                }
+            });
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        System.out.println("----------------------1-----------------------");
+        try {
+            List<Po> ps = (List<Po>) Trans.transNew(new Trans() {
+                @Override
+                public Object call() throws Exception {
+                    return p.qryList();
+                }
+            });
+            for (Po po : ps) {
+                System.out.println(po.get("personName"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
+
 }

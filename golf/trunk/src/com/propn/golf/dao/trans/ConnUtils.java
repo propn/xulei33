@@ -64,27 +64,6 @@ public class ConnUtils {
     }
 
     /**
-     * 获取最后一个回滚点
-     * 
-     * @TODO:test
-     * @return
-     */
-    private static String getLastTrans() {
-        String trans = getTransStatus();
-        if (trans.endsWith(String.valueOf(Trans.NEST))) {
-            return trans;
-        }
-        char[] ids = trans.toCharArray();
-        for (int i = ids.length - 1; i >= 0;) {
-            if (Integer.valueOf("" + ids[i]) != Trans.REQUIRED) {
-                return trans.substring(0, i + 1);
-            }
-            i--;
-        }
-        return "";
-    }
-
-    /**
      * 
      * @param dsCode
      * @return
@@ -198,21 +177,21 @@ public class ConnUtils {
     static void commit() {
         String trans = getTransStatus();
         int currentPropagation = getCurrentPropagation();
-        if (currentPropagation != 1) {// 0,2不提交事务
+        if (currentPropagation != Trans.NEW) {// 嵌入事务不提交
             log.debug("trans[{}] delegate to parent.", trans);
             return;
         }
 
         Map<String, Map<String, Connection>> connCache = connCtx.get();
         if (null == connCache) {
-            log.debug("trans[{}] has no conn.", trans);
+            log.debug("trans[{}] not enlist conn.", trans);
             return;
         }
 
         String currentTransId = getCurrentTransId();
         Map<String, Connection> connMap = connCache.get(currentTransId);
         if (null == connMap) {
-            log.debug("trans[{}] has no conn.", trans);
+            log.debug("trans[{}] not enlist conn.", trans);
             return;
         }
         for (Connection conn : connMap.values()) {
@@ -248,7 +227,7 @@ public class ConnUtils {
             if (null == savepointCache) {
                 rollbackConn();
             } else {
-                String trans = getLastTrans();
+                String trans = getTransStatus();
                 Map<String, Savepoint> savepointMap = savepointCache.get(trans);
                 if (null == savepointMap) {
                     rollbackConn();
@@ -283,10 +262,6 @@ public class ConnUtils {
                     // Clean SavepointMap
                     savepointMap = null;
                     savepointCache.remove(trans);
-                    // set new
-                    String newTransStatus = trans.substring(0, trans.length() - 1);
-                    setTransStatus(newTransStatus);
-                    log.debug("Trans rollback to trans[{}] !", newTransStatus);
                 }
             }
         }
@@ -298,14 +273,14 @@ public class ConnUtils {
 
         Map<String, Map<String, Connection>> connCache = connCtx.get();
         if (null == connCache) {
-            log.debug("trans[{}] has no conn. ", trans);
+            log.debug("trans[{}] not enlist conn. ", trans);
             return;
         }
 
         String transId = getCurrentTransId();
         Map<String, Connection> connMap = connCache.get(transId);
         if (null == connMap) {
-            log.debug("trans[{}] has no conn. ", trans);
+            log.debug("trans[{}] not enlist conn. ", trans);
             return;
         }
 
