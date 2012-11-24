@@ -31,18 +31,18 @@ public class PoUtils {
         SqlMapExe.excuteUpdate(conn, (String) param[0], (Object[]) param[1]);
     }
 
-    public static List<Po> qryPoList(Po obj) throws Exception {
+    public static <T> List<T> qryPoList(Po obj) throws Exception {
         String sql = SqlUtils.getSelectSql(obj.getClass());
         SqlFilter filter = new SelectSqlParser();
         Object[] param = filter.doFilter(sql, obj);
         Connection conn = ConnUtils.getConn();
         List<Map<String, Object>> maps = SqlMapExe.qryMapList(conn, (String) param[0], (Object[]) param[1]);
         // 转换结果
-        List<Po> rst = new ArrayList<Po>();
+        List<T> rst = new ArrayList<T>();
         for (Map<String, Object> map : maps) {
             Po po = obj.getClass().newInstance();
             po.set(map);
-            rst.add(po);
+            rst.add((T) po);
         }
         return rst;
     }

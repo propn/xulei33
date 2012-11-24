@@ -1,15 +1,25 @@
-package com.propn.golf.tools;
+package com.propn.golf.ioc;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
-public class BeanFactory {
+import javax.inject.Inject;
 
-    private static final Map<Class<?>, Object> INSTANCE_MAP = Collections
-            .synchronizedMap(new HashMap<Class<?>, Object>());
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.propn.golf.dao.Person;
+import com.propn.golf.tools.RefUtils;
+
+class BeanFactory {
+    private static final Logger log = LoggerFactory.getLogger(BeanFactory.class);
+    private static final Map<Class<?>, Object> instMap = Collections.synchronizedMap(new HashMap<Class<?>, Object>());
     private static final Object[] EMPTY_ARGS = new Object[0];
 
     /**
@@ -47,7 +57,7 @@ public class BeanFactory {
     public static <T> T getInstance(Class<? extends T> clazz, Object... args) throws SecurityException,
             IllegalArgumentException, NoSuchMethodException, InstantiationException, IllegalAccessException,
             InvocationTargetException {
-        Object object = INSTANCE_MAP.get(clazz);
+        Object object = instMap.get(clazz);
         if (object == null) {
             Class<?>[] parameterTypes = new Class<?>[args.length];
             for (int i = 0; i < args.length; i++) {
@@ -76,7 +86,7 @@ public class BeanFactory {
     public static <T> T getInstance(Class<? extends T> clazz, Class<?>[] parameterTypes, Object[] args)
             throws SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException,
             IllegalAccessException, InvocationTargetException {
-        Object object = INSTANCE_MAP.get(clazz);
+        Object object = instMap.get(clazz);
         if (object == null) { // 检查实例,如是不存在就进行同步代码区
             synchronized (clazz) { // 对其进行锁,防止两个线程同时进入同步代码区
                 // 双重检查,非常重要,如果两个同时访问的线程,当第一线程访问完同步代码区后,生成一个实例;当第二个已进入getInstance方法等待的线程进入同步代码区时,也会产生一个新的实例
@@ -86,14 +96,14 @@ public class BeanFactory {
                             Constructor<?> constructor = clazz.getDeclaredConstructor(parameterTypes);
                             constructor.setAccessible(true);
                             T instance = clazz.cast(constructor.newInstance(args));
-                            INSTANCE_MAP.put(clazz, instance);
+                            instMap.put(clazz, instance);
                             return instance;
                         } else {
                             throw new IllegalArgumentException("参数个数不匹配");
                         }
                     } else if (parameterTypes == null && args == null) {
                         T instance = clazz.newInstance();
-                        INSTANCE_MAP.put(clazz, instance);
+                        instMap.put(clazz, instance);
                         return instance;
                     } else {
                         throw new IllegalArgumentException("两个参数数组必须同时为null或同时不为null");
@@ -104,14 +114,15 @@ public class BeanFactory {
         return null;
     }
 
-}
-
-class Singleton {
-
     public static void main(String[] args) throws RuntimeException, IllegalArgumentException, NoSuchMethodException,
             InstantiationException, IllegalAccessException, InvocationTargetException {
-        Singleton obj1 = BeanFactory.getInstance(Singleton.class);
-        Singleton obj2 = BeanFactory.getInstance(Singleton.class);
+        long s = System.currentTimeMillis();
+        Person obj1 = BeanFactory.getInstance(Person.class);
+        long b = System.currentTimeMillis();
+        System.out.println(" " + String.valueOf(b - s));
+        Person obj2 = BeanFactory.getInstance(Person.class);
+        long c = System.currentTimeMillis();
+        System.out.println(" " + String.valueOf(c - b));
         System.out.println(obj1 == obj2);
     }
 

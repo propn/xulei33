@@ -21,9 +21,9 @@ import javax.ws.rs.Produces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.propn.golf.dao.sql.RefUtils;
 import com.propn.golf.tools.Cache;
 import com.propn.golf.tools.ClassScaner;
+import com.propn.golf.tools.RefUtils;
 
 /**
  * @author Thunder.Hsu

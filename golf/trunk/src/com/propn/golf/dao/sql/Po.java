@@ -16,6 +16,7 @@ import javax.xml.bind.JAXBException;
 
 import com.propn.golf.dao.PoUtils;
 import com.propn.golf.tools.JsonUtils;
+import com.propn.golf.tools.RefUtils;
 import com.propn.golf.tools.XmlUtils;
 
 /**
@@ -70,13 +71,13 @@ public abstract class Po implements Serializable, Cloneable {
         PoUtils.intsert(this);
     }
 
-    public Po getById(Object id) {
+    public <T> T getById(Object id) {
         // 校验主键
         return null;
     }
 
-    public Po getOne() throws Exception {
-        List<Po> pos = qryList();
+    public <T> T getOne() throws Exception {
+        List<T> pos = qryList();
         return null != pos && pos.size() > 0 ? pos.get(0) : null;
     }
 
@@ -85,21 +86,25 @@ public abstract class Po implements Serializable, Cloneable {
      * 
      * @param <T>
      * 
+     * @param <T>
+     * 
      * @return
      * @throws Exception
      */
-    public List<Po> qryList() throws Exception {
+    public <T> List<T> qryList() throws Exception {
         return PoUtils.qryPoList(this);
     }
 
     /**
      * 动态查询
      * 
+     * @param <T>
+     * 
      * @param qryCode 配置Sql编码
      * @param param 模版入参
      * @return
      */
-    List<Po> query(String qryCode, Object param) {
+    public <T> List<T> query(String qryCode, Object param) {
         return null;
     }
 

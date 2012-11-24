@@ -1,7 +1,6 @@
 package com.propn.golf.mvc;
 
-import java.sql.Connection;
-import java.sql.Statement;
+import java.util.List;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.ServletRequest;
@@ -20,7 +19,6 @@ import javax.ws.rs.core.MediaType;
 
 import com.propn.golf.dao.Person;
 import com.propn.golf.dao.Student;
-import com.propn.golf.dao.trans.ConnUtils;
 
 @Path("/version")
 @Consumes({ MediaType.TEXT_PLAIN, MediaType.TEXT_HTML })
@@ -34,10 +32,10 @@ public class Version {
     String personId, @FormParam(value = "personName")
     String personName, @FormParam(value = "age")
     int age, Person person) throws Exception {
-        Connection conn = ConnUtils.getConn();
-        Statement stat = conn.createStatement();
-        stat.execute("  create   table   PERSON(PERSON_ID varchar(10), PERSON_NAME varchar(64),AGE number)");
-        stat.close();
+//        Connection conn = ConnUtils.getConn();
+//        Statement stat = conn.createStatement();
+//        stat.execute("  create   table   PERSON(PERSON_ID varchar(10), PERSON_NAME varchar(64),AGE number)");
+//        stat.close();
         // System.out.println(person.toJson());
         Person p = new Person();
         p.setAge(age);
@@ -45,6 +43,16 @@ public class Version {
         p.setPersonName(personName);
         p.save();
         return p;
+    }
+
+    @GET
+    @Path("/getPerson")
+    public List<Person> getPerson() throws Exception {
+        // System.out.println(person.toJson());
+        Person p = new Person();
+        p.setPersonId("1");
+        List<Person> ps = p.qryList();
+        return ps;
     }
 
     @GET

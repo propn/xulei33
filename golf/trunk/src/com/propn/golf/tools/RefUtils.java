@@ -1,12 +1,10 @@
-package com.propn.golf.dao.sql;
+package com.propn.golf.tools;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
 
 import com.propn.golf.dao.Person;
-import com.propn.golf.tools.Cache;
-import com.propn.golf.tools.ConvertUtils;
 
 /**
  * 

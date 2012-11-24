@@ -11,6 +11,7 @@ import javax.persistence.Table;
 
 import com.propn.golf.dao.Student;
 import com.propn.golf.tools.Cache;
+import com.propn.golf.tools.RefUtils;
 import com.propn.golf.tools.StringUtils;
 
 /**

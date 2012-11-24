@@ -18,7 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.propn.golf.dao.trans.Trans;
-import com.propn.golf.tools.BeanFactory;
+import com.propn.golf.ioc.BeanUtils;
 import com.propn.golf.tools.ConvertUtils;
 
 public class Atom implements Callable<Object> {
@@ -54,7 +54,7 @@ public class Atom implements Callable<Object> {
     private Object invoke(final Resource res) throws Exception {
         long start = System.currentTimeMillis();
         Class<?> clz = res.getClz();
-        final Object obj = BeanFactory.getInstance(clz);
+        final Object obj = BeanUtils.getInstance(clz);
         final Method method = res.getMethod();
         Class[] argsClass = method.getParameterTypes();
         if (argsClass.length == 0) {

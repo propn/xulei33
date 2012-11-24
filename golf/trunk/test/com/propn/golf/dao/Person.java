@@ -3,6 +3,7 @@
  */
 package com.propn.golf.dao;
 
+import javax.inject.Inject;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
