@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.propn.golf.mvc;
+package com.propn.golf.tools;
 
 /**
  * @author Administrator
