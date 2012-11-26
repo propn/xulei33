@@ -89,6 +89,11 @@ public class Atom implements Callable<Object> {
                 args[i] = ReqCtx.getContext("Cookie[]");
                 continue;
             }
+
+            if (temp.equals(FileInfo[].class)) {
+                args[i] = ReqCtx.getContext("FileInfo[]");
+                continue;
+            }
         }
 
         // 绑定基础对象参数PathParam/QueryParam/FormParam/HeaderParam/CookieParam

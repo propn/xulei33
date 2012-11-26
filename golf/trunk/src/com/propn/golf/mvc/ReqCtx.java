@@ -5,8 +5,10 @@ package com.propn.golf.mvc;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -22,6 +24,10 @@ import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.oreilly.servlet.multipart.FilePart;
+import com.oreilly.servlet.multipart.MultipartParser;
+import com.oreilly.servlet.multipart.ParamPart;
+import com.oreilly.servlet.multipart.Part;
 import com.propn.golf.tools.MultMap;
 import com.propn.golf.tools.StringUtils;
 
@@ -55,6 +61,8 @@ public class ReqCtx {
         initPathParam(request.getServletPath(), res.getPath());
         // @FormParam
         initFormParam(request);
+        // @Multipart/form-data
+        initMultipart(request, response);
         log.debug("init ReqCtx cost time(millis):" + String.valueOf(System.currentTimeMillis() - start));
     }
 
@@ -146,8 +154,13 @@ public class ReqCtx {
         Map<String, Object> context = getContext();
         context.put("HttpServletRequest", request);
         context.put("HttpServletResponse", response);
-        ByteArrayInputStream bin = StringUtils.servletInputStream2ByteArrayInputStream(request.getInputStream());
-        context.put("InputStream", bin);
+        if (request.getContentType().contains(MediaType.MULTIPART_FORM_DATA)) {
+            context.put("InputStream", request.getInputStream());
+        } else {
+            // 非文件上传,则转换为ByteArrayInputStream
+            ByteArrayInputStream bin = StringUtils.servletInputStream2ByteArrayInputStream(request.getInputStream());
+            context.put("InputStream", bin);
+        }
         context.put("Cookie[]", request.getCookies());
     }
 
@@ -238,4 +251,49 @@ public class ReqCtx {
         }
     }
 
+    private static void initMultipart(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        if (request.getContentType().contains(MediaType.MULTIPART_FORM_DATA)) {
+
+            if (request.getContentLength() > 10487600) {
+                // 413 Request Entity Too Large
+                response.setCharacterEncoding("UTF-8");
+                response.setStatus(413);
+                PrintWriter out = response.getWriter();
+                out.print("Request Entity Too Large,Max Upload 10M!");
+                out.flush();
+                out.close();
+                throw new RuntimeException("Request Entity Too Large,Max Upload 10M!");
+            }
+
+            MultipartParser mp = new MultipartParser(request, 10487600);// 1024 * 1024 * 10
+            mp.setEncoding("utf-8");
+            Part part;
+            List<FileInfo> fileParts = new ArrayList<FileInfo>();
+            while ((part = mp.readNextPart()) != null) {
+                String name = part.getName();
+                if (part.isParam()) {
+                    ParamPart pp = (ParamPart) part;
+                    String value = pp.getStringValue();
+                    getFormParam().put(name, value);
+                    log.debug("FormParam [" + name + "=" + value + "]");
+                } else if (part.isFile()) {
+                    FilePart fp = (FilePart) part;
+                    if (null != fp.getFileName()) {
+                        fileParts.add(fp);
+                    }
+
+                } else {
+                    System.out.println("File name:" + name);
+                }
+            }
+
+            FileInfo[] files = new FileInfo[fileParts.size()];
+            int i = 0;
+            for (FileInfo fileInfo : fileParts) {
+                files[i] = fileInfo;
+                i++;
+            }
+            getContext().put("FileInfo[]", files);
+        }
+    }
 }

@@ -84,7 +84,7 @@ public class ViewBuilder {
                 // dispatcher.include(request, response);
                 dispatcher.forward(request, response);
             }
-            
+
             if (v.getKind().equals(View.freeMarker)) {
                 Map<String, Object> model = v.getModel();
                 for (Entry<String, Object> entry : model.entrySet()) {

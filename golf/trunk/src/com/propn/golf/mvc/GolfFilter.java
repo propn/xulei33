@@ -134,6 +134,16 @@ public class GolfFilter extends Golf implements Filter {
             response.getWriter().append("Not Found").flush();
             return false;
         }
+        String encoding = request.getCharacterEncoding();
+        if (null != encoding && !encoding.equals("UTF-8")) {
+            // 405 Method Not Allowed
+            response.setStatus(400);
+            response.setContentType(MediaType.TEXT_PLAIN);
+            response.setHeader("Allow", "UTF-8");
+            response.getWriter().append("CharacterEncoding Not Allowed!").flush();// Allow
+            response.getWriter().close();
+            return false;
+        }
 
         String acceptHttpMethods = res.getHttpMethod();
         if (!acceptHttpMethods.contains(request.getMethod())) {
@@ -153,6 +163,7 @@ public class GolfFilter extends Golf implements Filter {
             for (String consume : consumes) {
                 temp.append(consume).append(",");
             }
+            contentType = contentType.split(";")[0];
             if (!temp.toString().contains(contentType)) {
                 // 415 Unsupported Media Type
                 response.setStatus(415);

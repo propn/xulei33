@@ -1,11 +1,7 @@
 package com.propn.golf.mvc;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.security.Principal;
 import java.util.List;
 
 import javax.servlet.ServletInputStream;
@@ -23,10 +19,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import com.oreilly.servlet.multipart.FilePart;
-import com.oreilly.servlet.multipart.MultipartParser;
-import com.oreilly.servlet.multipart.ParamPart;
-import com.oreilly.servlet.multipart.Part;
 import com.propn.golf.dao.Person;
 import com.propn.golf.dao.Student;
 
@@ -133,35 +125,12 @@ public class Version {
     @Path("/upload")
     @Consumes({ MediaType.MULTIPART_FORM_DATA })
     @Produces({ MediaType.APPLICATION_JSON })
-    public View uploadFile(HttpServletRequest request) throws IOException {
-        MultipartParser mp = new MultipartParser(request, 1024 * 1024 * 10);
-        mp.setEncoding("utf-8");
-        Part part;
-        while ((part = mp.readNextPart()) != null) {
-            String name = part.getName();
-            if (part.isParam()) {
-                ParamPart pp = (ParamPart) part;
-                String value = pp.getStringValue();
-                System.out.println(name + "=" + value);
-            } else if (part.isFile()) {
-                FilePart fp = (FilePart) part;
-                String filename = fp.getFileName();
-                String fileType = fp.getContentType();
-                String filePath = fp.getFilePath();
-                InputStream is = fp.getInputStream();
-                FileOutputStream fos = new FileOutputStream(new File("e:/" + filename));
-                BufferedOutputStream bos = new BufferedOutputStream(fos);
-                byte[] bt = new byte[2048];
-                int k;
-                while ((k = is.read(bt)) > 0) {
-                    bos.write(bt, 0, k);
-                }
-                System.out.println("文件名称:" + filename);
-                System.out.println("<br/>文件类型" + fileType);
-                System.out.println("<br/>文件路径:" + filePath);
-            } else {
-                System.out.println("File name:" + name);
-            }
+    public View uploadFile(FileInfo[] files, @FormParam(value = "text")
+    String text) throws IOException {
+        System.out.println(text);
+        for (FileInfo fileInfo : files) {
+            System.out.println(fileInfo.getFileName());
+            fileInfo.WriteTO("C:\\" + fileInfo.getFileName());
         }
         return new View(View.jsp, "/index.jsp", null);
     }
