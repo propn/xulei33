@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -27,7 +28,6 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.dom4j.Attribute;
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
@@ -39,6 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
+import com.propn.golf.mvc.Golf;
 import com.propn.golf.mvc.ResUtils;
 
 /**
@@ -59,15 +60,20 @@ public class XmlUtils {
     private static Marshaller marshaller = null;
     private static Unmarshaller unmarshaller = null;
 
+    synchronized private static void registJaxb() throws JAXBException, IOException, ClassNotFoundException {
+        long start = System.currentTimeMillis();
+        context = JAXBContext.newInstance(loadJaxbClass(Golf.getPkgs()));
+        marshaller = context.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_ENCODING, ENCODING);
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        marshaller.setProperty(Marshaller.JAXB_FRAGMENT, false);
+        unmarshaller = context.createUnmarshaller();
+        log.debug("init JAXBContext cost time(millis):" + String.valueOf(System.currentTimeMillis() - start));
+    }
+
     public static String toXml(Object obj) throws JAXBException, IOException, ClassNotFoundException {
         if (null == context) {
-            long start = System.currentTimeMillis();
-            context = JAXBContext.newInstance(loadJaxbClass("com.propn;com.golf".split(";")));
-            marshaller = context.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_ENCODING, ENCODING);
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.setProperty(Marshaller.JAXB_FRAGMENT, false);
-            log.debug("init JAXBContext cost time(millis):" + String.valueOf(System.currentTimeMillis() - start));
+            registJaxb();
         }
         StringWriter sw = new StringWriter();
         marshaller.marshal(obj, sw);
@@ -76,8 +82,7 @@ public class XmlUtils {
 
     public static <T> T fromXml(Class<?> stream, String xml) throws JAXBException, IOException, ClassNotFoundException {
         if (null == context) {
-            context = JAXBContext.newInstance(loadJaxbClass("com".split(";")));
-            unmarshaller = context.createUnmarshaller();
+            registJaxb();
         }
         JAXBElement<T> element = (JAXBElement<T>) unmarshaller.unmarshal(new ByteArrayInputStream(xml.getBytes()));
         return element.getValue();
@@ -316,21 +321,30 @@ public class XmlUtils {
     }
 
     public static void main(String[] args) throws FileNotFoundException, SAXException, Exception {
-        String xmlFileName = "D:\\IBM\\wmbt70\\workspace\\MQTestJava\\com\\ztesoft\\csb\\common\\note_gb2312.xml";
+
+        URL url = Thread.currentThread().getContextClassLoader().getResource("");
+        String path = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+        System.out.println(path);
+
+        String xmlFileName = "/E:/java/golf/workspace/golf/WebRoot/WEB-INF/classes/golf.properties";
+        File f = new File(xmlFileName);
+        if (f.exists()) {
+            System.out.println(f.getAbsolutePath());
+        }
         // 获取要校验xml文档实例
         SAXReader xmlReader = new SAXReader();
-        try {
-            XmlUtils v = new XmlUtils();
-            String url = v.getClass().getResource("note.xsd").toString();
-            Document doc = xmlReader.read(new File(xmlFileName));
-            XmlUtils.validateXMLByXSD(doc, url);
-            String xml = XmlUtils.doc2String(doc);
-            System.out.println(xml);
-            Document doc2 = XmlUtils.parse(xml);
-            System.out.println(XmlUtils.doc2String(doc2));
-        } catch (DocumentException e) {
-            // TODO 自动生成 catch 块
-            e.printStackTrace();
-        }
+        // try {
+        // XmlUtils v = new XmlUtils();
+        // String url = v.getClass().getResource("note.xsd").toString();
+        // Document doc = xmlReader.read(new File(xmlFileName));
+        // XmlUtils.validateXMLByXSD(doc, url);
+        // String xml = XmlUtils.doc2String(doc);
+        // System.out.println(xml);
+        // Document doc2 = XmlUtils.parse(xml);
+        // System.out.println(XmlUtils.doc2String(doc2));
+        // } catch (DocumentException e) {
+        // // TODO 自动生成 catch 块
+        // e.printStackTrace();
+        // }
     }
 }

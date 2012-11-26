@@ -3,9 +3,15 @@
  */
 package com.propn.golf.mvc;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -25,16 +31,12 @@ import com.propn.golf.tools.XmlUtils;
  */
 public class ViewBuilder {
 
-    public static void build(HttpServletRequest request, HttpServletResponse response, String viewType, Object rst)
+    public static void build(HttpServletRequest request, HttpServletResponse response, String mediaType, Object rst)
             throws IOException, ServletException {
-        // download view
-        String contentType = response.getContentType();
-        if (null != contentType && contentType.equalsIgnoreCase("application/x-msdownload")) {
-            return;
-        }
         response.setCharacterEncoding("UTF-8");
         // error view
         if (rst instanceof Throwable) {
+            response.setContentType(MediaType.TEXT_PLAIN);
             Throwable e = (Throwable) rst;
             PrintWriter out = response.getWriter();
             response.setStatus(500);
@@ -47,15 +49,57 @@ public class ViewBuilder {
             out.close();
             return;
         }
-        // jsp view
-        if (rst instanceof String && ((String) rst).endsWith(".jsp")) {
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/index.jsp");
-            dispatcher.include(request, response);
-            // out.close();
+
+        // download view
+        if (rst instanceof File) {
+            File file = (File) rst;
+            response.setContentType("application/x-msdownload");
+            String filename = java.net.URLEncoder.encode(file.getName(), "UTF-8");
+            response.setContentLength((int) file.length());
+            response.setHeader("Content-Disposition", "attachment;filename=" + filename);
+            FileInputStream fis = new FileInputStream(file);
+            BufferedInputStream buff = new BufferedInputStream(fis);
+            byte[] b = new byte[1024];
+            long i = 0;
+            OutputStream outs = response.getOutputStream();
+            while (i < file.length()) {
+                int j = buff.read(b, 0, 1024);
+                i += j;
+                outs.write(b, 0, j);
+            }
+            outs.flush();
             return;
         }
+
+        // code view
+        if (rst instanceof View) {
+            View v = (View) rst;
+            if (v.getKind().equals(View.jsp)) {
+                Map<String, Object> model = v.getModel();
+                for (Entry<String, Object> entry : model.entrySet()) {
+                    request.setAttribute(entry.getKey(), entry.getValue());
+                }
+                RequestDispatcher dispatcher = request.getRequestDispatcher(v.getPath());
+                response.setContentType(MediaType.TEXT_HTML);
+                // dispatcher.include(request, response);
+                dispatcher.forward(request, response);
+            }
+            
+            if (v.getKind().equals(View.freeMarker)) {
+                Map<String, Object> model = v.getModel();
+                for (Entry<String, Object> entry : model.entrySet()) {
+                    request.setAttribute(entry.getKey(), entry.getValue());
+                }
+                RequestDispatcher dispatcher = request.getRequestDispatcher(v.getPath());
+                response.setContentType(MediaType.TEXT_HTML);
+                // dispatcher.include(request, response);
+                dispatcher.forward(request, response);
+            }
+            return;
+        }
+
         // application/json
-        if (viewType.equals(MediaType.APPLICATION_JSON)) {
+        if (mediaType.equals(MediaType.APPLICATION_JSON)) {
             response.setContentType(MediaType.APPLICATION_JSON);
             PrintWriter out = response.getWriter();
             out.append(JsonUtils.toJson(rst));
@@ -64,7 +108,7 @@ public class ViewBuilder {
             return;
         }
         // application/xml
-        if (viewType.equals(MediaType.APPLICATION_XML)) {
+        if (mediaType.equals(MediaType.APPLICATION_XML)) {
             response.setContentType(MediaType.APPLICATION_XML);
             PrintWriter out = response.getWriter();
             try {
@@ -78,5 +122,6 @@ public class ViewBuilder {
             out.close();
             return;
         }
+
     }
 }

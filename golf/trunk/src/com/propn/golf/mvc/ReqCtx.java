@@ -31,7 +31,7 @@ import com.propn.golf.tools.StringUtils;
  */
 public class ReqCtx {
     static final String charsetName = "UTF-8";
-    private static final Logger log = LoggerFactory.getLogger(GolfFilter.class);
+    private static final Logger log = LoggerFactory.getLogger(Golf.class);
 
     private static InheritableThreadLocal<Map<String, Object>> ctx = new InheritableThreadLocal<Map<String, Object>>();
     private static InheritableThreadLocal<Map<String, MultMap<String, Object>>> paramCtx = new InheritableThreadLocal<Map<String, MultMap<String, Object>>>();

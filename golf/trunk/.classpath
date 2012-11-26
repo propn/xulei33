@@ -17,5 +17,6 @@
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/slf4j-log4j12-1.7.2.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/validation-api-1.0.0.GA.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/junit-4.11.jar"/>
+	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/freemarker.jar" sourcepath="E:/java/freeMarker/freemarker-2.3.19/src"/>
 	<classpathentry kind="output" path="WebRoot/WEB-INF/classes"/>
 </classpath>

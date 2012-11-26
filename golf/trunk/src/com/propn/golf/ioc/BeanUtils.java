@@ -19,6 +19,7 @@ import javax.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.propn.golf.mvc.Golf;
 import com.propn.golf.tools.ClassScaner;
 import com.propn.golf.tools.RefUtils;
 
@@ -30,7 +31,7 @@ public class BeanUtils {
 
     private static final Logger log = LoggerFactory.getLogger(BeanUtils.class);
 
-    private static final Map<String, Class<?>> beanMap = Collections.synchronizedMap(new HashMap<String, Class<?>>());
+    private static Map<String, Class<?>> beanMap = null;
     private static final Map<Class<?>, Object> instMap = Collections.synchronizedMap(new HashMap<Class<?>, Object>());
 
     public static <T> T getInstance(Class<? extends T> clazz) throws Exception {
@@ -42,7 +43,11 @@ public class BeanUtils {
 
     synchronized public static void registBean(String... packages) throws IOException, ClassNotFoundException,
             Exception {
-        beanMap.clear();
+        if (null == beanMap) {
+            beanMap = Collections.synchronizedMap(new HashMap<String, Class<?>>());
+        } else {
+            beanMap.clear();
+        }
         List<String> classFilters = new ArrayList<String>();
         ClassScaner handler = new ClassScaner(true, true, classFilters);
         for (String pkg : packages) {
@@ -83,6 +88,9 @@ public class BeanUtils {
     }
 
     private static <T> Class<?> getBean(String beanName, Class<? extends T> clazz) throws Exception {
+        if (null == beanMap) {
+            registBean(Golf.getPkgs());
+        }
         Class<?> clz = beanMap.get(beanName);
         if (null == clz) {
             return null;

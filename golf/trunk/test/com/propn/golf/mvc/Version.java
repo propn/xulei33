@@ -1,5 +1,6 @@
 package com.propn.golf.mvc;
 
+import java.io.File;
 import java.util.List;
 
 import javax.servlet.ServletInputStream;
@@ -32,10 +33,10 @@ public class Version {
     String personId, @FormParam(value = "personName")
     String personName, @FormParam(value = "age")
     int age, Person person) throws Exception {
-//        Connection conn = ConnUtils.getConn();
-//        Statement stat = conn.createStatement();
-//        stat.execute("  create   table   PERSON(PERSON_ID varchar(10), PERSON_NAME varchar(64),AGE number)");
-//        stat.close();
+        // Connection conn = ConnUtils.getConn();
+        // Statement stat = conn.createStatement();
+        // stat.execute("  create   table   PERSON(PERSON_ID varchar(10), PERSON_NAME varchar(64),AGE number)");
+        // stat.close();
         // System.out.println(person.toJson());
         Person p = new Person();
         p.setAge(age);
@@ -95,5 +96,25 @@ public class Version {
          * System.out.println(version); System.out.println(p); System.out.println(t); System.out.println(name);
          */
         return version;
+    }
+
+    @GET
+    @Path("/getFile")
+    @Produces({ MediaType.APPLICATION_OCTET_STREAM })
+    public File getFile() throws Exception {
+        File f = new File("E:/DOC/职称评定/《员工职称晋升申请表》-徐雷.xls");
+        if (f.exists()) {
+            return f;
+        } else {
+            throw new Exception("文件不存在!");
+        }
+    }
+
+    @GET
+    @Path("/toLogin")
+    @Produces({ MediaType.TEXT_HTML })
+    public View toLogin() throws Exception {
+        View view = new View(View.jsp, "/login/login.jsp", null);
+        return view;
     }
 }

@@ -10,7 +10,7 @@ import java.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.propn.golf.mvc.GolfFilter;
+import com.propn.golf.mvc.Golf;
 
 /**
  * @author Thunder.Hsu
@@ -18,7 +18,7 @@ import com.propn.golf.mvc.GolfFilter;
  */
 public class ConvertUtils {
 
-    private static final Logger log = LoggerFactory.getLogger(GolfFilter.class);
+    private static final Logger log = LoggerFactory.getLogger(Golf.class);
 
     public static Object convert(Object obj, Class dist) throws Exception {
         if (null == obj) {
@@ -38,13 +38,28 @@ public class ConvertUtils {
         if (obj instanceof Vector) {
             return convert(dist, (Vector) obj);
         }
+        if (obj.getClass() == Integer.class) {
+            return convert(dist, (Integer) obj);
+        }
         throw new Exception(obj.getClass() + " 转 " + dist + "未实现!");
+    }
+
+    // Integer
+    private static Object convert(Class distClass, Integer obj) throws Exception {
+
+        if (distClass.equals(int.class)) {
+            return obj.intValue();
+        }
+        if (distClass == String.class) {
+            return String.valueOf(obj);
+        }
+        throw new Exception(obj.getClass() + " 转 " + distClass + "未实现!");
     }
 
     // BigDecimal
     private static Object convert(Class distClass, BigDecimal obj) throws Exception {
-        if (obj.getClass().equals(BigDecimal.class) && distClass.equals(int.class)) {
-            return ((BigDecimal) obj).intValue();
+        if (distClass.equals(int.class)) {
+            return obj.intValue();
         }
         if (distClass == String.class) {
             return String.valueOf(obj);
