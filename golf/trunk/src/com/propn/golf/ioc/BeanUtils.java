@@ -19,8 +19,8 @@ import javax.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.propn.golf.mvc.Golf;
-import com.propn.golf.tools.ClassScaner;
+import com.propn.golf.mvc.GolfFilter;
+import com.propn.golf.tools.ClassUtils;
 import com.propn.golf.tools.RefUtils;
 
 /**
@@ -49,7 +49,7 @@ public class BeanUtils {
             beanMap.clear();
         }
         List<String> classFilters = new ArrayList<String>();
-        ClassScaner handler = new ClassScaner(true, true, classFilters);
+        ClassUtils handler = new ClassUtils(true, true, classFilters);
         for (String pkg : packages) {
             Set<Class<?>> clazzs = handler.getPackageAllClasses(pkg, true);
             registBean(clazzs);
@@ -58,9 +58,7 @@ public class BeanUtils {
 
     public static void registBean(Set<Class<?>> clazzs) throws Exception {
         for (Class clazz : clazzs) {
-            if (clazz.isAnnotationPresent(Named.class)) {
-                registBean(clazz);
-            }
+            registBean(clazz);
         }
     }
 
@@ -89,7 +87,7 @@ public class BeanUtils {
 
     private static <T> Class<?> getBean(String beanName, Class<? extends T> clazz) throws Exception {
         if (null == beanMap) {
-            registBean(Golf.getPkgs());
+            registBean(GolfFilter.getPkgs());
         }
         Class<?> clz = beanMap.get(beanName);
         if (null == clz) {
@@ -115,7 +113,13 @@ public class BeanUtils {
         }
     }
 
-    private static <T> void registBean(Class<? extends T> clz) throws Exception {
+    public static <T> void registBean(Class<? extends T> clz) throws Exception {
+        if (null == beanMap) {
+            beanMap = Collections.synchronizedMap(new HashMap<String, Class<?>>());
+        }
+        if (!clz.isAnnotationPresent(Named.class)) {
+            return;
+        }
         Named name = clz.getAnnotation(Named.class);
         String beanName = name.value();
         if (null == beanName || "".equals(beanName)) {

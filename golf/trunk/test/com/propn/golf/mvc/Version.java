@@ -1,11 +1,16 @@
 package com.propn.golf.mvc;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.Principal;
 import java.util.List;
 
 import javax.servlet.ServletInputStream;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.CookieParam;
 import javax.ws.rs.FormParam;
@@ -18,6 +23,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import com.oreilly.servlet.multipart.FilePart;
+import com.oreilly.servlet.multipart.MultipartParser;
+import com.oreilly.servlet.multipart.ParamPart;
+import com.oreilly.servlet.multipart.Part;
 import com.propn.golf.dao.Person;
 import com.propn.golf.dao.Student;
 
@@ -80,14 +89,13 @@ public class Version {
         st.set("personName", "徐雷");
         st.set("age", 18);
         return st;
-        // throw new Exception("22");
     }
 
     // http://localhost:8080/golf/version/get2/12?aaa=23&aaa=24
     @GET
     @Path("/get2/{pathv}")
-    public String getVersion2(ServletRequest request, ServletResponse response, ServletInputStream ServletInputStream,
-            @PathParam(value = "pathv")
+    public String getVersion2(HttpServletRequest request, HttpServletResponse response,
+            ServletInputStream ServletInputStream, @PathParam(value = "pathv")
             String version, @QueryParam(value = "aaa")
             String p, @HeaderParam(value = "accept-language")
             String t, @CookieParam(value = "ys-healthcheck-summary-size-delta")
@@ -108,6 +116,54 @@ public class Version {
         } else {
             throw new Exception("文件不存在!");
         }
+    }
+
+    @POST
+    @Path("/login")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public View login(HttpServletRequest request, HttpServletResponse response, @FormParam(value = "personId")
+    String personId, @FormParam(value = "personName")
+    String personName) {
+        response.setHeader("userId", personId);
+        View view = new View(View.jsp, "/index.jsp", null);
+        return view;
+    }
+
+    @POST
+    @Path("/upload")
+    @Consumes({ MediaType.MULTIPART_FORM_DATA })
+    @Produces({ MediaType.APPLICATION_JSON })
+    public View uploadFile(HttpServletRequest request) throws IOException {
+        MultipartParser mp = new MultipartParser(request, 1024 * 1024 * 10);
+        mp.setEncoding("utf-8");
+        Part part;
+        while ((part = mp.readNextPart()) != null) {
+            String name = part.getName();
+            if (part.isParam()) {
+                ParamPart pp = (ParamPart) part;
+                String value = pp.getStringValue();
+                System.out.println(name + "=" + value);
+            } else if (part.isFile()) {
+                FilePart fp = (FilePart) part;
+                String filename = fp.getFileName();
+                String fileType = fp.getContentType();
+                String filePath = fp.getFilePath();
+                InputStream is = fp.getInputStream();
+                FileOutputStream fos = new FileOutputStream(new File("e:/" + filename));
+                BufferedOutputStream bos = new BufferedOutputStream(fos);
+                byte[] bt = new byte[2048];
+                int k;
+                while ((k = is.read(bt)) > 0) {
+                    bos.write(bt, 0, k);
+                }
+                System.out.println("文件名称:" + filename);
+                System.out.println("<br/>文件类型" + fileType);
+                System.out.println("<br/>文件路径:" + filePath);
+            } else {
+                System.out.println("File name:" + name);
+            }
+        }
+        return new View(View.jsp, "/index.jsp", null);
     }
 
     @GET

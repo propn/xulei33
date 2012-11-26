@@ -22,7 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.propn.golf.tools.Cache;
-import com.propn.golf.tools.ClassScaner;
+import com.propn.golf.tools.ClassUtils;
 import com.propn.golf.tools.RefUtils;
 
 /**
@@ -71,38 +71,42 @@ public class ResUtils {
     private static void registerResouce(String... packages) throws Exception {
         Set<Class<?>> calssList = getPackageAllClasses(packages);
         for (Class<?> clz : calssList) {
-            if (clz.isAnnotationPresent(Path.class)) {
-                Map<String, Method> methodsMap = RefUtils.getMethods(clz);
-                for (Iterator<String> it = methodsMap.keySet().iterator(); it.hasNext();) {
-                    Method method = methodsMap.get(it.next());
-                    if (method.isAnnotationPresent(Path.class)) {
-                        Resource res = buildRes(clz, method);
-                        if (null == resCache.get("path", res.getCompiledPath())) {
-                            resCache.put("path", res.getCompiledPath(), res);
-                            StringBuffer info = new StringBuffer("URL[");
-                            info.append(res.getCompiledPath());
-                            info.append("] register to [");
-                            info.append(res.getClassName());
-                            info.append(".");
-                            info.append(res.getMethodName());
-                            info.append("]");
-                            log.debug(info.toString());
-                        } else {
-                            res = resCache.get("path", res.getCompiledPath());
-                            StringBuffer error = new StringBuffer("URL[");
-                            error.append(res.getCompiledPath());
-                            error.append("]multiple registrations![");
-                            error.append(clz.getName());
-                            error.append(".");
-                            error.append(method.getName());
-                            error.append(",");
-                            error.append(res.getClassName());
-                            error.append(".");
-                            error.append(res.getMethodName()).append("]");
-                            String errMsg = error.toString();
-                            log.error(errMsg);
-                            throw new RuntimeException(errMsg);
-                        }
+            registerResouce(clz);
+        }
+    }
+
+    public static void registerResouce(Class clz) throws Exception {
+        if (clz.isAnnotationPresent(Path.class)) {
+            Map<String, Method> methodsMap = RefUtils.getMethods(clz);
+            for (Iterator<String> it = methodsMap.keySet().iterator(); it.hasNext();) {
+                Method method = methodsMap.get(it.next());
+                if (method.isAnnotationPresent(Path.class)) {
+                    Resource res = buildRes(clz, method);
+                    if (null == resCache.get("path", res.getCompiledPath())) {
+                        resCache.put("path", res.getCompiledPath(), res);
+                        StringBuffer info = new StringBuffer("URL[");
+                        info.append(res.getCompiledPath());
+                        info.append("] register to [");
+                        info.append(res.getClassName());
+                        info.append(".");
+                        info.append(res.getMethodName());
+                        info.append("]");
+                        log.debug(info.toString());
+                    } else {
+                        res = resCache.get("path", res.getCompiledPath());
+                        StringBuffer error = new StringBuffer("URL[");
+                        error.append(res.getCompiledPath());
+                        error.append("]multiple registrations![");
+                        error.append(clz.getName());
+                        error.append(".");
+                        error.append(method.getName());
+                        error.append(",");
+                        error.append(res.getClassName());
+                        error.append(".");
+                        error.append(res.getMethodName()).append("]");
+                        String errMsg = error.toString();
+                        log.error(errMsg);
+                        throw new RuntimeException(errMsg);
                     }
                 }
             }
@@ -151,7 +155,7 @@ public class ResUtils {
     private static Set<Class<?>> getPackageAllClasses(String... packages) throws IOException, ClassNotFoundException {
         Set<Class<?>> calssList = new LinkedHashSet<Class<?>>();
         List<String> classFilters = new ArrayList<String>();
-        ClassScaner handler = new ClassScaner(true, true, classFilters);
+        ClassUtils handler = new ClassUtils(true, true, classFilters);
         if (packages.length == 0) {
             return handler.getPackageAllClasses(null, true);
         }

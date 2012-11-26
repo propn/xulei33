@@ -7,7 +7,7 @@
 
 	<filter>
 		<filter-name>golf</filter-name>
-		<filter-class>com.propn.golf.mvc.Golf</filter-class>
+		<filter-class>com.propn.golf.mvc.GolfFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>golf</filter-name>

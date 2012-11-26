@@ -10,7 +10,7 @@ import java.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.propn.golf.mvc.Golf;
+import com.propn.golf.mvc.GolfFilter;
 
 /**
  * @author Thunder.Hsu
@@ -18,7 +18,7 @@ import com.propn.golf.mvc.Golf;
  */
 public class ConvertUtils {
 
-    private static final Logger log = LoggerFactory.getLogger(Golf.class);
+    private static final Logger log = LoggerFactory.getLogger(GolfFilter.class);
 
     public static Object convert(Object obj, Class dist) throws Exception {
         if (null == obj) {

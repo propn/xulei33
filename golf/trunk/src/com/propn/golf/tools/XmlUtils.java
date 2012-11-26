@@ -39,7 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import com.propn.golf.mvc.Golf;
+import com.propn.golf.Golf;
 import com.propn.golf.mvc.ResUtils;
 
 /**
@@ -59,6 +59,30 @@ public class XmlUtils {
     private static JAXBContext context = null;
     private static Marshaller marshaller = null;
     private static Unmarshaller unmarshaller = null;
+
+    public static void regist(Set<Class<?>> clzs) throws JAXBException, IOException, ClassNotFoundException {
+        long start = System.currentTimeMillis();
+        List<Class<?>> rst = new ArrayList<Class<?>>();
+        for (Class clz : clzs) {
+            if (clz.isAnnotationPresent(XmlRootElement.class)) {
+                rst.add(clz);
+                log.debug("register jaxb class " + clz.getName());
+            }
+        }
+        Class[] clz = new Class[rst.size()];
+        int i = 0;
+        for (Class<?> c : rst) {
+            clz[i] = c;
+            i++;
+        }
+        context = JAXBContext.newInstance(clz);
+        marshaller = context.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_ENCODING, ENCODING);
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        marshaller.setProperty(Marshaller.JAXB_FRAGMENT, false);
+        unmarshaller = context.createUnmarshaller();
+        log.debug("init JAXBContext cost time(millis):" + String.valueOf(System.currentTimeMillis() - start));
+    }
 
     synchronized private static void registJaxb() throws JAXBException, IOException, ClassNotFoundException {
         long start = System.currentTimeMillis();
@@ -92,7 +116,7 @@ public class XmlUtils {
         long start = System.currentTimeMillis();
         Set<Class<?>> calssList = new LinkedHashSet<Class<?>>();
         List<String> classFilters = new ArrayList<String>();
-        ClassScaner handler = new ClassScaner(true, true, classFilters);
+        ClassUtils handler = new ClassUtils(true, true, classFilters);
         for (String pkg : packages) {
             calssList.addAll(handler.getPackageAllClasses(pkg, true));
         }

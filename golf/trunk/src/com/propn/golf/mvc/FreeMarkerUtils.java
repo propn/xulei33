@@ -28,7 +28,7 @@ public class FreeMarkerUtils {
 
     public static void init() {
         cfg = new Configuration();
-        cfg.setServletContextForTemplateLoading(Golf.getAppPath(), "WEB-INF/templates");
+        cfg.setServletContextForTemplateLoading(GolfFilter.getAppPath(), "WEB-INF/templates");
         cfg.setTemplateUpdateDelay(0);
         cfg.setTemplateExceptionHandler(TemplateExceptionHandler.HTML_DEBUG_HANDLER);
         cfg.setObjectWrapper(ObjectWrapper.BEANS_WRAPPER);

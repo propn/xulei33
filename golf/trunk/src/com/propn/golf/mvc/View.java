@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public class View {
 
-    public static final String forward = "forward";
+//    public static final String forward = "forward";
     public static final String redirect = "redirect";
     public static final String jsp = "jsp";
     public static final String html = "html";

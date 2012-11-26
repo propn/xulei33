@@ -35,6 +35,14 @@ public class StringUtils {
         }
     }
 
+    public static String array2Strig(String[] array) {
+        StringBuffer sb = new StringBuffer();
+        for (String str : array) {
+            sb.append(str).append(",");
+        }
+        return sb.toString();
+    }
+
     public static String list2Stirng(List<?> args) {
         if (null == args || args.isEmpty()) {
             return null;

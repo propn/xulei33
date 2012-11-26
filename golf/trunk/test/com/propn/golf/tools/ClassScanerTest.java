@@ -15,7 +15,7 @@ public class ClassScanerTest {
         // // 自定义过滤规则
         List<String> classFilters = new ArrayList<String>();
         // 创建一个扫描处理器，排除内部类 扫描符合条件的类
-        ClassScaner handler = new ClassScaner(true, true, classFilters);
+        ClassUtils handler = new ClassUtils(true, true, classFilters);
         long a = System.currentTimeMillis();
         Set<Class<?>> calssList = handler.getPackageAllClasses("com", true);
         long b = System.currentTimeMillis();
