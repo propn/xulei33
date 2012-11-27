@@ -29,7 +29,7 @@ import com.propn.golf.tools.StringUtils;
 public class GolfFilter extends Golf implements Filter {
 
     private static final Logger log = LoggerFactory.getLogger(GolfFilter.class);
-    private static final String IGNORE = "^(.+[.])(jsp|png|gif|jpg|js|css|jspx|jpeg|swf|html)$";
+    private static final String IGNORE = "^(.+[.])(jsp|png|gif|jpg|ttf|woff|eot|svg|js|css|jspx|jpeg|swf|html)$";
 
     private static Pattern ignorePattern;
 
