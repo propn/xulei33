@@ -155,7 +155,7 @@ public class ReqCtx {
         Map<String, Object> context = getContext();
         context.put("HttpServletRequest", request);
         context.put("HttpServletResponse", response);
-        if (request.getContentType().contains(MediaType.MULTIPART_FORM_DATA)) {
+        if (null != request.getContentType() && request.getContentType().contains(MediaType.MULTIPART_FORM_DATA)) {
             context.put("InputStream", request.getInputStream());
         } else {
             // 非文件上传,则转换为ByteArrayInputStream
@@ -253,8 +253,7 @@ public class ReqCtx {
     }
 
     private static void initMultipart(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        if (request.getContentType().contains(MediaType.MULTIPART_FORM_DATA)) {
-
+        if (null != request.getContentType() && request.getContentType().contains(MediaType.MULTIPART_FORM_DATA)) {
             if (request.getContentLength() > 10487600) {
                 // 413 Request Entity Too Large
                 response.setCharacterEncoding("UTF-8");
