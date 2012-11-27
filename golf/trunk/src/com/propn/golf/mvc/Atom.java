@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import com.propn.golf.dao.trans.Trans;
 import com.propn.golf.ioc.BeanUtils;
+import com.propn.golf.mvc.multipart.UpFile;
 import com.propn.golf.tools.ConvertUtils;
 
 public class Atom implements Callable<Object> {
@@ -90,8 +91,8 @@ public class Atom implements Callable<Object> {
                 continue;
             }
 
-            if (temp.equals(FileInfo[].class)) {
-                args[i] = ReqCtx.getContext("FileInfo[]");
+            if (temp.equals(UpFile[].class)) {
+                args[i] = ReqCtx.getContext("UpFile[]");
                 continue;
             }
         }

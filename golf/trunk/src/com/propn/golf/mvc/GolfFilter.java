@@ -52,7 +52,7 @@ public class GolfFilter extends Golf implements Filter {
         String[] pkgs = null;
         if (null == packages) {
             pkgs = getPkgs();
-            log.debug("Packages : [{}]", StringUtils.array2Strig(pkgs));
+            log.debug("Packages : [{}]", StringUtils.array2Strig(pkgs, ","));
         } else {
             pkgs = packages.split(";");
             log.debug("Packages : " + packages);
@@ -156,19 +156,15 @@ public class GolfFilter extends Golf implements Filter {
             return false;
         }
 
-        String[] consumes = res.getConsumes();
+        String consumes = res.getConsumes();
         String contentType = request.getContentType();
-        if (null != contentType && consumes.length > 0) {
-            StringBuffer temp = new StringBuffer();
-            for (String consume : consumes) {
-                temp.append(consume).append(",");
-            }
+        if (null != contentType && !consumes.isEmpty()) {
             contentType = contentType.split(";")[0];
-            if (!temp.toString().contains(contentType)) {
+            if (!consumes.contains(contentType)) {
                 // 415 Unsupported Media Type
                 response.setStatus(415);
                 response.setContentType(MediaType.TEXT_PLAIN);
-                response.setHeader("Support", temp.toString());
+                response.setHeader("Support", consumes);
                 response.getWriter().append("Unsupported Media Type!").flush();// Support
                 return false;
             }
@@ -178,7 +174,7 @@ public class GolfFilter extends Golf implements Filter {
 
     private String getOptimalType(String accept, String[] produces) {
         if (null == produces || produces.length == 0) {
-            return "application/xml";
+            return MediaType.APPLICATION_JSON;
         }
         if (accept.contains("*/*")) {
             return produces[0];

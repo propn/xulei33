@@ -9,9 +9,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.CookieParam;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.HEAD;
 import javax.ws.rs.HeaderParam;
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -21,6 +24,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.propn.golf.dao.Person;
 import com.propn.golf.dao.Student;
+import com.propn.golf.mvc.multipart.UpFile;
 
 @Path("/version")
 @Consumes({ MediaType.TEXT_PLAIN, MediaType.TEXT_HTML })
@@ -30,6 +34,7 @@ public class Version {
     @POST
     @Path("/addPerson")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @HEAD
     public Person addPerson(@FormParam(value = "personId")
     String personId, @FormParam(value = "personName")
     String personName, @FormParam(value = "age")
@@ -125,10 +130,10 @@ public class Version {
     @Path("/upload")
     @Consumes({ MediaType.MULTIPART_FORM_DATA })
     @Produces({ MediaType.APPLICATION_JSON })
-    public View uploadFile(FileInfo[] files, @FormParam(value = "text")
+    public View uploadFile(UpFile[] files, @FormParam(value = "text")
     String text) throws IOException {
         System.out.println(text);
-        for (FileInfo fileInfo : files) {
+        for (UpFile fileInfo : files) {
             System.out.println(fileInfo.getFileName());
             fileInfo.WriteTO("C:\\" + fileInfo.getFileName());
         }

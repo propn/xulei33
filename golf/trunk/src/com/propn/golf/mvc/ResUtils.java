@@ -13,7 +13,10 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HEAD;
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -24,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import com.propn.golf.tools.Cache;
 import com.propn.golf.tools.ClassUtils;
 import com.propn.golf.tools.RefUtils;
+import com.propn.golf.tools.StringUtils;
 
 /**
  * @author Thunder.Hsu
@@ -35,8 +39,8 @@ public class ResUtils {
     private static Cache<Resource> resCache = new Cache<Resource>();
     private static final String PATH_PARAM_REXP = "/?\\{(\\S*?)\\}";// 匹配 /{a}
 
-    public static void init(String... packages) throws Exception {
-        registerResouce(packages);
+    public static void init(String... pkgs) throws Exception {
+        registRes(pkgs);
     }
 
     public static Resource getMatchedRes(String path) {
@@ -68,14 +72,14 @@ public class ResUtils {
         return resCache.get("path", path);
     }
 
-    private static void registerResouce(String... packages) throws Exception {
+    private static void registRes(String... packages) throws Exception {
         Set<Class<?>> calssList = getPackageAllClasses(packages);
         for (Class<?> clz : calssList) {
-            registerResouce(clz);
+            registerRes(clz);
         }
     }
 
-    public static void registerResouce(Class clz) throws Exception {
+    public static void registerRes(Class<?> clz) throws Exception {
         if (clz.isAnnotationPresent(Path.class)) {
             Map<String, Method> methodsMap = RefUtils.getMethods(clz);
             for (Iterator<String> it = methodsMap.keySet().iterator(); it.hasNext();) {
@@ -113,7 +117,7 @@ public class ResUtils {
         }
     }
 
-    private static Resource buildRes(Class clz, Method method) {
+    private static Resource buildRes(Class<?> clz, Method method) {
         Resource res = new Resource();
         res.setClassName(clz.getName());
         res.setClz(clz);
@@ -131,7 +135,8 @@ public class ResUtils {
         if (null == consumes && clz.isAnnotationPresent(Consumes.class)) {
             consumes = ((Consumes) clz.getAnnotation(Consumes.class)).value();
         }
-        res.setConsumes(consumes);
+        res.setConsumes(StringUtils.array2Strig(consumes, "|"));
+
         String[] produces = null;
         if (method.isAnnotationPresent(Produces.class)) {
             produces = method.getAnnotation(Produces.class).value();
@@ -148,7 +153,17 @@ public class ResUtils {
         if (method.isAnnotationPresent(POST.class)) {
             httpMethods.append("POST|");
         }
+        if (method.isAnnotationPresent(OPTIONS.class)) {
+            httpMethods.append("OPTIONS|");
+        }
+        if (method.isAnnotationPresent(DELETE.class)) {
+            httpMethods.append("DELETE|");
+        }
+        if (method.isAnnotationPresent(HEAD.class)) {
+            httpMethods.append("HEAD|");
+        }
         res.setHttpMethod(httpMethods.toString());
+
         return res;
     }
 

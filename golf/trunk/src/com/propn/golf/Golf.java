@@ -20,6 +20,11 @@ import com.propn.golf.tools.XmlUtils;
  * 
  */
 public abstract class Golf {
+    public static final String CONFIG_FILE_NAME = "golf";/* 数据库配置文件 */
+    public static final String DATASOURCE_FILE_NAME = "dataSource.xml";/* 数据库配置文件 */
+    public static final String DEFAULT_DATASOURCE_CODE = "default";/* 默认数据源 */
+    public static final String MAX_UPLOAD_SIZE = "maxUploadSize";/* 默认数据源 */
+
     private static final Logger log = LoggerFactory.getLogger(Golf.class);
 
     protected static String appPath = null;
@@ -39,7 +44,7 @@ public abstract class Golf {
         XmlUtils.regist(clzs);
         for (Class<?> clz : clzs) {
             // Resist mvc
-            ResUtils.registerResouce(clz);
+            ResUtils.registerRes(clz);
             // Resist bean
             BeanUtils.registBean(clz);
         }

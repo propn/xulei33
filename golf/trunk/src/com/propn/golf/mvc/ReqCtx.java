@@ -24,10 +24,11 @@ import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.oreilly.servlet.multipart.FilePart;
-import com.oreilly.servlet.multipart.MultipartParser;
-import com.oreilly.servlet.multipart.ParamPart;
-import com.oreilly.servlet.multipart.Part;
+import com.propn.golf.mvc.multipart.FilePart;
+import com.propn.golf.mvc.multipart.MultipartParser;
+import com.propn.golf.mvc.multipart.ParamPart;
+import com.propn.golf.mvc.multipart.Part;
+import com.propn.golf.mvc.multipart.UpFile;
 import com.propn.golf.tools.MultMap;
 import com.propn.golf.tools.StringUtils;
 
@@ -268,7 +269,7 @@ public class ReqCtx {
             MultipartParser mp = new MultipartParser(request, 10487600);// 1024 * 1024 * 10
             mp.setEncoding("utf-8");
             Part part;
-            List<FileInfo> fileParts = new ArrayList<FileInfo>();
+            List<UpFile> fileParts = new ArrayList<UpFile>();
             while ((part = mp.readNextPart()) != null) {
                 String name = part.getName();
                 if (part.isParam()) {
@@ -281,19 +282,15 @@ public class ReqCtx {
                     if (null != fp.getFileName()) {
                         fileParts.add(fp);
                     }
-
-                } else {
-                    System.out.println("File name:" + name);
                 }
             }
-
-            FileInfo[] files = new FileInfo[fileParts.size()];
+            UpFile[] files = new UpFile[fileParts.size()];
             int i = 0;
-            for (FileInfo fileInfo : fileParts) {
+            for (UpFile fileInfo : fileParts) {
                 files[i] = fileInfo;
                 i++;
             }
-            getContext().put("FileInfo[]", files);
+            getContext().put("UpFile[]", files);
         }
     }
 }

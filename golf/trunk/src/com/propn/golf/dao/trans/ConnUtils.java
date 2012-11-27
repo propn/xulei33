@@ -11,7 +11,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.propn.golf.Constants;
+import com.propn.golf.Golf;
 
 /**
  * 
@@ -85,7 +85,7 @@ public class ConnUtils {
                 currentTransId);
 
         if (null == dsCode) {
-            dsCode = Constants.DEFAULT_DATASOURCE;
+            dsCode = Golf.DEFAULT_DATASOURCE_CODE;
         }
 
         Connection conn = null;

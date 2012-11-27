@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jolbox.bonecp.BoneCPDataSource;
+import com.propn.golf.Golf;
 import com.propn.golf.tools.XmlUtils;
 
 public class DsUtils {
@@ -27,9 +28,9 @@ public class DsUtils {
         try {
             ic = new InitialContext();
             // 初始化数据源
-            InputStream dsIn = ClassLoader.getSystemResourceAsStream("ds.xml");
+            InputStream dsIn = ClassLoader.getSystemResourceAsStream(Golf.DATASOURCE_FILE_NAME);
             if (null == dsIn) {
-                dsIn = Thread.currentThread().getContextClassLoader().getResourceAsStream("ds.xml");
+                dsIn = Thread.currentThread().getContextClassLoader().getResourceAsStream(Golf.DATASOURCE_FILE_NAME);
             }
             Document doc = XmlUtils.load(dsIn);
             Map DataSources = (Map) XmlUtils.doc2Map(doc).get("DataSources");
@@ -53,12 +54,16 @@ public class DsUtils {
                     }
                 }
             }
+        } catch (RuntimeException e) {
+            log.error("初始化数据源错误!", e);
+            throw e;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("初始化数据源错误!", e);
+            throw new RuntimeException(e);
         }
     }
 
-    private static DataSource initDs(Map<String, String> map) throws Exception {
+    private static DataSource initDs(Map<String, String> map) throws RuntimeException {
         try {
             String driverClass = map.get("driverClass");
             String jdbcUrl = map.get("jdbcUrl");

@@ -35,10 +35,10 @@ public class StringUtils {
         }
     }
 
-    public static String array2Strig(String[] array) {
+    public static String array2Strig(String[] array, String split) {
         StringBuffer sb = new StringBuffer();
         for (String str : array) {
-            sb.append(str).append(",");
+            sb.append(str).append(split);
         }
         return sb.toString();
     }

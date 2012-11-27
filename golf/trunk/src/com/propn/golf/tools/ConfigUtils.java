@@ -3,7 +3,7 @@ package com.propn.golf.tools;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import com.propn.golf.Constants;
+import com.propn.golf.Golf;
 
 public class ConfigUtils {
 
@@ -11,10 +11,10 @@ public class ConfigUtils {
 
     static {
         try {
-            res = ResourceBundle.getBundle(Constants.PROPERTIES_FILE_NAME);
+            res = ResourceBundle.getBundle(Golf.CONFIG_FILE_NAME);
             // property.load(ClassLoader.getSystemResourceAsStream(Constants.PROPERTIES_FILE_NAME));
         } catch (Exception e) {
-            throw new RuntimeException("加载配置文件:" + Constants.PROPERTIES_FILE_NAME + " 出错!", e);
+            throw new RuntimeException("加载配置文件:" + Golf.CONFIG_FILE_NAME + " 出错!", e);
         }
     }
 
